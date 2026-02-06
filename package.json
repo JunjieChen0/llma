@@ -1,0 +1,228 @@
+{
+  "name": "llma",
+  "displayName": "LLMA AI Code Assistant",
+  "description": "Large Model-driven End-to-End Software Development（类Cline AI代码辅助）",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.108.1"
+  },
+  "categories": [
+    "Machine Learning",
+    "Snippets",
+    "Other"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished",
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:python",
+    "onLanguage:java",
+    "onLanguage:cpp",
+    "onLanguage:csharp",
+    "onLanguage:go",
+    "onLanguage:rust",
+    "onLanguage:php"
+  ],
+  "contributes": {
+    "configuration": {
+      "title": "LLMA AI Code Assistant",
+      "properties": {
+        "llma.currentModel": {
+          "type": "string",
+          "default": "deepseek",
+          "enum": ["deepseek", "douban", "qwen"],
+          "description": "选择要使用的国内大模型：deepseek-深度求索、douban-豆包、qwen-通义千问",
+          "enumDescriptions": [
+            "深度求索 DeepSeek - 强大的代码生成模型",
+            "豆包 - 字节跳动大模型",
+            "通义千问 - 阿里云大模型"
+          ]
+        },
+        "llma.deepseekApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "DeepSeek API密钥，获取地址：https://platform.deepseek.com/api_keys",
+          "scope": "application"
+        },
+        "llma.doubanApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "豆包API密钥，获取地址：https://www.douban.com/ai/openapi",
+          "scope": "application"
+        },
+        "llma.qwenApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "通义千问API密钥，获取地址：https://dashscope.aliyun.com/apiKey",
+          "scope": "application"
+        },
+        "llma.qwenBaseUrl": {
+          "type": "string",
+          "default": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "description": "通义千问OpenAI兼容接口地址，一般无需修改",
+          "scope": "application"
+        },
+        "llma.contextWindowSize": {
+          "type": "number",
+          "default": 20,
+          "description": "上下文窗口大小（行数），控制在光标前后各取多少行代码作为上下文",
+          "scope": "application"
+        },
+        "llma.maxTokens": {
+          "type": "number",
+          "default": 2000,
+          "description": "生成代码的最大token数",
+          "scope": "application"
+        },
+        "llma.temperature": {
+          "type": "number",
+          "default": 0.3,
+          "minimum": 0,
+          "maximum": 1,
+          "description": "温度参数，控制生成的随机性。较低的值（如0.3）使输出更确定性，较高的值（如0.8）使输出更有创造性",
+          "scope": "application"
+        },
+        "llma.enableAutoCompletion": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否启用AI自动代码提示功能",
+          "scope": "application"
+        },
+        "llma.enableHoverExplanation": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否启用悬停解释功能（鼠标悬停在代码上时显示AI解释）",
+          "scope": "application"
+        },
+        "llma.completionDelay": {
+          "type": "number",
+          "default": 300,
+          "description": "代码提示触发延迟（毫秒），避免频繁调用API",
+          "scope": "application"
+        },
+        "llma.aiCompletionTriggers": {
+          "type": "array",
+          "default": ["//", "function", "if", "for", "while", "return", "const", "let", "var", "class"],
+          "description": "触发AI代码提示的关键词列表",
+          "scope": "application"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "llma.aiCodeComplete",
+        "title": "LLMA: AI代码补全（智能上下文）",
+        "category": "LLMA",
+        "icon": {
+          "light": "resources/light/code.svg",
+          "dark": "resources/dark/code.svg"
+        }
+      },
+      {
+        "command": "llma.helloWorld",
+        "title": "LLMA: 测试命令",
+        "category": "LLMA"
+      },
+      {
+        "command": "llma.analyzeCode",
+        "title": "LLMA: 分析当前代码上下文",
+        "category": "LLMA"
+      },
+      {
+        "command": "llma.quickSuggest",
+        "title": "LLMA: 快速智能提示",
+        "category": "LLMA"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "llma.aiCodeComplete",
+        "key": "ctrl+shift+a",
+        "mac": "cmd+shift+a",
+        "when": "editorTextFocus",
+        "description": "触发LLMA智能代码补全"
+      },
+      {
+        "command": "llma.analyzeCode",
+        "key": "ctrl+shift+l",
+        "mac": "cmd+shift+l",
+        "when": "editorTextFocus",
+        "description": "分析当前代码上下文"
+      },
+      {
+        "command": "llma.quickSuggest",
+        "key": "ctrl+space",
+        "mac": "cmd+space",
+        "when": "editorTextFocus",
+        "description": "触发LLMA智能代码提示"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "llma.aiCodeComplete",
+          "group": "llma",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "llma.analyzeCode",
+          "group": "llma",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "llma.quickSuggest",
+          "group": "llma",
+          "when": "editorTextFocus"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "llma.aiCodeComplete",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "llma.helloWorld"
+        },
+        {
+          "command": "llma.analyzeCode",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "llma.quickSuggest",
+          "when": "editorTextFocus"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "npm run check-types && npm run lint && node esbuild.js",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "package": "npm run check-types && npm run lint && node esbuild.js --production",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.108.1",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "22.x",
+    "typescript-eslint": "^8.54.0",
+    "eslint": "^9.39.2",
+    "esbuild": "^0.27.2",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.9.3",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.5.2",
+    "@types/axios": "^0.14.0"
+  },
+  "dependencies": {
+    "axios": "^1.7.7"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "npm: compile",
+      "type": "npm",
+      "script": "compile",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "detail": "编译 TypeScript 扩展"
+    },
+    {
+      "label": "npm: watch",
+      "type": "npm",
+      "script": "watch",
+      "group": "build",
+      "problemMatcher": [],
+      "detail": "监听并编译 TypeScript 扩展"
+    },
+    {
+      "label": "npm: package",
+      "type": "npm",
+      "script": "package",
+      "group": "build",
+      "problemMatcher": [],
+      "detail": "打包扩展用于发布"
+    },
+    {
+      "label": "npm: lint",
+      "type": "npm",
+      "script": "lint",
+      "problemMatcher": [],
+      "detail": "运行 ESLint 代码检查"
+    },
+    {
+      "label": "npm: test",
+      "type": "npm",
+      "script": "test",
+      "group": "test",
+      "problemMatcher": [],
+      "detail": "运行测试"
+    }
+  ]
+}
