@@ -1,0 +1,3016 @@
+import * as vscode from 'vscode';
+import * as path from 'path';
+import * as fs from 'fs';
+import axios from 'axios';
+
+// 全局状态栏项
+let statusBarItem: vscode.StatusBarItem;
+// 编译专用终端
+let compilationTerminal: vscode.Terminal | undefined;
+
+// 扩展激活入口
+export function activate(context: vscode.ExtensionContext) {
+  console.log('=== LLMA 已激活 ===');
+
+  // 1. 初始化状态栏
+  statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+  statusBarItem.command = "llma.toggle"; 
+  updateStatusBar(false);
+  statusBarItem.show();
+
+  // 2. 注册行内代码预测 (Ghost Text)
+  const provider = new LLMAInlineCompletionProvider();
+  const selector = { pattern: '**' }; 
+  const inlineProvider = vscode.languages.registerInlineCompletionItemProvider(selector, provider);
+
+  // 3. 注册侧边栏聊天窗口
+  const chatProvider = new LLMAChatProvider(context.extensionUri);
+  const chatView = vscode.window.registerWebviewViewProvider("llma.chatView", chatProvider, {
+    webviewOptions: { retainContextWhenHidden: true }
+  });
+
+  // 4. 注册命令
+  const generateCommand = vscode.commands.registerCommand('llma.aiCodeComplete', async () => {
+    await handleExplicitCodeGeneration();
+  });
+
+  const toggleCommand = vscode.commands.registerCommand('llma.toggle', () => {
+    const config = vscode.workspace.getConfiguration('llma');
+    const currentState = config.get<boolean>('enableAutoCompletion');
+    config.update('enableAutoCompletion', !currentState, vscode.ConfigurationTarget.Global);
+    vscode.window.showInformationMessage(`LLMA 自动预测已${!currentState ? '开启' : '关闭'}`);
+  });
+
+  const manualTriggerCommand = vscode.commands.registerCommand('llma.trigger', () => {
+    vscode.commands.executeCommand('editor.action.inlineSuggest.trigger');
+  });
+
+  // 5. 注册编译命令
+  const compileCommand = vscode.commands.registerCommand('llma.compileCurrentFile', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showWarningMessage('请先打开一个编辑器');
+      return;
+    }
+    await compileFile(editor.document.uri.fsPath, { showDialog: true });
+  });
+
+  const compileWithOptionsCommand = vscode.commands.registerCommand('llma.compileWithOptions', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showWarningMessage('请先打开一个编辑器');
+      return;
+    }
+    await showCompilationOptions(editor.document.uri.fsPath);
+  });
+
+  // 6. 监听配置变化
+  const configListener = vscode.workspace.onDidChangeConfiguration(e => {
+    if (e.affectsConfiguration('llma')) {
+      updateStatusBar(false);
+    }
+  });
+
+  context.subscriptions.push(
+    statusBarItem,
+    inlineProvider,
+    chatView,
+    generateCommand,
+    toggleCommand,
+    manualTriggerCommand,
+    compileCommand,
+    compileWithOptionsCommand,
+    configListener
+  );
+}
+
+export function deactivate() {
+  if (compilationTerminal) {
+    compilationTerminal.dispose();
+  }
+  console.log('LLMA 已停用');
+}
+
+/**
+ * === 编译核心功能 ===
+ */
+
+async function compileFile(filePath: string, options: { 
+  showDialog?: boolean;
+  customCommand?: string;
+  outputPath?: string;
+  args?: string[];
+} = {}) {
+  try {
+    const config = vscode.workspace.getConfiguration('llma');
+    const compilers = config.get<any>('compilation.compilers') || {};
+    const defaultOutputDir = config.get<string>('compilation.defaultOutputDir') || 'build';
+    
+    const fileExt = path.extname(filePath).toLowerCase();
+    const fileName = path.basename(filePath);
+    const fileNameWithoutExt = path.basename(filePath, fileExt);
+    const fileDir = path.dirname(filePath);
+    
+    // 获取文件语言
+    const language = getLanguageFromExtension(fileExt);
+    
+    if (!language) {
+      vscode.window.showErrorMessage(`不支持的文件类型: ${fileExt}`);
+      return;
+    }
+    
+    // 确定输出目录
+    let outputDir: string;
+    if (options.outputPath) {
+        outputDir = path.dirname(options.outputPath);
+    } else {
+        outputDir = path.join(fileDir, defaultOutputDir);
+    }
+    
+    // 获取可执行文件名
+    const executableName = getExecutableName(fileNameWithoutExt, language);
+    const outputPath = options.outputPath || path.join(outputDir, executableName);
+    
+    // 获取编译命令
+    let compileCommand = options.customCommand || compilers[language];
+    
+    if (!compileCommand) {
+      vscode.window.showErrorMessage(`未配置 ${language} 语言的编译命令`);
+      return;
+    }
+    
+    // 对于 Java，默认使用 -d 参数指定输出目录（如果用户没有自定义命令）
+    if (language === 'java' && !options.customCommand) {
+        compileCommand = compilers['java'] || `javac -d \"{outputDir}\" \"{file}\"`;
+    }
+    
+    // 替换占位符
+    compileCommand = compileCommand
+      .replace(/{file}/g, `"${filePath}"`)
+      .replace(/{executable}/g, `"${outputPath}"`)
+      .replace(/{fileDir}/g, `"${fileDir}"`)
+      .replace(/{fileName}/g, fileName)
+      .replace(/{fileNameWithoutExt}/g, fileNameWithoutExt)
+      .replace(/{outputDir}/g, `"${outputDir}"`);
+    
+    // 添加额外参数
+    if (options.args && options.args.length > 0) {
+      compileCommand += ` ${options.args.join(' ')}`;
+    }
+    
+    // 创建输出目录（如果不存在）
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
+    
+    // 显示确认对话框
+    if (options.showDialog) {
+      const selection = await vscode.window.showInformationMessage(
+        `编译 ${fileName}?`,
+        {
+          modal: true,
+          detail: `命令: ${compileCommand}\n输出目录: ${outputDir}\n输出文件: ${executableName}`
+        },
+        "✅ 编译",
+        "⚙️ 自定义参数",
+        "❌ 取消"
+      );
+      
+      if (selection === "❌ 取消") {
+        return;
+      }
+      
+      if (selection === "⚙️ 自定义参数") {
+        await showCompilationOptions(filePath);
+        return;
+      }
+    }
+    
+    await executeCompilationCommand(compileCommand, filePath, outputPath, language, fileNameWithoutExt, outputDir);
+    
+  } catch (error: any) {
+    vscode.window.showErrorMessage(`编译失败: ${error.message}`);
+  }
+}
+
+async function showCompilationOptions(filePath: string) {
+  const config = vscode.workspace.getConfiguration('llma');
+  const compilers = config.get<any>('compilation.compilers') || {};
+  const fileExt = path.extname(filePath).toLowerCase();
+  const language = getLanguageFromExtension(fileExt);
+  
+  if (!language) {
+    vscode.window.showErrorMessage(`不支持的文件类型: ${fileExt}`);
+    return;
+  }
+  
+  const defaultCommand = compilers[language] || '';
+  
+  const customCommand = await vscode.window.showInputBox({
+    prompt: `请输入 ${language} 编译命令（使用 {file}、{executable}、{outputDir} 等占位符）`,
+    value: defaultCommand,
+    placeHolder: `例如: gcc "{file}" -o "{executable}" -Wall 或 javac -d "{outputDir}" "{file}"`
+  });
+  
+  if (customCommand === undefined) {
+    return;
+  }
+  
+  const additionalArgs = await vscode.window.showInputBox({
+    prompt: '请输入额外参数（可选）',
+    placeHolder: '例如: -O2 -g -I./include'
+  });
+  
+  const outputPath = await vscode.window.showSaveDialog({
+    defaultUri: vscode.Uri.file(path.join(path.dirname(filePath), 'build', 
+      getExecutableName(path.basename(filePath, fileExt), language))),
+    filters: {
+      '可执行文件': ['exe', 'out', 'class', ''],
+      '所有文件': ['*']
+    }
+  });
+  
+  await compileFile(filePath, {
+    customCommand,
+    outputPath: outputPath?.fsPath,
+    args: additionalArgs && additionalArgs.trim() ? additionalArgs.split(' ') : []
+  });
+}
+
+async function executeCompilationCommand(command: string, filePath: string, outputPath: string, language: string, fileNameWithoutExt: string, outputDir: string) {
+  if (!compilationTerminal) {
+    compilationTerminal = vscode.window.createTerminal({
+      name: 'LLMA Compilation',
+      shellPath: getShellPath()
+    });
+  }
+  
+  compilationTerminal.show();
+  compilationTerminal.sendText('clear', true);
+  compilationTerminal.sendText(`echo "=== LLMA 编译开始 ==="`);
+  compilationTerminal.sendText(`echo "文件: ${path.basename(filePath)}"`);
+  compilationTerminal.sendText(`echo "命令: ${command}"`);
+  compilationTerminal.sendText(`echo "输出目录: ${outputDir}"`);
+  compilationTerminal.sendText(`echo ""`);
+  
+  const fileDir = path.dirname(filePath);
+  compilationTerminal.sendText(getChangeDirectoryCommand(fileDir));
+  compilationTerminal.sendText(command);
+  compilationTerminal.sendText(`echo ""`);
+  compilationTerminal.sendText(`echo "=== 编译过程结束 (请检查上方报错) ==="`);
+  
+  setTimeout(async () => {
+    if (language === 'python') {
+      compilationTerminal?.sendText(`echo "✅ Python 语法检查完成"`);
+      const selection = await vscode.window.showInformationMessage(
+        `Python 语法检查完成！是否运行程序？`,
+        "▶️ 运行",
+        "❌ 关闭"
+      );
+      if (selection === "▶️ 运行") {
+        await runExecutable(filePath, language);
+      }
+    }
+    else if (language === 'java') {
+      const className = fileNameWithoutExt + '.class';
+      const classFilePath = path.join(outputDir, className);
+      
+      if (fs.existsSync(classFilePath)) {
+        compilationTerminal?.sendText(`echo "✅ Java 编译成功，生成 ${className}"`);
+        const selection = await vscode.window.showInformationMessage(
+          `Java 编译成功！是否运行程序？`,
+          "▶️ 运行",
+          "📁 在资源管理器中显示",
+          "❌ 关闭"
+        );
+        if (selection === "▶️ 运行") {
+          await runExecutable(classFilePath, language);
+        } else if (selection === "📁 在资源管理器中显示") {
+          vscode.commands.executeCommand('revealFileInOS', vscode.Uri.file(outputDir));
+        }
+      } else {
+        compilationTerminal?.sendText(`echo "⚠️ 未检测到生成的 .class 文件"`);
+      }
+    }
+    else if (language === 'javascript') {
+      compilationTerminal?.sendText(`echo "✅ JavaScript 语法检查完成"`);
+      const selection = await vscode.window.showInformationMessage(
+        `JavaScript 语法检查完成！是否运行程序？`,
+        "▶️ 运行",
+        "❌ 关闭"
+      );
+      if (selection === "▶️ 运行") {
+        await runExecutable(filePath, language);
+      }
+    }
+    else if (language === 'typescript') {
+      compilationTerminal?.sendText(`echo "✅ TypeScript 类型检查完成"`);
+      const selection = await vscode.window.showInformationMessage(
+        `TypeScript 类型检查完成！`,
+        "📁 在资源管理器中显示输出目录",
+        "❌ 关闭"
+      );
+      if (selection === "📁 在资源管理器中显示输出目录") {
+        vscode.commands.executeCommand('revealFileInOS', vscode.Uri.file(outputDir));
+      }
+    }
+    else {
+      if (fs.existsSync(outputPath)) {
+        compilationTerminal?.sendText(`echo "✅ 检测到输出文件: ${outputPath}"`);
+        const isExecutable = ['c', 'cpp', 'rust', 'go', 'cangjie'].includes(language);
+        const selection = await vscode.window.showInformationMessage(
+          `编译完成！${isExecutable ? '是否运行？' : '查看输出文件？'}`,
+          isExecutable ? "▶️ 运行" : "📁 查看",
+          "📁 在资源管理器中显示",
+          "❌ 关闭"
+        );
+        if (selection === "▶️ 运行") {
+          await runExecutable(outputPath, language);
+        } else if (selection === "📁 查看" || selection === "📁 在资源管理器中显示") {
+          vscode.commands.executeCommand('revealFileInOS', vscode.Uri.file(outputPath));
+        }
+      } else {
+        compilationTerminal?.sendText(`echo "⚠️ 未检测到新生成的文件"`);
+      }
+    }
+  }, 1500);
+}
+
+async function runExecutable(executablePath: string, language: string) {
+  const ext = path.extname(executablePath);
+  const baseName = path.basename(executablePath);
+  const terminalName = `LLMA Runner - ${baseName}`;
+  
+  const runTerminal = vscode.window.createTerminal({
+    name: terminalName,
+    shellPath: getShellPath()
+  });
+  
+  runTerminal.show();
+  
+  let runCommand = '';
+  const execDir = path.dirname(executablePath);
+  runTerminal.sendText(getChangeDirectoryCommand(execDir));
+  
+  if (ext === '.class' || language === 'java') {
+    const className = path.basename(executablePath, '.class');
+    runCommand = `java ${className}`;
+  } else if (ext === '.py' || language === 'python') {
+    const pythonInfo = await getPythonRunCommand(executablePath);
+    if (process.platform === 'win32') {
+      runCommand = `& '${pythonInfo.interpreter}' '${baseName}'`;
+    } else {
+      runCommand = `"${pythonInfo.interpreter}" "${baseName}"`;
+    }
+  } else if (ext === '.js' || language === 'javascript') {
+    runCommand = `node "${baseName}"`;
+  } else {
+    if (process.platform === 'win32') {
+      runCommand = `& ".\\${baseName}"`;
+    } else {
+      runCommand = `"./${baseName}"`;
+    }
+  }
+  
+  runTerminal.sendText(runCommand);
+  runTerminal.sendText(`echo ""`);
+  if (process.platform === 'win32') {
+    runTerminal.sendText('pause');
+  } else {
+    runTerminal.sendText('read -p "按回车键关闭..."');
+  }
+}
+
+function getLanguageFromExtension(ext: string): string | null {
+  const languageMap: { [key: string]: string } = {
+    '.c': 'c',
+    '.cpp': 'cpp',
+    '.cc': 'cpp',
+    '.cxx': 'cpp',
+    '.java': 'java',
+    '.class': 'java',
+    '.jar': 'java',
+    '.py': 'python',
+    '.js': 'javascript',
+    '.ts': 'typescript',
+    '.rs': 'rust',
+    '.go': 'go',
+    '.cs': 'csharp',
+    '.php': 'php',
+    '.rb': 'ruby',
+    '.swift': 'swift',
+    '.m': 'objective-c',
+    '.cj': 'cangjie'
+  };
+  return languageMap[ext] || null;
+}
+
+function getExecutableName(baseName: string, language: string): string {
+  if (process.platform === 'win32') {
+    if (language === 'java') {
+      return `${baseName}.class`;
+    }
+    return `${baseName}.exe`;
+  }
+  if (['python', 'javascript', 'ruby', 'php'].includes(language)) {
+    return baseName;
+  }
+  if (language === 'java') {
+    return `${baseName}.class`;
+  }
+  return baseName;
+}
+
+function getShellPath(): string {
+  if (process.platform === 'win32') {
+    return process.env.PSModulePath ? 'powershell.exe' : (process.env.COMSPEC || 'cmd.exe');
+  }
+  return process.env.SHELL || '/bin/bash';
+}
+
+function getChangeDirectoryCommand(dirPath: string): string {
+  const normalizedPath = dirPath.replace(/\\/g, '\\\\');
+  
+  if (process.platform === 'win32') {
+    return process.env.PSModulePath 
+      ? `Set-Location -Path '${normalizedPath}'` 
+      : `cd /d "${normalizedPath}"`;
+  } else {
+    return `cd "${normalizedPath}"`;
+  }
+}
+
+/**
+ * === Python 解释器管理功能 ===
+ */
+
+interface PythonInterpreterInfo {
+  path: string;
+  version?: string;
+  isVirtualEnv?: boolean;
+  virtualEnvPath?: string;
+}
+
+function getPythonInterpreterPath(): string | undefined {
+  const config = vscode.workspace.getConfiguration('llma');
+  const interpreterPath = config.get<string>('python.interpreterPath');
+  
+  if (interpreterPath && interpreterPath.trim() !== '') {
+    if (path.isAbsolute(interpreterPath)) {
+      return interpreterPath;
+    }
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+    if (workspaceFolders && workspaceFolders.length > 0) {
+      const absolutePath = path.join(workspaceFolders[0].uri.fsPath, interpreterPath);
+      if (fs.existsSync(absolutePath)) {
+        return absolutePath;
+      }
+    }
+  }
+  
+  return undefined;
+}
+
+function detectPythonInterpreter(): string {
+  const config = vscode.workspace.getConfiguration('llma');
+  const preferredCommand = config.get<string>('python.preferredCommand') || 'auto';
+  
+  const configuredPath = getPythonInterpreterPath();
+  if (configuredPath) {
+    return configuredPath;
+  }
+  
+  if (preferredCommand !== 'auto') {
+    return preferredCommand;
+  }
+  
+  if (process.platform === 'win32') {
+    return 'py';
+  } else {
+    return 'python3';
+  }
+}
+
+function detectVirtualEnv(filePath: string): string | undefined {
+  const config = vscode.workspace.getConfiguration('llma');
+  const autoDetect = config.get<boolean>('python.autoDetectVirtualEnv');
+  
+  if (!autoDetect) {
+    return undefined;
+  }
+  
+  const fileDir = path.dirname(filePath);
+  
+  const venvDirs = [
+    'venv',
+    '.venv',
+    'env',
+    '.env',
+    'virtualenv',
+    '.virtualenv'
+  ];
+  
+  let currentDir = fileDir;
+  let maxDepth = 5;
+  
+  while (maxDepth-- > 0 && currentDir !== path.dirname(currentDir)) {
+    for (const venvDir of venvDirs) {
+      const venvPath = path.join(currentDir, venvDir);
+      
+      if (fs.existsSync(venvPath)) {
+        let pythonPath: string;
+        
+        if (process.platform === 'win32') {
+          pythonPath = path.join(venvPath, 'Scripts', 'python.exe');
+        } else {
+          pythonPath = path.join(venvPath, 'bin', 'python');
+        }
+        
+        if (fs.existsSync(pythonPath)) {
+          return pythonPath;
+        }
+      }
+    }
+    
+    currentDir = path.dirname(currentDir);
+  }
+  
+  return undefined;
+}
+
+async function checkPythonVersion(pythonPath: string): Promise<string | undefined> {
+  try {
+    const { exec } = require('child_process');
+    
+    return new Promise((resolve) => {
+      exec(`"${pythonPath}" --version`, (error: any, stdout: string, stderr: string) => {
+        if (error) {
+          resolve(undefined);
+          return;
+        }
+        
+        const versionOutput = (stdout || stderr).trim();
+        const versionMatch = versionOutput.match(/Python\s+(\d+\.\d+\.\d+)/);
+        
+        if (versionMatch) {
+          resolve(versionMatch[1]);
+        } else {
+          resolve(undefined);
+        }
+      });
+    });
+  } catch (error) {
+    return undefined;
+  }
+}
+
+async function getPythonRunCommand(filePath: string): Promise<{ command: string; interpreter: string; version?: string }> {
+  const config = vscode.workspace.getConfiguration('llma');
+  const versionCheck = config.get<boolean>('python.versionCheck');
+  
+  const venvPython = detectVirtualEnv(filePath);
+  const configuredPython = getPythonInterpreterPath();
+  const autoDetectedPython = detectPythonInterpreter();
+  
+  let pythonInterpreter = venvPython || configuredPython || autoDetectedPython;
+  
+  let version: string | undefined;
+  if (versionCheck) {
+    version = await checkPythonVersion(pythonInterpreter);
+  }
+  
+  const baseName = path.basename(filePath);
+  let runCommand: string;
+  
+  if (process.platform === 'win32') {
+    runCommand = `"${pythonInterpreter}" "${baseName}"`;
+  } else {
+    runCommand = `"${pythonInterpreter}" "${baseName}"`;
+  }
+  
+  return {
+    command: runCommand,
+    interpreter: pythonInterpreter,
+    version
+  };
+}
+
+function showPythonInfo(interpreter: string, version?: string, isVirtual?: boolean) {
+  const info = `Python 解释器: ${interpreter}`;
+  const versionInfo = version ? `\n版本: ${version}` : '';
+  const venvInfo = isVirtual ? '\n(虚拟环境)' : '';
+  
+  vscode.window.showInformationMessage(info + versionInfo + venvInfo);
+}
+
+/**
+ * === 侧边栏聊天视图提供者 ===
+ */
+class LLMAChatProvider implements vscode.WebviewViewProvider {
+  private _view?: vscode.WebviewView;
+
+  constructor(private readonly _extensionUri: vscode.Uri) {}
+
+  public resolveWebviewView(
+    webviewView: vscode.WebviewView,
+    context: vscode.WebviewViewResolveContext,
+    _token: vscode.CancellationToken,
+  ) {
+    this._view = webviewView;
+
+    webviewView.webview.options = {
+      enableScripts: true,
+      localResourceRoots: [this._extensionUri]
+    };
+
+    webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
+
+    vscode.window.onDidChangeTextEditorSelection(e => {
+      if (this._view && e.textEditor === vscode.window.activeTextEditor) {
+        this.updateContextStatus(e.textEditor);
+      }
+    });
+
+    webviewView.webview.onDidReceiveMessage(async (data) => {
+      switch (data.type) {
+        case 'sendMessage':
+          await this.handleUserMessage(data.text, data.history, data.model, data.mode, data.files);
+          break;
+        case 'applyFileChange':
+          await this.handleApplyFileChange(data.filepath, data.content);
+          break;
+        case 'compileCurrentFile':
+           await vscode.commands.executeCommand('llma.compileCurrentFile');
+           break;
+        case 'refreshContext':
+           if (vscode.window.activeTextEditor) {
+             this.updateContextStatus(vscode.window.activeTextEditor);
+           }
+           break;
+        case 'selectContextFiles':
+           await this.handleSelectContextFiles();
+           break;
+        case 'getSettings':
+           await this.sendSettingsToWebview();
+           break;
+        case 'saveSettings':
+           await this.handleSaveSettings(data.settings);
+           break;
+        case 'log':
+           console.log('Webview Log:', data.message);
+           break;
+      }
+    });
+  }
+
+  private async handleApplyFileChange(filepath: string, content: string) {
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+    if (!workspaceFolders) {
+      vscode.window.showErrorMessage('请先打开一个工作区文件夹');
+      return;
+    }
+
+    let targetUri: vscode.Uri;
+    if (path.isAbsolute(filepath)) {
+      targetUri = vscode.Uri.file(filepath);
+    } else {
+      targetUri = vscode.Uri.joinPath(workspaceFolders[0].uri, filepath);
+    }
+
+    let fileExists = false;
+    try {
+      await vscode.workspace.fs.stat(targetUri);
+      fileExists = true;
+    } catch {
+      fileExists = false;
+    }
+
+    if (fileExists) {
+      try {
+        const doc = await vscode.workspace.openTextDocument(targetUri);
+        await vscode.window.showTextDocument(doc, { preview: false });
+        
+        const fullRange = new vscode.Range(
+          doc.positionAt(0),
+          doc.positionAt(doc.getText().length)
+        );
+
+        const edit = new vscode.WorkspaceEdit();
+        edit.replace(targetUri, fullRange, content);
+
+        const applied = await vscode.workspace.applyEdit(edit);
+        
+        if (applied) {
+          const selection = await vscode.window.showInformationMessage(
+            `LLMA Agent 已修改文件: ${path.basename(filepath)}`,
+            { modal: true, detail: "修改已应用到编辑器缓冲区。请审查代码，选择是否保留更改。" },
+            "💾 接受并保存", 
+            "↩️ 撤销更改"
+          );
+
+          if (selection === "💾 接受并保存") {
+            await doc.save();
+            vscode.window.setStatusBarMessage(`已保存 ${path.basename(filepath)}`, 3000);
+          } else {
+            await vscode.commands.executeCommand('undo');
+            vscode.window.setStatusBarMessage(`已撤销更改`, 3000);
+          }
+        } else {
+          vscode.window.showErrorMessage('无法应用更改，文件可能被锁定或只读。');
+        }
+      } catch (e: any) {
+        vscode.window.showErrorMessage(`修改文件时出错: ${e.message}`);
+      }
+
+    } else {
+      const selection = await vscode.window.showInformationMessage(
+        `LLMA Agent 请求创建新文件: ${path.basename(filepath)}`,
+        { modal: true, detail: `将在路径 ${targetUri.fsPath} 创建文件。` },
+        "✅ 确认创建",
+        "❌ 取消"
+      );
+
+      if (selection === "✅ 确认创建") {
+        try {
+          const edit = new vscode.WorkspaceEdit();
+          edit.createFile(targetUri, { ignoreIfExists: true });
+          edit.insert(targetUri, new vscode.Position(0, 0), content);
+          
+          const applied = await vscode.workspace.applyEdit(edit);
+          if (applied) {
+             const doc = await vscode.workspace.openTextDocument(targetUri);
+             await vscode.window.showTextDocument(doc);
+             await doc.save();
+             vscode.window.setStatusBarMessage(`已创建并保存: ${path.basename(filepath)}`, 3000);
+          } else {
+             vscode.window.showErrorMessage(`创建文件失败`);
+          }
+        } catch (e: any) {
+          vscode.window.showErrorMessage(`创建失败: ${e.message}`);
+        }
+      }
+    }
+  }
+
+  private async handleSelectContextFiles() {
+    const uris = await vscode.window.showOpenDialog({
+      canSelectMany: true,
+      openLabel: '添加到上下文',
+      title: '选择要让 AI 参考的文件'
+    });
+
+    if (uris && uris.length > 0) {
+      this._view?.webview.postMessage({
+        type: 'filesSelected',
+        files: uris.map(u => ({ name: path.basename(u.fsPath), path: u.fsPath }))
+      });
+    }
+  }
+
+  private async sendSettingsToWebview() {
+    const config = vscode.workspace.getConfiguration('llma');
+    this._view?.webview.postMessage({
+      type: 'updateSettings',
+      settings: {
+        deepseekApiKey: config.get('deepseekApiKey') || '',
+        qwenApiKey: config.get('qwenApiKey') || '',
+        doubanApiKey: config.get('doubanApiKey') || '',
+        doubanModel: config.get('doubanModel') || '',
+        zhipuApiKey: config.get('zhipuApiKey') || '',
+        localModelEnabled: config.get('localModel.enabled') || false,
+        localModelBaseUrl: config.get('localModel.baseUrl') || 'http://localhost:11434/v1',
+        localModelName: config.get('localModel.modelName') || 'llama3',
+        localModelTimeout: config.get('localModel.timeout') || 120000,
+        enableWebSearch: config.get('enableWebSearch') || false,
+        webSearchEngine: config.get('webSearchEngine') || 'bing',
+        bingApiKey: config.get('bingApiKey') || '',
+        baiduApiKey: config.get('baiduApiKey') || '',
+        googleApiKey: config.get('googleApiKey') || '',
+        googleSearchEngineId: config.get('googleSearchEngineId') || ''
+      }
+    });
+  }
+
+  private async handleSaveSettings(settings: any) {
+    const config = vscode.workspace.getConfiguration('llma');
+    try {
+      if (settings.deepseekApiKey !== undefined) {
+        await config.update('deepseekApiKey', settings.deepseekApiKey, vscode.ConfigurationTarget.Global);
+      }
+      if (settings.qwenApiKey !== undefined) {
+        await config.update('qwenApiKey', settings.qwenApiKey, vscode.ConfigurationTarget.Global);
+      }
+      if (settings.doubanApiKey !== undefined) {
+        await config.update('doubanApiKey', settings.doubanApiKey, vscode.ConfigurationTarget.Global);
+      }
+      if (settings.doubanModel !== undefined) {
+        await config.update('doubanModel', settings.doubanModel, vscode.ConfigurationTarget.Global);
+      }
+      if (settings.zhipuApiKey !== undefined) {
+        await config.update('zhipuApiKey', settings.zhipuApiKey, vscode.ConfigurationTarget.Global);
+      }
+      
+      if (settings.localModelEnabled !== undefined) {
+        await config.update('localModel.enabled', settings.localModelEnabled, vscode.ConfigurationTarget.Global);
+      }
+      if (settings.localModelBaseUrl !== undefined) {
+        await config.update('localModel.baseUrl', settings.localModelBaseUrl, vscode.ConfigurationTarget.Global);
+      }
+      if (settings.localModelName !== undefined) {
+        await config.update('localModel.modelName', settings.localModelName, vscode.ConfigurationTarget.Global);
+      }
+      if (settings.localModelTimeout !== undefined) {
+        await config.update('localModel.timeout', settings.localModelTimeout, vscode.ConfigurationTarget.Global);
+      }
+      
+      if (settings.enableWebSearch !== undefined) {
+        await config.update('enableWebSearch', settings.enableWebSearch, vscode.ConfigurationTarget.Global);
+      }
+      if (settings.bingApiKey !== undefined) {
+        await config.update('bingApiKey', settings.bingApiKey, vscode.ConfigurationTarget.Global);
+      }
+      
+      vscode.window.showInformationMessage('配置已更新！');
+      await this.sendSettingsToWebview();
+    } catch (e: any) {
+      vscode.window.showErrorMessage(`配置保存失败: ${e.message}`);
+    }
+  }
+
+  private updateContextStatus(editor: vscode.TextEditor) {
+     const fileName = path.basename(editor.document.fileName);
+     const lineCount = editor.selection.isEmpty ? 0 : editor.selection.end.line - editor.selection.start.line + 1;
+     const contextInfo = editor.selection.isEmpty 
+        ? `当前编辑器: ${fileName}` 
+        : `选中代码: ${fileName} (${lineCount} 行)`;
+     
+     this._view?.webview.postMessage({ type: 'updateContextInfo', text: contextInfo });
+  }
+
+  private async handleUserMessage(userText: string, history: any[], selectedModel: string, mode: 'chat' | 'agent', attachedFiles: string[]) {
+  if (!this._view) {
+    return;
+  }
+
+  const editor = vscode.window.activeTextEditor;
+  let contextPrompt = "";
+  const maxContextLength = mode === 'agent' ? 8000 : 4000;
+
+  if (editor) {
+    const document = editor.document;
+    const selection = editor.selection;
+    const fileName = path.basename(document.fileName);
+    const relativePath = vscode.workspace.asRelativePath(document.uri);
+    const language = document.languageId;
+    
+    let codeContext = "";
+    
+    if (!selection.isEmpty) {
+      codeContext = document.getText(selection);
+    } else {
+      const cursorLine = selection.active.line;
+      const startLine = Math.max(0, cursorLine - 200);
+      const endLine = Math.min(document.lineCount - 1, cursorLine + 50);
+      const range = new vscode.Range(startLine, 0, endLine, document.lineAt(endLine).range.end.character);
+      codeContext = document.getText(range);
+    }
+    
+    if (codeContext.length > maxContextLength) {
+      codeContext = codeContext.substring(0, maxContextLength) + "\n... (truncated)";
+    }
+
+    contextPrompt += `\n\n[Active File: ${relativePath}]\n\`\`\`${language}\n${codeContext}\n\`\`\`\n`;
+  }
+
+  if (attachedFiles && attachedFiles.length > 0) {
+    contextPrompt += `\n\n=== User Attached Files ===\n`;
+    for (const filePath of attachedFiles) {
+      try {
+        const content = await fs.promises.readFile(filePath, 'utf-8');
+        const truncatedContent = content.length > 10000 ? content.substring(0, 10000) + "\n... (File too large, truncated)" : content;
+        const relPath = vscode.workspace.asRelativePath(filePath);
+        contextPrompt += `\n[File: ${relPath}]\n\`\`\`\n${truncatedContent}\n\`\`\`\n`;
+      } catch (e) {
+        contextPrompt += `\n[File: ${path.basename(filePath)}] (Error reading file)\n`;
+      }
+    }
+  }
+
+  const config = vscode.workspace.getConfiguration('llma');
+  const model = selectedModel || config.get<string>('currentModel') || 'deepseek';
+  
+  if (model === 'local') {
+    const localEnabled = config.get<boolean>('localModel.enabled', false);
+    if (!localEnabled) {
+      this._view.webview.postMessage({ 
+        type: 'addResponse', 
+        text: `⚠️ 本地模型未启用\n\n请按以下步骤启用:\n1. 打开 VS Code 设置 (Ctrl+,)\n2. 搜索 "LLMA Pro 配置"\n3. 找到 "llma.localModel.enabled" 并启用\n4. 配置本地模型服务地址 (默认: http://localhost:11434/v1)\n5. 配置模型名称 (如: llama3, qwen2, codellama)\n\n确保本地服务(如 Ollama)已启动。` 
+      });
+      return;
+    }
+    
+    const baseUrl = config.get<string>('localModel.baseUrl') || 'http://localhost:11434/v1';
+    const modelName = config.get<string>('localModel.modelName') || 'llama3';
+    console.log(`[LLMA] 使用本地模型: ${modelName}, URL: ${baseUrl}`);
+  }
+  
+  const apiKey = getApiKey(config, model);
+
+  if (model !== 'local' && !apiKey) {
+    this._view.webview.postMessage({ type: 'addResponse', text: `⚠️ 请点击右上角设置图标配置 ${model} 的 API Key` });
+    return;
+  }
+  
+  // 检查豆包模型ID是否配置
+  if (model === 'douban') {
+    const doubanModel = config.get<string>('doubanModel');
+    if (!doubanModel) {
+      this._view.webview.postMessage({ 
+        type: 'addResponse', 
+        text: `⚠️ 豆包(Volcengine) 需要配置 Endpoint ID。\n请点击设置图标 ⚙️，在"豆包 Endpoint ID"中输入接入点ID (格式如 ep-2024...)。` 
+      });
+      return;
+    }
+  }
+
+  try {
+    // === 联网搜索功能 ===
+    let webSearchResults = '';
+    const enableWebSearch = config.get<boolean>('enableWebSearch', false);
+    const bingApiKey = config.get<string>('bingApiKey', '');
+    
+    // 如果启用了联网搜索，且检测到需要搜索，且有 API Key
+    if (enableWebSearch && bingApiKey && needsWebSearch(userText)) {
+      this._view.webview.postMessage({ type: 'addResponse', text: '🔍 正在搜索网络信息...' });
+      
+      try {
+        const results = await searchWeb(userText, bingApiKey, 5);
+        webSearchResults = formatSearchResults(results);
+        console.log(`[LLMA] 搜索到 ${results.length} 条结果`);
+      } catch (searchError: any) {
+        console.error('[LLMA] 搜索失败:', searchError.message);
+        webSearchResults = `\n\n⚠️ 网络搜索失败: ${searchError.message}\n`;
+      }
+    }
+
+    let systemPrompt = '你是一个专业的 VS Code 编程助手。请使用中文回答。如果涉及代码生成，请务必使用 markdown 代码块包裹。';
+    
+    if (mode === 'agent') {
+      systemPrompt = `你是一个高级代码 Agent，具备直接修改、创建和编译文件的能力。
+
+1. **指令协议 (Modification)**: 如果你需要修改现有文件或创建新文件，**必须**在代码块之前的一行，输出格式为 \`> FILE: path/to/file\` 的标记。
+   - 例如: \`> FILE: path/to/file\`
+   - 例如: \`> FILE: src/extension.ts\`
+   - 必须输出修改后的**完整文件内容**。
+
+2. **编译支持 (Compilation)**:
+   - 你可以指导用户编译代码。
+   - 如果用户询问如何运行，告诉他们可以使用右上角的 "▶️" 按钮或快捷键 \`Ctrl+Shift+B\`。
+   - 对于 C/C++，建议用户检查 build 目录下的可执行文件。
+   - 对于 Java，编译后会生成 .class 文件在 build 目录下。
+   - 对于 Python，运行的是源文件，不需要编译生成可执行文件。
+   - 如果项目复杂，建议生成 Makefile 或 shell 脚本。
+
+3. **流程**: 用户界面会解析你的输出，提供"⚡️ 审查并应用"按钮。`;
+    }
+
+    // 如果有搜索结果，将其添加到用户消息中
+    let enhancedUserText = userText;
+    if (webSearchResults) {
+      enhancedUserText = userText + '\n\n' + webSearchResults;
+    }
+
+    const messages = [
+      { role: 'system', content: systemPrompt },
+      ...history,
+      { role: 'user', content: enhancedUserText + contextPrompt }
+    ];
+
+    const temp = mode === 'agent' ? 0.1 : 0.7;
+
+    console.log(`[LLMA] 调用模型: ${model}, 消息数: ${messages.length}`);
+    const responseText = await callChatAI(model, apiKey, messages, config, 2000, temp);
+    console.log(`[LLMA] 响应长度: ${responseText.length}`);
+    this._view.webview.postMessage({ type: 'addResponse', text: responseText });
+
+  } catch (error: any) {
+    console.error('[LLMA] 错误详情:', error);
+    const errorMsg = `❌ 错误: ${error.message}`;
+    
+    if (model === 'local') {
+      const baseUrl = config.get<string>('localModel.baseUrl') || 'http://localhost:11434/v1';
+      const modelName = config.get<string>('localModel.modelName') || 'llama3';
+      console.log(`[LLMA] 本地模型调试信息:`);
+      console.log(`- Base URL: ${baseUrl}`);
+      console.log(`- 模型名称: ${modelName}`);
+      console.log(`- 错误代码: ${error.code}`);
+      console.log(`- 错误详情:`, error);
+      
+      this._view.webview.postMessage({ 
+        type: 'addResponse', 
+        text: `${errorMsg}\n\n调试信息:\n- 模型: ${modelName}\n- 服务地址: ${baseUrl}\n- 错误类型: ${error.code || 'Unknown'}\n\n常见解决方案:\n1. 确保本地服务(如 Ollama)已启动\n2. 检查服务地址是否正确\n3. 在终端运行: curl ${baseUrl}/tags 查看可用模型` 
+      });
+    } else {
+      this._view.webview.postMessage({ type: 'addResponse', text: errorMsg });
+    }
+  }
+}
+
+  private _getHtmlForWebview(webview: vscode.Webview) {
+    const config = vscode.workspace.getConfiguration('llma');
+    const defaultModel = config.get<string>('currentModel') || 'deepseek';
+    const cspSource = webview.cspSource;
+    
+    // 构建 CSP
+    const csp = `default-src 'none'; style-src ${cspSource} 'unsafe-inline'; script-src ${cspSource} 'unsafe-inline'; font-src ${cspSource} data:; img-src ${cspSource} data: https:;`;
+
+    return `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="${csp}">
+  <title>LLMA Pro - AI 编程助手</title>
+  <style>
+    /* ... 样式保持不变，已省略以节省空间，但需注意保持原有样式 ... */
+    :root {
+      --primary-color: #007acc;
+      --primary-hover: #005fa3;
+      --success-color: #2ecc71;
+      --warning-color: #f39c12;
+      --danger-color: #e74c3c;
+      --info-color: #3498db;
+      --bg-light: var(--vscode-sideBar-background);
+      --bg-lighter: var(--vscode-sideBarSectionHeader-background);
+      --border-color: var(--vscode-widget-border);
+      --text-primary: var(--vscode-foreground);
+      --text-secondary: var(--vscode-descriptionForeground);
+      --text-tertiary: var(--vscode-disabledForeground);
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+      --shadow-md: 0 4px 8px rgba(0,0,0,0.15);
+      --transition-fast: 0.15s ease;
+      --transition-normal: 0.25s ease;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      background: var(--bg-light);
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      line-height: 1.5;
+    }
+    
+    /* ===== 顶部工具栏 ===== */
+    .header-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--bg-lighter);
+      border-bottom: 1px solid var(--border-color);
+      min-height: 44px;
+    }
+    
+    .model-selector {
+      flex: 1;
+      position: relative;
+    }
+    
+    .model-select {
+      width: 100%;
+      padding: 5px 8px;
+      background: var(--vscode-dropdown-background);
+      color: var(--vscode-dropdown-foreground);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      outline: none;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+    
+    .model-select:hover {
+      border-color: var(--primary-color);
+    }
+    
+    .model-select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
+    }
+    
+    .btn-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition-fast);
+      font-size: 13px;
+    }
+    
+    .btn-icon:hover {
+      background: var(--vscode-toolbar-hoverBackground);
+      color: var(--text-primary);
+      border-color: var(--border-color);
+    }
+    
+    .btn-icon.active {
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    .btn-icon.compile {
+      background: linear-gradient(135deg, var(--success-color), #27ae60);
+      color: white;
+      border: none;
+    }
+    
+    .btn-icon.compile:hover {
+      background: linear-gradient(135deg, #27ae60, #219653);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    /* ===== 模式切换器 ===== */
+    .mode-toggle {
+      display: flex;
+      background: var(--vscode-input-background);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 2px;
+      gap: 2px;
+    }
+    
+    .mode-btn {
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 500;
+      background: transparent;
+      border: none;
+      border-radius: 3px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition-fast);
+      white-space: nowrap;
+    }
+    
+    .mode-btn:hover {
+      color: var(--text-primary);
+    }
+    
+    .mode-btn.active {
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    /* ===== 上下文栏 ===== */
+    .context-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px 12px;
+      background: var(--vscode-list-hoverBackground);
+      border-bottom: 1px solid var(--border-color);
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+    
+    .context-info {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow: hidden;
+    }
+    
+    .context-icon {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+    
+    .context-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .context-actions {
+      display: flex;
+      gap: 4px;
+    }
+    
+    /* ===== 聊天容器 ===== */
+    .chat-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: var(--vscode-editor-background);
+    }
+    
+    /* 欢迎消息 */
+    .welcome-message {
+      background: linear-gradient(135deg, var(--primary-color), #3498db);
+      color: white;
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-bottom: 6px;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .welcome-message h3 {
+      font-size: 13px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .welcome-message ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    
+    .welcome-message li {
+      margin-bottom: 5px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .feature-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 10px;
+    }
+    
+    .badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 9px;
+      font-weight: 500;
+    }
+    
+    /* 消息样式 */
+    .message {
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      position: relative;
+      animation: fadeIn 0.3s ease;
+      line-height: 1.4;
+      font-size: 13px;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .user-message {
+      align-self: flex-end;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+      color: white;
+      border-bottom-right-radius: var(--radius-sm);
+    }
+    
+    .ai-message {
+      align-self: flex-start;
+      background: var(--vscode-editor-inactiveSelectionBackground);
+      border: 1px solid var(--border-color);
+      border-bottom-left-radius: var(--radius-sm);
+    }
+    
+    .message-time {
+      font-size: 9px;
+      opacity: 0.6;
+      margin-top: 4px;
+      text-align: right;
+    }
+    
+    /* 代码块 */
+    .code-block {
+      position: relative;
+      margin: 6px 0;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 8px;
+      background: var(--vscode-textBlockQuote-background);
+      border-bottom: 1px solid var(--border-color);
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 10px;
+      color: var(--text-secondary);
+    }
+    
+    .language-tag {
+      background: var(--primary-color);
+      color: white;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 9px;
+      font-weight: 500;
+    }
+    
+    pre {
+      margin: 0;
+      padding: 10px;
+      background: var(--vscode-textBlockQuote-background);
+      overflow-x: auto;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    
+    code {
+      font-family: inherit;
+    }
+    
+    /* 文件操作区域 */
+    .file-action-card {
+      background: var(--vscode-editor-lineHighlightBackground);
+      border-left: 3px solid var(--info-color);
+      border-radius: var(--radius-md);
+      padding: 10px;
+      margin: 10px 0;
+      animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(-10px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    .file-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    
+    .file-icon {
+      font-size: 14px;
+      color: var(--info-color);
+    }
+    
+    .file-path {
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 11px;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    
+    /* ===== 文件附件区域 ===== */
+    .attachments-bar {
+      padding: 6px 12px;
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-lighter);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      min-height: 36px;
+    }
+    
+    .attachments-label {
+      font-size: 10px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    
+    .file-chips {
+      display: flex;
+      gap: 5px;
+      flex: 1;
+      overflow-x: auto;
+      padding: 2px;
+    }
+    
+    .file-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--vscode-badge-background);
+      color: var(--vscode-badge-foreground);
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      white-space: nowrap;
+      transition: var(--transition-fast);
+    }
+    
+    .file-chip:hover {
+      background: var(--vscode-badge-hoverBackground);
+    }
+    
+    .remove-chip {
+      cursor: pointer;
+      opacity: 0.7;
+      transition: var(--transition-fast);
+      font-size: 12px;
+      line-height: 1;
+    }
+    
+    .remove-chip:hover {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+    
+    /* ===== 输入区域 ===== */
+    .input-area {
+      padding: 12px 12px;
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-lighter);
+      position: relative;
+    }
+    
+    .textarea-wrapper {
+      position: relative;
+      margin-bottom: 0;
+    }
+    
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      max-height: 120px;
+      padding: 10px 12px 40px 12px; /* 底部留出按钮空间 */
+      background: var(--vscode-input-background);
+      color: var(--vscode-input-foreground);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      font-size: 13px;
+      line-height: 1.4;
+      resize: none;
+      outline: none;
+      transition: var(--transition-fast);
+    }
+    
+    textarea:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
+    }
+    
+    textarea::placeholder {
+      color: var(--text-tertiary);
+    }
+    
+    /* 新的输入操作区域 - 放在文本框右下角 */
+    .input-actions {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 10;
+    }
+    
+    .btn-attach {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: var(--vscode-button-secondaryBackground);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 12px;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      padding: 0;
+    }
+    
+    .btn-attach:hover {
+      background: var(--vscode-button-secondaryHoverBackground);
+      color: var(--text-primary);
+    }
+    
+    .hint-text {
+      display: none; /* 隐藏提示文字，节省空间 */
+    }
+    
+    .btn-send {
+      padding: 6px 16px;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition-normal);
+      min-width: 60px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .btn-send:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .btn-send:active:not(:disabled) {
+      transform: translateY(0);
+    }
+    
+    .btn-send:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .btn-stop {
+      padding: 6px 16px;
+      background: linear-gradient(135deg, var(--danger-color), #c0392b);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition-normal);
+      min-width: 60px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .btn-stop:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    /* 移除旧的左右操作区域样式 */
+    .left-actions, .right-actions {
+      display: none;
+    }
+    
+    /* ===== 加载动画 ===== */
+    .loading-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px;
+      background: var(--vscode-editor-inactiveSelectionBackground);
+      border-radius: var(--radius-md);
+      margin: 6px 0;
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; }
+    }
+    
+    .loading-dots {
+      display: flex;
+      gap: 3px;
+    }
+    
+    .loading-dot {
+      width: 5px;
+      height: 5px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out;
+    }
+    
+    .loading-dot:nth-child(1) { animation-delay: -0.32s; }
+    .loading-dot:nth-child(2) { animation-delay: -0.16s; }
+    
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+    
+    /* ===== 模态框 ===== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .modal-content {
+      background: var(--vscode-editor-background);
+      border-radius: var(--radius-lg);
+      width: 90%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-md);
+      animation: slideUp 0.3s ease;
+    }
+    
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .modal-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 16px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+    }
+    
+    .modal-close:hover {
+      background: var(--vscode-toolbar-hoverBackground);
+    }
+    
+    .modal-body {
+      padding: 18px;
+    }
+    
+    .settings-tabs {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .settings-tab {
+      padding: 6px 14px;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      font-size: 12px;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+    
+    .settings-tab:hover {
+      color: var(--text-primary);
+    }
+    
+    .settings-tab.active {
+      color: var(--primary-color);
+      border-bottom-color: var(--primary-color);
+    }
+    
+    .form-group {
+      margin-bottom: 14px;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 12px;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    
+    .form-hint {
+      display: block;
+      margin-top: 3px;
+      font-size: 10px;
+      color: var(--text-tertiary);
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 7px 10px;
+      background: var(--vscode-input-background);
+      color: var(--vscode-input-foreground);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      outline: none;
+      transition: var(--transition-fast);
+    }
+    
+    .form-input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
+    }
+    
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .checkbox-group input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+    }
+    
+    .modal-footer {
+      padding: 14px 18px;
+      border-top: 1px solid var(--border-color);
+      text-align: right;
+    }
+    
+    .btn-primary {
+      padding: 6px 20px;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition-normal);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    /* ===== 响应式调整 ===== */
+    @media (max-width: 600px) {
+      .header-toolbar {
+        padding: 6px;
+      }
+      
+      .mode-btn {
+        padding: 4px 6px;
+        font-size: 10px;
+      }
+      
+      .message {
+        max-width: 95%;
+        padding: 8px 12px;
+      }
+      
+      .chat-container {
+        padding: 8px;
+        gap: 10px;
+      }
+      
+      .input-actions {
+        right: 8px;
+        bottom: 8px;
+      }
+    }
+    
+    /* 滚动条美化 */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: var(--vscode-scrollbarSlider-background);
+      border-radius: 3px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--vscode-scrollbarSlider-hoverBackground);
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部工具栏 -->
+  <div class="header-toolbar">
+    <div class="model-selector">
+      <select class="model-select" id="model-select" aria-label="选择 AI 模型">
+        <option value="deepseek" ${defaultModel === 'deepseek' ? 'selected' : ''}> DeepSeek</option>
+        <option value="qwen" ${defaultModel === 'qwen' ? 'selected' : ''}> 通义千问</option>
+        <option value="douban" ${defaultModel === 'douban' ? 'selected' : ''}> 豆包(Volcengine)</option>
+        <option value="zhipu" ${defaultModel === 'zhipu' ? 'selected' : ''}> 智普AI</option>
+        <option value="local" ${defaultModel === 'local' ? 'selected' : ''}> 本地模型</option>
+      </select>
+    </div>
+    
+    <button class="btn-icon compile" id="compile-btn" title="编译当前文件 (Ctrl+Shift+B)">
+      ▶
+    </button>
+    
+    <button class="btn-icon" id="settings-btn" title="设置">
+      ⚙️
+    </button>
+    
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="mode-chat">聊天模式</button>
+      <button class="mode-btn" id="mode-agent">Agent 模式</button>
+    </div>
+  </div>
+  
+  <!-- 上下文栏 -->
+  <div class="context-bar">
+    <div class="context-info">
+      <span class="context-icon">📄</span>
+      <span class="context-text" id="context-text">等待编辑器激活...</span>
+    </div>
+    <div class="context-actions">
+      <button class="btn-icon" id="refresh-context" title="刷新上下文">
+        🔄
+      </button>
+    </div>
+  </div>
+  
+  <!-- 聊天容器 -->
+  <div class="chat-container" id="chat-container">
+    <!-- 欢迎消息 -->
+    <div class="welcome-message">
+      <h3>✨ LLMA Pro 助手已就绪</h3>
+      <ul>
+        <li>🔄 <strong>聊天模式</strong>: 获取代码建议和解答</li>
+        <li>🤖 <strong>Agent 模式</strong>: 创建、修改文件并编译代码</li>
+        <li>⚡️ <strong>快捷键</strong>: Ctrl+Shift+B 快速编译当前文件</li>
+        <li>💡 <strong>提示</strong>: 拖拽文件或点击 📎 添加上下文</li>
+      </ul>
+      <div class="feature-badges">
+        <span class="badge">代码生成</span>
+        <span class="badge">智能预测</span>
+        <span class="badge">文件编译</span>
+        <span class="badge">多模型支持</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 文件附件区域 -->
+  <div class="attachments-bar" id="attachments-bar">
+    <span class="attachments-label">📎 已添加:</span>
+    <div class="file-chips" id="file-chips">
+      <!-- 文件标签会动态添加到这里 -->
+    </div>
+  </div>
+  
+  <!-- 输入区域 -->
+  <div class="input-area">
+    <div class="textarea-wrapper">
+      <textarea 
+        id="message-input" 
+        placeholder="输入您的问题或指令... (Enter 发送, Shift+Enter 换行)"
+        aria-label="输入消息"
+      ></textarea>
+      <!-- 输入操作按钮区域 - 放在右下角 -->
+      <div class="input-actions">
+        <button class="btn-attach" id="attach-btn" title="添加文件">
+          📎
+        </button>
+        <button class="btn-stop" id="stop-btn" style="display: none;" title="停止生成">
+          停止
+        </button>
+        <button class="btn-send" id="send-btn" title="发送消息">
+          发送
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 设置模态框 -->
+  <div class="modal-overlay" id="settings-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">⚙️ LLMA Pro 设置</h3>
+        <button class="modal-close" id="close-settings">×</button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="settings-tabs">
+          <button class="settings-tab active" data-tab="online">在线模型</button>
+          <button class="settings-tab" data-tab="local">本地模型</button>
+          <button class="settings-tab" data-tab="websearch">联网搜索</button>
+        </div>
+        
+        <!-- 在线模型设置 -->
+        <div id="online-settings" class="tab-content">
+          <div class="form-group">
+            <label class="form-label" for="key-deepseek">DeepSeek API Key</label>
+            <input type="password" id="key-deepseek" class="form-input" placeholder="输入您的 DeepSeek API Key">
+            <span class="form-hint">可在 DeepSeek 官网申请</span>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="key-qwen">通义千问 API Key</label>
+            <input type="password" id="key-qwen" class="form-input" placeholder="输入您的 Qwen API Key">
+            <span class="form-hint">可在阿里云百炼平台获取</span>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="key-douban">豆包 API Key</label>
+            <input type="password" id="key-douban" class="form-input" placeholder="输入您的豆包 API Key">
+            <span class="form-hint">可在火山引擎获取</span>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="model-douban">豆包 Endpoint ID (必填)</label>
+            <input type="text" id="model-douban" class="form-input" placeholder="输入接入点ID (如 ep-20240604094030-fwkl7)">
+            <span class="form-hint">注意: 豆包必须填写 Endpoint ID，不能使用 'doubao-pro-32k' 等模型名</span>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="key-zhipu">智普AI API Key</label>
+            <input type="password" id="key-zhipu" class="form-input" placeholder="输入您的智普AI API Key">
+            <span class="form-hint">可在智谱AI开放平台获取</span>
+          </div>
+        </div>
+        
+        <!-- 本地模型设置 -->
+        <div id="local-settings" class="tab-content" style="display: none;">
+          <div class="form-group">
+            <div class="checkbox-group">
+              <input type="checkbox" id="local-enabled">
+              <label class="form-label" for="local-enabled">启用本地模型</label>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="local-base-url">服务地址</label>
+            <input type="text" id="local-base-url" class="form-input" placeholder="http://localhost:11434/v1">
+            <span class="form-hint">例如: Ollama 默认地址为 http://localhost:11434/v1</span>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="local-model-name">模型名称</label>
+            <input type="text" id="local-model-name" class="form-input" placeholder="llama3">
+            <span class="form-hint">例如: llama3, qwen2, codellama</span>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="local-timeout">请求超时 (毫秒)</label>
+            <input type="number" id="local-timeout" class="form-input" value="120000">
+            <span class="form-hint">建议值: 120000 (2分钟)</span>
+          </div>
+        </div>
+        
+        <!-- 联网搜索设置 -->
+        <div id="websearch-settings" class="tab-content" style="display: none;">
+          <div class="form-group">
+            <div class="checkbox-group">
+              <input type="checkbox" id="websearch-enabled">
+              <label class="form-label" for="websearch-enabled">启用联网搜索</label>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="bing-api-key">Bing 搜索 API Key</label>
+            <input type="password" id="bing-api-key" class="form-input" placeholder="输入您的 Bing API Key">
+            <span class="form-hint">可在 <a href="https://www.microsoft.com/cognitive-services/en-us/bing-web-search-api" target="_blank" style="color: var(--info-color);">Microsoft Azure</a> 免费申请</span>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">说明</label>
+            <p style="font-size: 10px; color: var(--text-tertiary); line-height: 1.4;">
+              启用联网搜索后，当您的提问包含"最新"、"当前"、"搜索"、"天气"等关键词时，系统会自动进行网络搜索，并将搜索结果提供给 AI 助手，帮助它提供更准确的回答。
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn-primary" id="save-settings-btn">保存设置</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const vscode = acquireVsCodeApi();
+    
+    // DOM 元素
+    const chatContainer = document.getElementById('chat-container');
+    const input = document.getElementById('message-input');
+    const sendBtn = document.getElementById('send-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const attachBtn = document.getElementById('attach-btn');
+    const modelSelect = document.getElementById('model-select');
+    const compileBtn = document.getElementById('compile-btn');
+    const refreshBtn = document.getElementById('refresh-context');
+    const settingsBtn = document.getElementById('settings-btn');
+    const closeSettingsBtn = document.getElementById('close-settings');
+    const saveSettingsBtn = document.getElementById('save-settings-btn');
+    const settingsModal = document.getElementById('settings-modal');
+    const modeChatBtn = document.getElementById('mode-chat');
+    const modeAgentBtn = document.getElementById('mode-agent');
+    const fileChips = document.getElementById('file-chips');
+    const attachmentsBar = document.getElementById('attachments-bar');
+    
+    // 状态变量
+    let history = [];
+    let currentMode = 'chat';
+    let attachedFiles = [];
+    let isGenerating = false;
+    let currentAbortController = null;
+    let activeSettingsTab = 'online';
+    
+    // ===== 初始化函数 =====
+    function init() {
+      // 设置默认模式
+      setMode('chat');
+      
+      // 加载保存的状态
+      const savedState = vscode.getState();
+      if (savedState) {
+        if (savedState.attachedFiles) {
+          attachedFiles = savedState.attachedFiles;
+          renderFileChips();
+        }
+        if (savedState.currentMode) {
+          setMode(savedState.currentMode);
+        }
+      }
+      
+      // 绑定事件监听器
+      bindEvents();
+      
+      // 请求初始上下文
+      vscode.postMessage({ type: 'refreshContext' });
+      
+      // 隐藏附件栏（如果没有文件）
+      updateAttachmentsBar();
+    }
+    
+    // ===== 事件绑定 =====
+    function bindEvents() {
+      // 模式切换
+      modeChatBtn.addEventListener('click', () => setMode('chat'));
+      modeAgentBtn.addEventListener('click', () => setMode('agent'));
+      
+      // 发送消息
+      sendBtn.addEventListener('click', sendMessage);
+      stopBtn.addEventListener('click', stopGeneration);
+      
+      // 输入处理
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+      
+      // 文件附件
+      attachBtn.addEventListener('click', () => {
+        vscode.postMessage({ type: 'selectContextFiles' });
+      });
+      
+      // 编译按钮
+      compileBtn.addEventListener('click', () => {
+        vscode.postMessage({ type: 'compileCurrentFile' });
+      });
+      
+      // 刷新上下文
+      refreshBtn.addEventListener('click', () => {
+        vscode.postMessage({ type: 'refreshContext' });
+      });
+      
+      // 设置模态框
+      settingsBtn.addEventListener('click', openSettings);
+      closeSettingsBtn.addEventListener('click', closeSettings);
+      saveSettingsBtn.addEventListener('click', saveSettings);
+      
+      // 设置标签页切换
+      document.querySelectorAll('.settings-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          const tabId = tab.dataset.tab;
+          switchSettingsTab(tabId);
+        });
+      });
+      
+      // 模型选择变化时更新设置标签页
+      modelSelect.addEventListener('change', (e) => {
+        if (e.target.value === 'local') {
+          switchSettingsTab('local');
+        } else {
+          switchSettingsTab('online');
+        }
+      });
+      
+      // 点击模态框外部关闭
+      settingsModal.addEventListener('click', (e) => {
+        if (e.target === settingsModal) {
+          closeSettings();
+        }
+      });
+      
+      // 支持文件拖拽
+      attachmentsBar.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        attachmentsBar.style.backgroundColor = 'var(--vscode-list-hoverBackground)';
+      });
+      
+      attachmentsBar.addEventListener('dragleave', () => {
+        attachmentsBar.style.backgroundColor = '';
+      });
+      
+      attachmentsBar.addEventListener('drop', (e) => {
+        e.preventDefault();
+        attachmentsBar.style.backgroundColor = '';
+        
+        const files = Array.from(e.dataTransfer.files);
+        const fileInfos = files.map(file => ({
+          name: file.name,
+          path: file.path
+        }));
+        
+        vscode.postMessage({
+          type: 'filesSelected',
+          files: fileInfos
+        });
+      });
+      
+      // 自动调整输入框高度
+      input.addEventListener('input', autoResizeTextarea);
+    }
+    
+    // ===== 自动调整输入框高度 =====
+    function autoResizeTextarea() {
+      input.style.height = 'auto';
+      input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+    }
+    
+    // ===== 模式切换 =====
+    function setMode(mode) {
+      currentMode = mode;
+      
+      // 更新按钮状态
+      modeChatBtn.classList.remove('active');
+      modeAgentBtn.classList.remove('active');
+      
+      const activeBtn = mode === 'chat' ? modeChatBtn : modeAgentBtn;
+      activeBtn.classList.add('active');
+      
+      // 更新输入框提示
+      input.placeholder = mode === 'agent' 
+        ? "输入指令，例如：'创建 src/utils.ts' 或 '如何编译这个文件'..." 
+        : "输入您的问题或代码请求... (Enter 发送, Shift+Enter 换行)";
+      
+      // 保存状态
+      saveState();
+    }
+    
+    // ===== 消息处理 =====
+    function sendMessage() {
+      const text = input.value.trim();
+      if (!text || isGenerating) return;
+      
+      // 添加用户消息到界面
+      addMessage(text, 'user');
+      input.value = '';
+      autoResizeTextarea(); // 重置输入框高度
+      
+      // 开始生成状态
+      isGenerating = true;
+      updateButtonState();
+      
+      // 显示加载指示器
+      showLoadingIndicator();
+      
+      // 发送消息到扩展
+      vscode.postMessage({
+        type: 'sendMessage',
+        text: text,
+        history: history,
+        model: modelSelect.value,
+        mode: currentMode,
+        files: attachedFiles.map(f => f.path)
+      });
+      
+      // 添加到历史
+      history.push({ role: 'user', content: text });
+      
+      // 保存状态
+      saveState();
+    }
+    
+    function stopGeneration() {
+      if (!isGenerating) return;
+      
+      hideLoadingIndicator();
+      
+      addMessage('⚠️ 生成已停止', 'ai', true);
+      isGenerating = false;
+      updateButtonState();
+    }
+    
+    // ===== 界面更新函数 =====
+    function addMessage(text, type, isError = false) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = \`message \${type}-message\`;
+      
+      if (isError) {
+        messageDiv.style.background = 'linear-gradient(135deg, var(--danger-color), #c0392b)';
+        messageDiv.style.color = 'white';
+      }
+      
+      // 格式化消息内容
+      const formattedContent = formatMessageContent(text, type);
+      messageDiv.innerHTML = formattedContent;
+      
+      // 添加时间戳
+      const timeSpan = document.createElement('div');
+      timeSpan.className = 'message-time';
+      timeSpan.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      messageDiv.appendChild(timeSpan);
+      
+      chatContainer.appendChild(messageDiv);
+      scrollToBottom();
+    }
+    
+    function formatMessageContent(text, type) {
+      if (type === 'user') {
+        return escapeHtml(text);
+      }
+      
+      // AI 消息处理
+      let html = '';
+      let lines = text.split('\\n');
+      let inCodeBlock = false;
+      let currentLanguage = '';
+      let buffer = '';
+      
+      // 检测文件操作标记
+      const fileActionMatch = text.match(/^> FILE:\\s*(.+?)$/m);
+      
+      lines.forEach(line => {
+        // 检测代码块开始
+        if (line.startsWith('\`\`\`')) {
+          if (!inCodeBlock) {
+            // 开始代码块
+            inCodeBlock = true;
+            currentLanguage = line.substring(3).trim();
+            html += buffer;
+            buffer = '';
+          } else {
+            // 结束代码块
+            html += \`<div class="code-block">
+              <div class="code-header">
+                <span>\${currentLanguage || 'code'}</span>
+                <span class="language-tag">\${currentLanguage || 'text'}</span>
+              </div>
+              <pre><code>\${escapeHtml(buffer)}</code></pre>
+            </div>\`;
+            buffer = '';
+            inCodeBlock = false;
+            currentLanguage = '';
+          }
+          return;
+        }
+        
+        if (inCodeBlock) {
+          buffer += line + '\\n';
+        } else {
+          // 处理普通文本
+          if (line.trim().startsWith('> FILE:')) {
+            const filePath = line.substring(7).trim();
+            html += \`<div class="file-action-card">
+              <div class="file-header">
+                <span class="file-icon">📄</span>
+                <span class="file-path">\${escapeHtml(filePath)}</span>
+              </div>
+              <div class="action-buttons">
+                <button class="btn-primary" onclick="applyFileChange('\${escapeHtml(filePath)}')">
+                  ⚡️ 审查并应用
+                </button>
+              </div>
+            </div>\`;
+          } else if (line.trim()) {
+            html += \`<p>\${escapeHtml(line)}</p>\`;
+          }
+        }
+      });
+      
+      // 处理剩余的缓冲区内容
+      if (buffer.trim()) {
+        html += buffer;
+      }
+      
+      return html;
+    }
+    
+    function showLoadingIndicator() {
+      const loadingDiv = document.createElement('div');
+      loadingDiv.className = 'loading-indicator';
+      loadingDiv.id = 'loading-indicator';
+      loadingDiv.innerHTML = \`
+        <div class="loading-dots">
+          <div class="loading-dot"></div>
+          <div class="loading-dot"></div>
+          <div class="loading-dot"></div>
+        </div>
+        <span>AI 正在思考...</span>
+      \`;
+      chatContainer.appendChild(loadingDiv);
+      scrollToBottom();
+    }
+    
+    function hideLoadingIndicator() {
+      const loading = document.getElementById('loading-indicator');
+      if (loading) loading.remove();
+    }
+    
+    function updateButtonState() {
+      if (isGenerating) {
+        sendBtn.style.display = 'none';
+        stopBtn.style.display = 'block';
+        input.disabled = true;
+      } else {
+        sendBtn.style.display = 'block';
+        stopBtn.style.display = 'none';
+        input.disabled = false;
+        input.focus();
+      }
+    }
+    
+    function scrollToBottom() {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+    
+    // ===== 文件附件管理 =====
+    function renderFileChips() {
+      fileChips.innerHTML = '';
+      
+      attachedFiles.forEach((file, index) => {
+        const chip = document.createElement('div');
+        chip.className = 'file-chip';
+        chip.title = file.path;
+        
+        chip.innerHTML = \`
+          <span>📄 \${escapeHtml(file.name)}</span>
+          <span class="remove-chip" data-index="\${index}">×</span>
+        \`;
+        
+        fileChips.appendChild(chip);
+      });
+      
+      // 添加删除事件
+      document.querySelectorAll('.remove-chip').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const index = parseInt(btn.dataset.index);
+          attachedFiles.splice(index, 1);
+          renderFileChips();
+          updateAttachmentsBar();
+          saveState();
+        });
+      });
+    }
+    
+    function updateAttachmentsBar() {
+      if (attachedFiles.length > 0) {
+        attachmentsBar.style.display = 'flex';
+      } else {
+        attachmentsBar.style.display = 'none';
+      }
+    }
+    
+    // ===== 设置管理 =====
+    function openSettings() {
+      // 根据当前选择的模型设置标签页
+      if (modelSelect.value === 'local') {
+        switchSettingsTab('local');
+      } else {
+        switchSettingsTab('online');
+      }
+      
+      // 请求当前设置
+      vscode.postMessage({ type: 'getSettings' });
+      settingsModal.style.display = 'flex';
+    }
+    
+    function closeSettings() {
+      settingsModal.style.display = 'none';
+    }
+    
+    function switchSettingsTab(tabId) {
+      // 更新标签页状态
+      document.querySelectorAll('.settings-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.tab === tabId);
+      });
+      
+      // 显示对应的内容
+      document.getElementById('online-settings').style.display = 
+        tabId === 'online' ? 'block' : 'none';
+      document.getElementById('local-settings').style.display = 
+        tabId === 'local' ? 'block' : 'none';
+      document.getElementById('websearch-settings').style.display = 
+        tabId === 'websearch' ? 'block' : 'none';
+      
+      activeSettingsTab = tabId;
+    }
+    
+    function saveSettings() {
+      const settings = {};
+      
+      if (activeSettingsTab === 'online') {
+        settings.deepseekApiKey = document.getElementById('key-deepseek').value;
+        settings.qwenApiKey = document.getElementById('key-qwen').value;
+        settings.doubanApiKey = document.getElementById('key-douban').value;
+        settings.doubanModel = document.getElementById('model-douban').value;
+        settings.zhipuApiKey = document.getElementById('key-zhipu').value;
+      } else if (activeSettingsTab === 'local') {
+        settings.localModelEnabled = document.getElementById('local-enabled').checked;
+        settings.localModelBaseUrl = document.getElementById('local-base-url').value;
+        settings.localModelName = document.getElementById('local-model-name').value;
+        settings.localModelTimeout = parseInt(document.getElementById('local-timeout').value) || 120000;
+      } else if (activeSettingsTab === 'websearch') {
+        settings.enableWebSearch = document.getElementById('websearch-enabled').checked;
+        settings.bingApiKey = document.getElementById('bing-api-key').value;
+      }
+      
+      vscode.postMessage({
+        type: 'saveSettings',
+        settings: settings
+      });
+      
+      closeSettings();
+    }
+    
+    // ===== 辅助函数 =====
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+    
+    function saveState() {
+      vscode.setState({
+        attachedFiles: attachedFiles,
+        currentMode: currentMode
+      });
+    }
+    
+    // 全局函数供按钮使用
+    window.applyFileChange = function(filePath) {
+      // 这里需要从代码块中提取内容
+      // 简化实现：提示用户
+      vscode.postMessage({
+        type: 'applyFileChange',
+        filepath: filePath,
+        content: '[需要从代码块中提取内容]'
+      });
+    };
+    
+    // ===== 消息监听器 =====
+    window.addEventListener('message', event => {
+      const message = event.data;
+      
+      switch (message.type) {
+        case 'addResponse':
+          hideLoadingIndicator();
+          addMessage(message.text, 'ai');
+          history.push({ role: 'assistant', content: message.text });
+          isGenerating = false;
+          updateButtonState();
+          break;
+          
+        case 'updateContextInfo':
+          document.getElementById('context-text').textContent = message.text;
+          break;
+          
+        case 'filesSelected':
+          message.files.forEach(file => {
+            if (!attachedFiles.some(f => f.path === file.path)) {
+              attachedFiles.push(file);
+            }
+          });
+          renderFileChips();
+          updateAttachmentsBar();
+          saveState();
+          break;
+          
+        case 'updateSettings':
+          // 更新表单字段
+          if (message.settings.deepseekApiKey) {
+            document.getElementById('key-deepseek').value = message.settings.deepseekApiKey;
+          }
+          if (message.settings.qwenApiKey) {
+            document.getElementById('key-qwen').value = message.settings.qwenApiKey;
+          }
+          if (message.settings.doubanApiKey) {
+            document.getElementById('key-douban').value = message.settings.doubanApiKey;
+          }
+          if (message.settings.doubanModel) {
+            document.getElementById('model-douban').value = message.settings.doubanModel;
+          }
+          if (message.settings.zhipuApiKey) {
+            document.getElementById('key-zhipu').value = message.settings.zhipuApiKey;
+          }
+          if (message.settings.localModelEnabled !== undefined) {
+            document.getElementById('local-enabled').checked = message.settings.localModelEnabled;
+          }
+          if (message.settings.localModelBaseUrl) {
+            document.getElementById('local-base-url').value = message.settings.localModelBaseUrl;
+          }
+          if (message.settings.localModelName) {
+            document.getElementById('local-model-name').value = message.settings.localModelName;
+          }
+          if (message.settings.localModelTimeout) {
+            document.getElementById('local-timeout').value = message.settings.localModelTimeout;
+          }
+          if (message.settings.enableWebSearch !== undefined) {
+            document.getElementById('websearch-enabled').checked = message.settings.enableWebSearch;
+          }
+          if (message.settings.bingApiKey) {
+            document.getElementById('bing-api-key').value = message.settings.bingApiKey;
+          }
+          break;
+      }
+    });
+    
+    // 初始化应用
+    init();
+  </script>
+</body>
+</html>`;
+  }
+}
+
+/**
+ * 智能代码生成 (Ctrl+Shift+A)
+ */
+async function handleExplicitCodeGeneration() {
+  const editor = vscode.window.activeTextEditor;
+  if (!editor) {
+    vscode.window.showWarningMessage('请先打开一个编辑器');
+    return;
+  }
+
+  const document = editor.document;
+  const selection = editor.selection;
+  const cursorLine = selection.active.line;
+  
+  const startContextLine = Math.max(0, cursorLine - 100);
+  const endContextLine = Math.min(document.lineCount - 1, cursorLine + 20);
+  
+  const textBefore = document.getText(new vscode.Range(startContextLine, 0, selection.start.line, selection.start.character));
+  const textSelected = document.getText(selection);
+  const textAfter = document.getText(new vscode.Range(selection.end.line, selection.end.character, endContextLine, document.lineAt(endContextLine).range.end.character));
+
+  const currentIndent = document.lineAt(cursorLine).text.match(/^\s*/)?.[0] || '';
+
+  try {
+    await vscode.window.withProgress({
+      location: vscode.ProgressLocation.Notification,
+      title: "LLMA 正在生成代码...",
+      cancellable: true
+    }, async (progress, token) => {
+      
+      const config = vscode.workspace.getConfiguration('llma');
+      const currentModel = config.get<string>('currentModel') || 'deepseek';
+      const apiKey = getApiKey(config, currentModel);
+      
+      if (!apiKey) {
+        vscode.window.showErrorMessage(`请先配置 ${currentModel} 的 API 密钥`);
+        return;
+      }
+
+      progress.report({ increment: 20 });
+      
+      const isInsertion = textSelected.trim().length === 0;
+      let systemPrompt = `You are an expert coding assistant. Return ONLY the code block. No markdown fencing, no explanation. Maintain indentation: "${currentIndent}".`;
+      let userPrompt = "";
+
+      if (isInsertion) {
+        userPrompt = `
+[FILE: ${path.basename(document.fileName)}]
+[LANGUAGE: ${document.languageId}]
+[CODE BEFORE CURSOR]:
+${textBefore}
+<CURSOR>
+[CODE AFTER CURSOR]:
+${textAfter}
+
+INSTRUCTION: Generate the code that belongs at <CURSOR>. Just the code.
+`;
+      } else {
+        userPrompt = `
+[FILE: ${path.basename(document.fileName)}]
+[CONTEXT BEFORE]:
+${textBefore.slice(-500)}
+
+[SELECTED CODE TO PROCESS]:
+${textSelected}
+
+[INSTRUCTION]:
+Optimize, fix, or implement the logic described in the selected code.
+Return only the replaced code.
+`;
+      }
+
+      progress.report({ increment: 40 });
+
+      const completion = await callSimpleAI(
+        currentModel, apiKey, systemPrompt, userPrompt, 2000, 0.2, config
+      );
+
+      if (token.isCancellationRequested) { return; }
+
+      if (completion) {
+        progress.report({ increment: 90 });
+        await editor.edit(editBuilder => {
+          let cleanCode = completion.replace(/^```[\w]*\n?/, '').replace(/\n?```$/, '');
+          if (selection.isEmpty) {
+             editBuilder.insert(selection.active, cleanCode);
+          } else {
+             editBuilder.replace(selection, cleanCode);
+          }
+        });
+      }
+    });
+  } catch (error: any) {
+    vscode.window.showErrorMessage(`生成失败: ${error.message}`);
+  }
+}
+
+/**
+ * 行内代码预测提供者 (Ghost Text)
+ */
+class LLMAInlineCompletionProvider implements vscode.InlineCompletionItemProvider {
+  private _abortController: AbortController | null = null;
+  private _timer: NodeJS.Timeout | null = null;
+
+  async provideInlineCompletionItems(
+    document: vscode.TextDocument,
+    position: vscode.Position,
+    context: vscode.InlineCompletionContext,
+    token: vscode.CancellationToken
+  ): Promise<vscode.InlineCompletionItem[] | vscode.InlineCompletionList> {
+    
+    const config = vscode.workspace.getConfiguration('llma');
+    if (!config.get<boolean>('enableAutoCompletion')) { return []; }
+
+    if (this._timer) { clearTimeout(this._timer); }
+    if (this._abortController) { this._abortController.abort(); }
+
+    const delay = config.get<number>('requestDelay') || 300;
+
+    return new Promise((resolve) => {
+      this._timer = setTimeout(async () => {
+        if (token.isCancellationRequested) { resolve([]); return; }
+
+        try {
+          updateStatusBar(true);
+          this._abortController = new AbortController();
+          const signal = this._abortController.signal;
+
+          token.onCancellationRequested(() => {
+            this._abortController?.abort();
+            updateStatusBar(false);
+            resolve([]);
+          });
+
+          const promptData = this.prepareSmartContext(document, position);
+          if (!promptData) {
+            updateStatusBar(false);
+            resolve([]);
+            return;
+          }
+
+          const completionText = await this.fetchAICompletion(promptData, config, signal);
+
+          if (!completionText || completionText.trim().length === 0) {
+            updateStatusBar(false);
+            resolve([]);
+            return;
+          }
+
+          const item = new vscode.InlineCompletionItem(
+            completionText,
+            new vscode.Range(position, position)
+          );
+          
+          updateStatusBar(false);
+          resolve([item]);
+
+        } catch (error) {
+          updateStatusBar(false);
+          resolve([]);
+        }
+      }, delay);
+    });
+  }
+
+  private prepareSmartContext(document: vscode.TextDocument, position: vscode.Position) {
+    const windowSizeLines = 60;
+    const startLine = Math.max(0, position.line - windowSizeLines);
+    const endLine = Math.min(document.lineCount - 1, position.line + 10);
+    
+    const rangeBefore = new vscode.Range(startLine, 0, position.line, position.character);
+    const rangeAfter = new vscode.Range(position.line, position.character, endLine, document.lineAt(endLine).range.end.character);
+    
+    const textBefore = document.getText(rangeBefore);
+    const textAfter = document.getText(rangeAfter);
+
+    if (textBefore.trim().length < 1) { return null; }
+
+    return {
+      prefix: textBefore,
+      suffix: textAfter,
+      language: document.languageId,
+      filename: path.basename(document.fileName)
+    };
+  }
+
+  private async fetchAICompletion(
+    data: { prefix: string, suffix: string, language: string, filename: string },
+    config: vscode.WorkspaceConfiguration,
+    signal: AbortSignal
+  ): Promise<string> {
+    const model = config.get<string>('currentModel') || 'deepseek';
+    const apiKey = getApiKey(config, model);
+    if (!apiKey) { return ''; }
+
+    const systemPrompt = `You are a code completion engine. Output ONLY the code to fill the <CURSOR> gap. DO NOT repeat prefix/suffix. No Markdown.`;
+    const userPrompt = `
+File: ${data.filename}
+Lang: ${data.language}
+
+[CODE START]
+${data.prefix}<CURSOR>${data.suffix}
+[CODE END]
+
+Task: Fill in <CURSOR>.
+`;
+    const maxTokens = 100;
+    return await callSimpleAI(model, apiKey, systemPrompt, userPrompt, maxTokens, 0.0, config, signal);
+  }
+}
+
+// --- 联网搜索功能 ---
+
+interface SearchResult {
+  title: string;
+  url: string;
+  snippet: string;
+}
+
+/**
+ * 使用 Bing 搜索 API 进行网络搜索
+ * @param query 搜索查询
+ * @param apiKey Bing API Key
+ * @param maxResults 最大结果数量
+ * @returns 搜索结果列表
+ */
+async function searchWeb(query: string, apiKey: string, maxResults: number = 5): Promise<SearchResult[]> {
+  const url = 'https://api.bing.microsoft.com/v7.0/search';
+  
+  try {
+    const response = await axios.get(url, {
+      params: {
+        q: query,
+        count: maxResults,
+        mkt: 'zh-CN'
+      },
+      headers: {
+        'Ocp-Apim-Subscription-Key': apiKey
+      },
+      timeout: 10000
+    });
+
+    const results: SearchResult[] = [];
+    if (response.data.webPages && response.data.webPages.value) {
+      response.data.webPages.value.forEach((item: any) => {
+        results.push({
+          title: item.name,
+          url: item.url,
+          snippet: item.snippet
+        });
+      });
+    }
+
+    return results;
+  } catch (error: any) {
+    console.error('网络搜索失败:', error.message);
+    throw new Error(`网络搜索失败: ${error.message}`);
+  }
+}
+
+/**
+ * 检测用户消息中是否需要联网搜索
+ * @param userMessage 用户消息
+ * @returns 是否需要联网搜索
+ */
+function needsWebSearch(userMessage: string): boolean {
+  const searchKeywords = [
+    '最新', '新闻', '当前', '现在', '实时', '搜索', '查一下', '查询',
+    '天气', '汇率', '股票', '价格', '最近', '今天', '今年', '2024', '2025',
+    'what is', 'latest', 'current', 'search', 'find', 'look up'
+  ];
+  
+  const lowerMessage = userMessage.toLowerCase();
+  return searchKeywords.some(keyword => lowerMessage.includes(keyword.toLowerCase()));
+}
+
+/**
+ * 格式化搜索结果为文本
+ * @param results 搜索结果列表
+ * @returns 格式化后的文本
+ */
+function formatSearchResults(results: SearchResult[]): string {
+  if (results.length === 0) {
+    return '未找到相关结果。';
+  }
+
+  let formatted = '🌐 网络搜索结果:\n\n';
+  results.forEach((result, index) => {
+    formatted += `${index + 1}. **${result.title}**\n`;
+    formatted += `   ${result.snippet}\n`;
+    formatted += `   来源: ${result.url}\n\n`;
+  });
+
+  return formatted;
+}
+
+// --- 通用 API 调用函数 ---
+
+async function callSimpleAI(
+  model: string,
+  apiKey: string,
+  systemPrompt: string,
+  userPrompt: string,
+  maxTokens: number,
+  temperature: number,
+  config: vscode.WorkspaceConfiguration,
+  signal?: AbortSignal
+): Promise<string> {
+  const messages = [
+    { role: 'system', content: systemPrompt }, 
+    { role: 'user', content: userPrompt }
+  ];
+  return await callChatAI(model, apiKey, messages, config, maxTokens, temperature, signal);
+}
+
+async function callChatAI(
+  model: string,
+  apiKey: string | undefined,
+  messages: any[],
+  config: vscode.WorkspaceConfiguration,
+  maxTokens: number = 2000,
+  temperature: number = 0.7,
+  signal?: AbortSignal
+): Promise<string> {
+  let url = '';
+  let payload: any = {
+    messages: messages,
+    max_tokens: maxTokens,
+    temperature: temperature,
+    stream: false
+  };
+  
+  const headers: any = {
+    'Content-Type': 'application/json'
+  };
+
+  if (model === 'local') {
+    const localEnabled = config.get<boolean>('localModel.enabled', false);
+    if (!localEnabled) {
+      throw new Error('本地模型未启用，请在设置中启用本地模型');
+    }
+    
+    const baseUrl = config.get<string>('localModel.baseUrl') || 'http://localhost:11434/v1';
+    const modelName = config.get<string>('localModel.modelName') || 'llama3';
+    const timeout = config.get<number>('localModel.timeout') || 120000;
+    
+    url = `${baseUrl}/chat/completions`;
+    payload.model = modelName;
+    
+    if (apiKey) {
+      headers['Authorization'] = `Bearer ${apiKey}`;
+    }
+    
+    try {
+      const response = await axios.post(url, payload, { headers, signal, timeout });
+      return response.data.choices[0]?.message?.content || '';
+    } catch (error: any) {
+      if (!axios.isCancel(error)) {
+        console.error('本地模型调用失败:', error.message);
+        if (error.code === 'ECONNREFUSED') {
+          throw new Error('无法连接到本地模型服务，请确保 Ollama 或其他本地服务已启动');
+        }
+        throw error;
+      }
+      return '';
+    }
+  } else if (model === 'deepseek') {
+    url = 'https://api.deepseek.com/chat/completions';
+    payload.model = 'deepseek-coder';
+    headers['Authorization'] = `Bearer ${apiKey}`;
+  } else if (model === 'qwen') {
+    const baseUrl = config.get<string>('qwenBaseUrl') || 'https://dashscope.aliyuncs.com/compatible-mode/v1';
+    url = `${baseUrl}/chat/completions`;
+    payload.model = 'qwen-coder-turbo';
+    headers['Authorization'] = `Bearer ${apiKey}`;
+  } else if (model === 'douban') {
+    url = 'https://ark.cn-beijing.volces.com/api/v3/chat/completions';
+    // 修复: 使用配置中的 Endpoint ID，而不是硬编码的模型名
+    const endpointId = config.get<string>('doubanModel');
+    if (!endpointId) {
+      throw new Error('未配置豆包 Endpoint ID，请在设置中添加');
+    }
+    payload.model = endpointId;
+    headers['Authorization'] = `Bearer ${apiKey}`;
+  } else if (model === 'zhipu') {
+    url = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
+    payload.model = 'glm-4';
+    headers['Authorization'] = `Bearer ${apiKey}`;
+  }
+
+  try {
+    const response = await axios.post(url, payload, { headers, signal, timeout: 60000 });
+    return response.data.choices[0]?.message?.content || '';
+  } catch (error: any) {
+    if (!axios.isCancel(error)) {
+      console.error('API Error:', error.message);
+      // 增加详细的错误日志
+      if (error.response) {
+         console.error('Data:', error.response.data);
+         if (model === 'douban') {
+            throw new Error(`豆包API错误: ${JSON.stringify(error.response.data)}`);
+         }
+      }
+      throw error;
+    }
+    return '';
+  }
+}
+
+// --- 辅助函数 ---
+
+function updateStatusBar(isLoading: boolean) {
+  const config = vscode.workspace.getConfiguration('llma');
+  const enabled = config.get<boolean>('enableAutoCompletion');
+
+  if (!enabled) {
+    statusBarItem.text = `$(circle-slash) LLMA Off`;
+  } else if (isLoading) {
+    statusBarItem.text = `$(sync~spin) LLMA...`;
+  } else {
+    statusBarItem.text = `$(hubot) LLMA`;
+  }
+}
+
+function getApiKey(config: vscode.WorkspaceConfiguration, model: string): string | undefined {
+  if (model === 'local') {
+    return 'local';
+  }
+  switch (model) {
+    case 'deepseek': return config.get<string>('deepseekApiKey');
+    case 'qwen': return config.get<string>('qwenApiKey');
+    case 'douban': return config.get<string>('doubanApiKey');
+    case 'zhipu': return config.get<string>('zhipuApiKey');
+    default: return undefined;
+  }
+}

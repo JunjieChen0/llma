@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="">
+  <title>LLMA Pro - AI 编程助手</title>
+  <style>
+    :root {
+      --primary-color: #007acc;
+      --primary-hover: #005fa3;
+      --success-color: #2ecc71;
+      --warning-color: #f39c12;
+      --danger-color: #e74c3c;
+      --info-color: #3498db;
+      --bg-light: var(--vscode-sideBar-background);
+      --bg-lighter: var(--vscode-sideBarSectionHeader-background);
+      --border-color: var(--vscode-widget-border);
+      --text-primary: var(--vscode-foreground);
+      --text-secondary: var(--vscode-descriptionForeground);
+      --text-tertiary: var(--vscode-disabledForeground);
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+      --shadow-md: 0 4px 8px rgba(0,0,0,0.15);
+      --transition-fast: 0.15s ease;
+      --transition-normal: 0.25s ease;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      background: var(--bg-light);
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      line-height: 1.5;
+    }
+    
+    /* ===== 顶部工具栏 ===== */
+    .header-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--bg-lighter);
+      border-bottom: 1px solid var(--border-color);
+      min-height: 44px;
+    }
+    
+    .model-selector {
+      flex: 1;
+      position: relative;
+    }
+    
+    .model-select {
+      width: 100%;
+      padding: 5px 8px;
+      background: var(--vscode-dropdown-background);
+      color: var(--vscode-dropdown-foreground);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      outline: none;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+    
+    .model-select:hover {
+      border-color: var(--primary-color);
+    }
+    
+    .model-select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
+    }
+    
+    .btn-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition-fast);
+      font-size: 13px;
+    }
+    
+    .btn-icon:hover {
+      background: var(--vscode-toolbar-hoverBackground);
+      color: var(--text-primary);
+      border-color: var(--border-color);
+    }
+    
+    .btn-icon.active {
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    .btn-icon.compile {
+      background: linear-gradient(135deg, var(--success-color), #27ae60);
+      color: white;
+      border: none;
+    }
+    
+    .btn-icon.compile:hover {
+      background: linear-gradient(135deg, #27ae60, #219653);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    /* ===== 模式切换器 ===== */
+    .mode-toggle {
+      display: flex;
+      background: var(--vscode-input-background);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 2px;
+      gap: 2px;
+    }
+    
+    .mode-btn {
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 500;
+      background: transparent;
+      border: none;
+      border-radius: 3px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition-fast);
+      white-space: nowrap;
+    }
+    
+    .mode-btn:hover {
+      color: var(--text-primary);
+    }
+    
+    .mode-btn.active {
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    /* ===== 上下文栏 ===== */
+    .context-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px 12px;
+      background: var(--vscode-list-hoverBackground);
+      border-bottom: 1px solid var(--border-color);
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+    
+    .context-info {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow: hidden;
+    }
+    
+    .context-icon {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+    
+    .context-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .context-actions {
+      display: flex;
+      gap: 4px;
+    }
+    
+    /* ===== 聊天容器 ===== */
+    .chat-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: var(--vscode-editor-background);
+    }
+    
+    /* 欢迎消息 */
+    .welcome-message {
+      background: linear-gradient(135deg, var(--primary-color), #3498db);
+      color: white;
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-bottom: 6px;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .welcome-message h3 {
+      font-size: 13px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .welcome-message ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    
+    .welcome-message li {
+      margin-bottom: 5px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .feature-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 10px;
+    }
+    
+    .badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 9px;
+      font-weight: 500;
+    }
+    
+    /* 消息样式 */
+    .message {
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      position: relative;
+      animation: fadeIn 0.3s ease;
+      line-height: 1.4;
+      font-size: 13px;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .user-message {
+      align-self: flex-end;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+      color: white;
+      border-bottom-right-radius: var(--radius-sm);
+    }
+    
+    .ai-message {
+      align-self: flex-start;
+      background: var(--vscode-editor-inactiveSelectionBackground);
+      border: 1px solid var(--border-color);
+      border-bottom-left-radius: var(--radius-sm);
+    }
+    
+    .message-time {
+      font-size: 9px;
+      opacity: 0.6;
+      margin-top: 4px;
+      text-align: right;
+    }
+    
+    /* 代码块 */
+    .code-block {
+      position: relative;
+      margin: 6px 0;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 8px;
+      background: var(--vscode-textBlockQuote-background);
+      border-bottom: 1px solid var(--border-color);
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 10px;
+      color: var(--text-secondary);
+    }
+    
+    .language-tag {
+      background: var(--primary-color);
+      color: white;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 9px;
+      font-weight: 500;
+    }
+    
+    pre {
+      margin: 0;
+      padding: 10px;
+      background: var(--vscode-textBlockQuote-background);
+      overflow-x: auto;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    
+    code {
+      font-family: inherit;
+    }
+    
+    /* 文件操作区域 */
+    .file-action-card {
+      background: var(--vscode-editor-lineHighlightBackground);
+      border-left: 3px solid var(--info-color);
+      border-radius: var(--radius-md);
+      padding: 10px;
+      margin: 10px 0;
+      animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(-10px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    .file-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    
+    .file-icon {
+      font-size: 14px;
+      color: var(--info-color);
+    }
+    
+    .file-path {
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 11px;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    
+    /* ===== 文件附件区域 ===== */
+    .attachments-bar {
+      padding: 6px 12px;
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-lighter);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      min-height: 36px;
+    }
+    
+    .attachments-label {
+      font-size: 10px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    
+    .file-chips {
+      display: flex;
+      gap: 5px;
+      flex: 1;
+      overflow-x: auto;
+      padding: 2px;
+    }
+    
+    .file-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--vscode-badge-background);
+      color: var(--vscode-badge-foreground);
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      white-space: nowrap;
+      transition: var(--transition-fast);
+    }
+    
+    .file-chip:hover {
+      background: var(--vscode-badge-hoverBackground);
+    }
+    
+    .remove-chip {
+      cursor: pointer;
+      opacity: 0.7;
+      transition: var(--transition-fast);
+      font-size: 12px;
+      line-height: 1;
+    }
+    
+    .remove-chip:hover {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+    
+    /* ===== 输入区域 ===== */
+    .input-area {
+      padding: 12px 12px;
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-lighter);
+      position: relative;
+    }
+    
+    .textarea-wrapper {
+      position: relative;
+      margin-bottom: 0;
+    }
+    
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      max-height: 120px;
+      padding: 10px 12px 40px 12px; /* 底部留出按钮空间 */
+      background: var(--vscode-input-background);
+      color: var(--vscode-input-foreground);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      font-size: 13px;
+      line-height: 1.4;
+      resize: none;
+      outline: none;
+      transition: var(--transition-fast);
+    }
+    
+    textarea:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
+    }
+    
+    textarea::placeholder {
+      color: var(--text-tertiary);
+    }
+    
+    /* 新的输入操作区域 - 放在文本框右下角 */
+    .input-actions {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 10;
+    }
+    
+    .btn-attach {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: var(--vscode-button-secondaryBackground);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 12px;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      padding: 0;
+    }
+    
+    .btn-attach:hover {
+      background: var(--vscode-button-secondaryHoverBackground);
+      color: var(--text-primary);
+    }
+    
+    .hint-text {
+      display: none; /* 隐藏提示文字，节省空间 */
+    }
+    
+    .btn-send {
+      padding: 6px 16px;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition-normal);
+      min-width: 60px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .btn-send:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .btn-send:active:not(:disabled) {
+      transform: translateY(0);
+    }
+    
+    .btn-send:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .btn-stop {
+      padding: 6px 16px;
+      background: linear-gradient(135deg, var(--danger-color), #c0392b);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition-normal);
+      min-width: 60px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .btn-stop:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    /* 移除旧的左右操作区域样式 */
+    .left-actions, .right-actions {
+      display: none;
+    }
+    
+    /* ===== 加载动画 ===== */
+    .loading-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px;
+      background: var(--vscode-editor-inactiveSelectionBackground);
+      border-radius: var(--radius-md);
+      margin: 6px 0;
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; }
+    }
+    
+    .loading-dots {
+      display: flex;
+      gap: 3px;
+    }
+    
+    .loading-dot {
+      width: 5px;
+      height: 5px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out;
+    }
+    
+    .loading-dot:nth-child(1) { animation-delay: -0.32s; }
+    .loading-dot:nth-child(2) { animation-delay: -0.16s; }
+    
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+    
+    /* ===== 模态框 ===== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .modal-content {
+      background: var(--vscode-editor-background);
+      border-radius: var(--radius-lg);
+      width: 90%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-md);
+      animation: slideUp 0.3s ease;
+    }
+    
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .modal-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 16px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+    }
+    
+    .modal-close:hover {
+      background: var(--vscode-toolbar-hoverBackground);
+    }
+    
+    .modal-body {
+      padding: 18px;
+    }
+    
+    .settings-tabs {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .settings-tab {
+      padding: 6px 14px;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      font-size: 12px;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+    
+    .settings-tab:hover {
+      color: var(--text-primary);
+    }
+    
+    .settings-tab.active {
+      color: var(--primary-color);
+      border-bottom-color: var(--primary-color);
+    }
+    
+    .form-group {
+      margin-bottom: 14px;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 12px;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    
+    .form-hint {
+      display: block;
+      margin-top: 3px;
+      font-size: 10px;
+      color: var(--text-tertiary);
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 7px 10px;
+      background: var(--vscode-input-background);
+      color: var(--vscode-input-foreground);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      outline: none;
+      transition: var(--transition-fast);
+    }
+    
+    .form-input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
+    }
+    
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .checkbox-group input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+    }
+    
+    .modal-footer {
+      padding: 14px 18px;
+      border-top: 1px solid var(--border-color);
+      text-align: right;
+    }
+    
+    .btn-primary {
+      padding: 6px 20px;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition-normal);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    /* ===== 响应式调整 ===== */
+    @media (max-width: 600px) {
+      .header-toolbar {
+        padding: 6px;
+      }
+      
+      .mode-btn {
+        padding: 4px 6px;
+        font-size: 10px;
+      }
+      
+      .message {
+        max-width: 95%;
+        padding: 8px 12px;
+      }
+      
+      .chat-container {
+        padding: 8px;
+        gap: 10px;
+      }
+      
+      .input-actions {
+        right: 8px;
+        bottom: 8px;
+      }
+    }
+    
+    /* 滚动条美化 */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: var(--vscode-scrollbarSlider-background);
+      border-radius: 3px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--vscode-scrollbarSlider-hoverBackground);
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部工具栏 -->
+  <div class="header-toolbar">
+    <div class="model-selector">
+      <select class="model-select" id="model-select" aria-label="选择 AI 模型">
+        <option value="deepseek"> DeepSeek</option>
+        <option value="qwen"> 通义千问</option>
+        <option value="douban"> 豆包</option>
+        <option value="local"> 本地模型</option>
+      </select>
+    </div>
+    
+    <button class="btn-icon compile" id="compile-btn" title="编译当前文件 (Ctrl+Shift+B)">
+      ▶
+    </button>
+    
+    <button class="btn-icon" id="settings-btn" title="设置">
+      ⚙️
+    </button>
+    
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="mode-chat">聊天模式</button>
+      <button class="mode-btn" id="mode-agent">Agent 模式</button>
+    </div>
+  </div>
+  
+  <!-- 上下文栏 -->
+  <div class="context-bar">
+    <div class="context-info">
+      <span class="context-icon">📄</span>
+      <span class="context-text" id="context-text">等待编辑器激活...</span>
+    </div>
+    <div class="context-actions">
+      <button class="btn-icon" id="refresh-context" title="刷新上下文">
+        🔄
+      </button>
+    </div>
+  </div>
+  
+  <!-- 聊天容器 -->
+  <div class="chat-container" id="chat-container">
+    <!-- 欢迎消息 -->
+    <div class="welcome-message">
+      <h3>✨ LLMA Pro 助手已就绪</h3>
+      <ul>
+        <li>🔄 <strong>聊天模式</strong>: 获取代码建议和解答</li>
+        <li>🤖 <strong>Agent 模式</strong>: 创建、修改文件并编译代码</li>
+        <li>⚡️ <strong>快捷键</strong>: Ctrl+Shift+B 快速编译当前文件</li>
+        <li>💡 <strong>提示</strong>: 拖拽文件或点击 📎 添加上下文</li>
+      </ul>
+      <div class="feature-badges">
+        <span class="badge">代码生成</span>
+        <span class="badge">智能预测</span>
+        <span class="badge">文件编译</span>
+        <span class="badge">多模型支持</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 文件附件区域 -->
+  <div class="attachments-bar" id="attachments-bar">
+    <span class="attachments-label">📎 已添加:</span>
+    <div class="file-chips" id="file-chips">
+      <!-- 文件标签会动态添加到这里 -->
+    </div>
+  </div>
+  
+  <!-- 输入区域 -->
+  <div class="input-area">
+    <div class="textarea-wrapper">
+      <textarea 
+        id="message-input" 
+        placeholder="输入您的问题或指令... (Enter 发送, Shift+Enter 换行)"
+        aria-label="输入消息"
+      ></textarea>
+      <!-- 输入操作按钮区域 - 放在右下角 -->
+      <div class="input-actions">
+        <button class="btn-attach" id="attach-btn" title="添加文件">
+          📎
+        </button>
+        <button class="btn-stop" id="stop-btn" style="display: none;" title="停止生成">
+          停止
+        </button>
+        <button class="btn-send" id="send-btn" title="发送消息">
+          发送
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 设置模态框 -->
+  <div class="modal-overlay" id="settings-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">⚙️ LLMA Pro 设置</h3>
+        <button class="modal-close" id="close-settings">×</button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="settings-tabs">
+          <button class="settings-tab active" data-tab="online">在线模型</button>
+          <button class="settings-tab" data-tab="local">本地模型</button>
+        </div>
+        
+        <!-- 在线模型设置 -->
+        <div id="online-settings" class="tab-content">
+          <div class="form-group">
+            <label class="form-label" for="key-deepseek">DeepSeek API Key</label>
+            <input type="password" id="key-deepseek" class="form-input" placeholder="输入您的 DeepSeek API Key">
+            <span class="form-hint">可在 DeepSeek 官网申请</span>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="key-qwen">通义千问 API Key</label>
+            <input type="password" id="key-qwen" class="form-input" placeholder="输入您的 Qwen API Key">
+            <span class="form-hint">可在阿里云百炼平台获取</span>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="key-douban">豆包 API Key</label>
+            <input type="password" id="key-douban" class="form-input" placeholder="输入您的豆包 API Key">
+            <span class="form-hint">可在火山引擎获取</span>
+          </div>
+        </div>
+        
+        <!-- 本地模型设置 -->
+        <div id="local-settings" class="tab-content" style="display: none;">
+          <div class="form-group">
+            <div class="checkbox-group">
+              <input type="checkbox" id="local-enabled">
+              <label class="form-label" for="local-enabled">启用本地模型</label>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="local-base-url">服务地址</label>
+            <input type="text" id="local-base-url" class="form-input" placeholder="http://localhost:11434/v1">
+            <span class="form-hint">例如: Ollama 默认地址为 http://localhost:11434/v1</span>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="local-model-name">模型名称</label>
+            <input type="text" id="local-model-name" class="form-input" placeholder="llama3">
+            <span class="form-hint">例如: llama3, qwen2, codellama</span>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="local-timeout">请求超时 (毫秒)</label>
+            <input type="number" id="local-timeout" class="form-input" value="120000">
+            <span class="form-hint">建议值: 120000 (2分钟)</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn-primary" id="save-settings-btn">保存设置</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const vscode = acquireVsCodeApi();
+    
+    // DOM 元素
+    const chatContainer = document.getElementById('chat-container');
+    const input = document.getElementById('message-input');
+    const sendBtn = document.getElementById('send-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const attachBtn = document.getElementById('attach-btn');
+    const modelSelect = document.getElementById('model-select');
+    const compileBtn = document.getElementById('compile-btn');
+    const refreshBtn = document.getElementById('refresh-context');
+    const settingsBtn = document.getElementById('settings-btn');
+    const closeSettingsBtn = document.getElementById('close-settings');
+    const saveSettingsBtn = document.getElementById('save-settings-btn');
+    const settingsModal = document.getElementById('settings-modal');
+    const modeChatBtn = document.getElementById('mode-chat');
+    const modeAgentBtn = document.getElementById('mode-agent');
+    const fileChips = document.getElementById('file-chips');
+    const attachmentsBar = document.getElementById('attachments-bar');
+    
+    // 状态变量
+    let history = [];
+    let currentMode = 'chat';
+    let attachedFiles = [];
+    let isGenerating = false;
+    let currentAbortController = null;
+    let activeSettingsTab = 'online';
+    
+    // ===== 初始化函数 =====
+    function init() {
+      // 设置默认模式
+      setMode('chat');
+      
+      // 加载保存的状态
+      const savedState = vscode.getState();
+      if (savedState) {
+        if (savedState.attachedFiles) {
+          attachedFiles = savedState.attachedFiles;
+          renderFileChips();
+        }
+        if (savedState.currentMode) {
+          setMode(savedState.currentMode);
+        }
+      }
+      
+      // 绑定事件监听器
+      bindEvents();
+      
+      // 请求初始上下文
+      vscode.postMessage({ type: 'refreshContext' });
+      
+      // 隐藏附件栏（如果没有文件）
+      updateAttachmentsBar();
+    }
+    
+    // ===== 事件绑定 =====
+    function bindEvents() {
+      // 模式切换
+      modeChatBtn.addEventListener('click', () => setMode('chat'));
+      modeAgentBtn.addEventListener('click', () => setMode('agent'));
+      
+      // 发送消息
+      sendBtn.addEventListener('click', sendMessage);
+      stopBtn.addEventListener('click', stopGeneration);
+      
+      // 输入处理
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+      
+      // 文件附件
+      attachBtn.addEventListener('click', () => {
+        vscode.postMessage({ type: 'selectContextFiles' });
+      });
+      
+      // 编译按钮
+      compileBtn.addEventListener('click', () => {
+        vscode.postMessage({ type: 'compileCurrentFile' });
+      });
+      
+      // 刷新上下文
+      refreshBtn.addEventListener('click', () => {
+        vscode.postMessage({ type: 'refreshContext' });
+      });
+      
+      // 设置模态框
+      settingsBtn.addEventListener('click', openSettings);
+      closeSettingsBtn.addEventListener('click', closeSettings);
+      saveSettingsBtn.addEventListener('click', saveSettings);
+      
+      // 设置标签页切换
+      document.querySelectorAll('.settings-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          const tabId = tab.dataset.tab;
+          switchSettingsTab(tabId);
+        });
+      });
+      
+      // 模型选择变化时更新设置标签页
+      modelSelect.addEventListener('change', (e) => {
+        if (e.target.value === 'local') {
+          switchSettingsTab('local');
+        } else {
+          switchSettingsTab('online');
+        }
+      });
+      
+      // 点击模态框外部关闭
+      settingsModal.addEventListener('click', (e) => {
+        if (e.target === settingsModal) {
+          closeSettings();
+        }
+      });
+      
+      // 支持文件拖拽
+      attachmentsBar.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        attachmentsBar.style.backgroundColor = 'var(--vscode-list-hoverBackground)';
+      });
+      
+      attachmentsBar.addEventListener('dragleave', () => {
+        attachmentsBar.style.backgroundColor = '';
+      });
+      
+      attachmentsBar.addEventListener('drop', (e) => {
+        e.preventDefault();
+        attachmentsBar.style.backgroundColor = '';
+        
+        const files = Array.from(e.dataTransfer.files);
+        const fileInfos = files.map(file => ({
+          name: file.name,
+          path: file.path
+        }));
+        
+        vscode.postMessage({
+          type: 'filesSelected',
+          files: fileInfos
+        });
+      });
+      
+      // 自动调整输入框高度
+      input.addEventListener('input', autoResizeTextarea);
+    }
+    
+    // ===== 自动调整输入框高度 =====
+    function autoResizeTextarea() {
+      input.style.height = 'auto';
+      input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+    }
+    
+    // ===== 模式切换 =====
+    function setMode(mode) {
+      currentMode = mode;
+      
+      // 更新按钮状态
+      modeChatBtn.classList.remove('active');
+      modeAgentBtn.classList.remove('active');
+      
+      const activeBtn = mode === 'chat' ? modeChatBtn : modeAgentBtn;
+      activeBtn.classList.add('active');
+      
+      // 更新输入框提示
+      input.placeholder = mode === 'agent' 
+        ? "输入指令，例如：'创建 src/utils.ts' 或 '如何编译这个文件'..." 
+        : "输入您的问题或代码请求... (Enter 发送, Shift+Enter 换行)";
+      
+      // 保存状态
+      saveState();
+    }
+    
+    // ===== 消息处理 =====
+    function sendMessage() {
+      const text = input.value.trim();
+      if (!text || isGenerating) return;
+      
+      // 添加用户消息到界面
+      addMessage(text, 'user');
+      input.value = '';
+      autoResizeTextarea(); // 重置输入框高度
+      
+      // 开始生成状态
+      isGenerating = true;
+      updateButtonState();
+      
+      // 显示加载指示器
+      showLoadingIndicator();
+      
+      // 发送消息到扩展
+      vscode.postMessage({
+        type: 'sendMessage',
+        text: text,
+        history: history,
+        model: modelSelect.value,
+        mode: currentMode,
+        files: attachedFiles.map(f => f.path)
+      });
+      
+      // 添加到历史
+      history.push({ role: 'user', content: text });
+      
+      // 保存状态
+      saveState();
+    }
+    
+    function stopGeneration() {
+      if (!isGenerating) return;
+      
+      hideLoadingIndicator();
+      
+      addMessage('⚠️ 生成已停止', 'ai', true);
+      isGenerating = false;
+      updateButtonState();
+    }
+    
+    // ===== 界面更新函数 =====
+    function addMessage(text, type, isError = false) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${type}-message`;
+      
+      if (isError) {
+        messageDiv.style.background = 'linear-gradient(135deg, var(--danger-color), #c0392b)';
+        messageDiv.style.color = 'white';
+      }
+      
+      // 格式化消息内容
+      const formattedContent = formatMessageContent(text, type);
+      messageDiv.innerHTML = formattedContent;
+      
+      // 添加时间戳
+      const timeSpan = document.createElement('div');
+      timeSpan.className = 'message-time';
+      timeSpan.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      messageDiv.appendChild(timeSpan);
+      
+      chatContainer.appendChild(messageDiv);
+      scrollToBottom();
+    }
+    
+    function formatMessageContent(text, type) {
+      if (type === 'user') {
+        return escapeHtml(text);
+      }
+      
+      // AI 消息处理
+      let html = '';
+      let lines = text.split('\n');
+      let inCodeBlock = false;
+      let currentLanguage = '';
+      let buffer = '';
+      
+      // 检测文件操作标记
+      const fileActionMatch = text.match(/^> FILE:\s*(.+?)$/m);
+      
+      lines.forEach(line => {
+        // 检测代码块开始
+        if (line.startsWith('```')) {
+          if (!inCodeBlock) {
+            // 开始代码块
+            inCodeBlock = true;
+            currentLanguage = line.substring(3).trim();
+            html += buffer;
+            buffer = '';
+          } else {
+            // 结束代码块
+            html += `<div class="code-block">
+              <div class="code-header">
+                <span>${currentLanguage || 'code'}</span>
+                <span class="language-tag">${currentLanguage || 'text'}</span>
+              </div>
+              <pre><code>${escapeHtml(buffer)}</code></pre>
+            </div>`;
+            buffer = '';
+            inCodeBlock = false;
+            currentLanguage = '';
+          }
+          return;
+        }
+        
+        if (inCodeBlock) {
+          buffer += line + '\n';
+        } else {
+          // 处理普通文本
+          if (line.trim().startsWith('> FILE:')) {
+            const filePath = line.substring(7).trim();
+            html += `<div class="file-action-card">
+              <div class="file-header">
+                <span class="file-icon">📄</span>
+                <span class="file-path">${escapeHtml(filePath)}</span>
+              </div>
+              <div class="action-buttons">
+                <button class="btn-primary" onclick="applyFileChange('${escapeHtml(filePath)}')">
+                  ⚡️ 审查并应用
+                </button>
+              </div>
+            </div>`;
+          } else if (line.trim()) {
+            html += `<p>${escapeHtml(line)}</p>`;
+          }
+        }
+      });
+      
+      // 处理剩余的缓冲区内容
+      if (buffer.trim()) {
+        html += buffer;
+      }
+      
+      return html;
+    }
+    
+    function showLoadingIndicator() {
+      const loadingDiv = document.createElement('div');
+      loadingDiv.className = 'loading-indicator';
+      loadingDiv.id = 'loading-indicator';
+      loadingDiv.innerHTML = `
+        <div class="loading-dots">
+          <div class="loading-dot"></div>
+          <div class="loading-dot"></div>
+          <div class="loading-dot"></div>
+        </div>
+        <span>AI 正在思考...</span>
+      `;
+      chatContainer.appendChild(loadingDiv);
+      scrollToBottom();
+    }
+    
+    function hideLoadingIndicator() {
+      const loading = document.getElementById('loading-indicator');
+      if (loading) loading.remove();
+    }
+    
+    function updateButtonState() {
+      if (isGenerating) {
+        sendBtn.style.display = 'none';
+        stopBtn.style.display = 'block';
+        input.disabled = true;
+      } else {
+        sendBtn.style.display = 'block';
+        stopBtn.style.display = 'none';
+        input.disabled = false;
+        input.focus();
+      }
+    }
+    
+    function scrollToBottom() {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+    
+    // ===== 文件附件管理 =====
+    function renderFileChips() {
+      fileChips.innerHTML = '';
+      
+      attachedFiles.forEach((file, index) => {
+        const chip = document.createElement('div');
+        chip.className = 'file-chip';
+        chip.title = file.path;
+        
+        chip.innerHTML = `
+          <span>📄 ${escapeHtml(file.name)}</span>
+          <span class="remove-chip" data-index="${index}">×</span>
+        `;
+        
+        fileChips.appendChild(chip);
+      });
+      
+      // 添加删除事件
+      document.querySelectorAll('.remove-chip').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const index = parseInt(btn.dataset.index);
+          attachedFiles.splice(index, 1);
+          renderFileChips();
+          updateAttachmentsBar();
+          saveState();
+        });
+      });
+    }
+    
+    function updateAttachmentsBar() {
+      if (attachedFiles.length > 0) {
+        attachmentsBar.style.display = 'flex';
+      } else {
+        attachmentsBar.style.display = 'none';
+      }
+    }
+    
+    // ===== 设置管理 =====
+    function openSettings() {
+      // 根据当前选择的模型设置标签页
+      if (modelSelect.value === 'local') {
+        switchSettingsTab('local');
+      } else {
+        switchSettingsTab('online');
+      }
+      
+      // 请求当前设置
+      vscode.postMessage({ type: 'getSettings' });
+      settingsModal.style.display = 'flex';
+    }
+    
+    function closeSettings() {
+      settingsModal.style.display = 'none';
+    }
+    
+    function switchSettingsTab(tabId) {
+      // 更新标签页状态
+      document.querySelectorAll('.settings-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.tab === tabId);
+      });
+      
+      // 显示对应的内容
+      document.getElementById('online-settings').style.display = 
+        tabId === 'online' ? 'block' : 'none';
+      document.getElementById('local-settings').style.display = 
+        tabId === 'local' ? 'block' : 'none';
+      
+      activeSettingsTab = tabId;
+    }
+    
+    function saveSettings() {
+      const settings = {};
+      
+      if (activeSettingsTab === 'online') {
+        settings.deepseekApiKey = document.getElementById('key-deepseek').value;
+        settings.qwenApiKey = document.getElementById('key-qwen').value;
+        settings.doubanApiKey = document.getElementById('key-douban').value;
+      } else {
+        settings.localModelEnabled = document.getElementById('local-enabled').checked;
+        settings.localModelBaseUrl = document.getElementById('local-base-url').value;
+        settings.localModelName = document.getElementById('local-model-name').value;
+        settings.localModelTimeout = parseInt(document.getElementById('local-timeout').value) || 120000;
+      }
+      
+      vscode.postMessage({
+        type: 'saveSettings',
+        settings: settings
+      });
+      
+      closeSettings();
+    }
+    
+    // ===== 辅助函数 =====
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+    
+    function saveState() {
+      vscode.setState({
+        attachedFiles: attachedFiles,
+        currentMode: currentMode
+      });
+    }
+    
+    // 全局函数供按钮使用
+    window.applyFileChange = function(filePath) {
+      // 这里需要从代码块中提取内容
+      // 简化实现：提示用户
+      vscode.postMessage({
+        type: 'applyFileChange',
+        filepath: filePath,
+        content: '[需要从代码块中提取内容]'
+      });
+    };
+    
+    // ===== 消息监听器 =====
+    window.addEventListener('message', event => {
+      const message = event.data;
+      
+      switch (message.type) {
+        case 'addResponse':
+          hideLoadingIndicator();
+          addMessage(message.text, 'ai');
+          history.push({ role: 'assistant', content: message.text });
+          isGenerating = false;
+          updateButtonState();
+          break;
+          
+        case 'updateContextInfo':
+          document.getElementById('context-text').textContent = message.text;
+          break;
+          
+        case 'filesSelected':
+          message.files.forEach(file => {
+            if (!attachedFiles.some(f => f.path === file.path)) {
+              attachedFiles.push(file);
+            }
+          });
+          renderFileChips();
+          updateAttachmentsBar();
+          saveState();
+          break;
+          
+        case 'updateSettings':
+          // 更新表单字段
+          if (message.settings.deepseekApiKey) {
+            document.getElementById('key-deepseek').value = message.settings.deepseekApiKey;
+          }
+          if (message.settings.qwenApiKey) {
+            document.getElementById('key-qwen').value = message.settings.qwenApiKey;
+          }
+          if (message.settings.doubanApiKey) {
+            document.getElementById('key-douban').value = message.settings.doubanApiKey;
+          }
+          if (message.settings.localModelEnabled !== undefined) {
+            document.getElementById('local-enabled').checked = message.settings.localModelEnabled;
+          }
+          if (message.settings.localModelBaseUrl) {
+            document.getElementById('local-base-url').value = message.settings.localModelBaseUrl;
+          }
+          if (message.settings.localModelName) {
+            document.getElementById('local-model-name').value = message.settings.localModelName;
+          }
+          if (message.settings.localModelTimeout) {
+            document.getElementById('local-timeout').value = message.settings.localModelTimeout;
+          }
+          break;
+      }
+    });
+    
+    // 初始化应用
+    init();
+  </script>
+</body>
+</html>
