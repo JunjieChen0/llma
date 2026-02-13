@@ -5,6 +5,9 @@ var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __esm = (fn, res) => function __init() {
+  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+};
 var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
 };
@@ -30,9 +33,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-// ../node_modules/.pnpm/delayed-stream@1.0.0/node_modules/delayed-stream/lib/delayed_stream.js
+// node_modules/delayed-stream/lib/delayed_stream.js
 var require_delayed_stream = __commonJS({
-  "../node_modules/.pnpm/delayed-stream@1.0.0/node_modules/delayed-stream/lib/delayed_stream.js"(exports2, module2) {
+  "node_modules/delayed-stream/lib/delayed_stream.js"(exports2, module2) {
     var Stream = require("stream").Stream;
     var util3 = require("util");
     module2.exports = DelayedStream;
@@ -121,9 +124,9 @@ var require_delayed_stream = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/combined-stream@1.0.8/node_modules/combined-stream/lib/combined_stream.js
+// node_modules/combined-stream/lib/combined_stream.js
 var require_combined_stream = __commonJS({
-  "../node_modules/.pnpm/combined-stream@1.0.8/node_modules/combined-stream/lib/combined_stream.js"(exports2, module2) {
+  "node_modules/combined-stream/lib/combined_stream.js"(exports2, module2) {
     var util3 = require("util");
     var Stream = require("stream").Stream;
     var DelayedStream = require_delayed_stream();
@@ -237,7 +240,8 @@ var require_combined_stream = __commonJS({
       if (!this.pauseStreams) {
         return;
       }
-      if (this.pauseStreams && this._currentStream && typeof this._currentStream.pause == "function") this._currentStream.pause();
+      if (this.pauseStreams && this._currentStream && typeof this._currentStream.pause == "function")
+        this._currentStream.pause();
       this.emit("pause");
     };
     CombinedStream.prototype.resume = function() {
@@ -246,7 +250,8 @@ var require_combined_stream = __commonJS({
         this.writable = true;
         this._getNext();
       }
-      if (this.pauseStreams && this._currentStream && typeof this._currentStream.resume == "function") this._currentStream.resume();
+      if (this.pauseStreams && this._currentStream && typeof this._currentStream.resume == "function")
+        this._currentStream.resume();
       this.emit("resume");
     };
     CombinedStream.prototype.end = function() {
@@ -290,9 +295,9 @@ var require_combined_stream = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/mime-db@1.52.0/node_modules/mime-db/db.json
+// node_modules/mime-db/db.json
 var require_db = __commonJS({
-  "../node_modules/.pnpm/mime-db@1.52.0/node_modules/mime-db/db.json"(exports2, module2) {
+  "node_modules/mime-db/db.json"(exports2, module2) {
     module2.exports = {
       "application/1d-interleaved-parityfec": {
         source: "iana"
@@ -8815,19 +8820,19 @@ var require_db = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/mime-db@1.52.0/node_modules/mime-db/index.js
+// node_modules/mime-db/index.js
 var require_mime_db = __commonJS({
-  "../node_modules/.pnpm/mime-db@1.52.0/node_modules/mime-db/index.js"(exports2, module2) {
+  "node_modules/mime-db/index.js"(exports2, module2) {
     module2.exports = require_db();
   }
 });
 
-// ../node_modules/.pnpm/mime-types@2.1.35/node_modules/mime-types/index.js
+// node_modules/mime-types/index.js
 var require_mime_types = __commonJS({
-  "../node_modules/.pnpm/mime-types@2.1.35/node_modules/mime-types/index.js"(exports2) {
+  "node_modules/mime-types/index.js"(exports2) {
     "use strict";
     var db = require_mime_db();
-    var extname = require("path").extname;
+    var extname2 = require("path").extname;
     var EXTRACT_TYPE_REGEXP = /^\s*([^;\s]*)(?:;|\s|$)/;
     var TEXT_TYPE_REGEXP = /^text\//i;
     exports2.charset = charset;
@@ -8862,7 +8867,8 @@ var require_mime_types = __commonJS({
       }
       if (mime.indexOf("charset") === -1) {
         var charset2 = exports2.charset(mime);
-        if (charset2) mime += "; charset=" + charset2.toLowerCase();
+        if (charset2)
+          mime += "; charset=" + charset2.toLowerCase();
       }
       return mime;
     }
@@ -8881,7 +8887,7 @@ var require_mime_types = __commonJS({
       if (!path2 || typeof path2 !== "string") {
         return false;
       }
-      var extension2 = extname("x." + path2).toLowerCase().substr(1);
+      var extension2 = extname2("x." + path2).toLowerCase().substr(1);
       if (!extension2) {
         return false;
       }
@@ -8912,9 +8918,9 @@ var require_mime_types = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/defer.js
+// node_modules/asynckit/lib/defer.js
 var require_defer = __commonJS({
-  "../node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/defer.js"(exports2, module2) {
+  "node_modules/asynckit/lib/defer.js"(exports2, module2) {
     module2.exports = defer;
     function defer(fn) {
       var nextTick = typeof setImmediate == "function" ? setImmediate : typeof process == "object" && typeof process.nextTick == "function" ? process.nextTick : null;
@@ -8927,9 +8933,9 @@ var require_defer = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/async.js
+// node_modules/asynckit/lib/async.js
 var require_async = __commonJS({
-  "../node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/async.js"(exports2, module2) {
+  "node_modules/asynckit/lib/async.js"(exports2, module2) {
     var defer = require_defer();
     module2.exports = async;
     function async(callback) {
@@ -8950,9 +8956,9 @@ var require_async = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/abort.js
+// node_modules/asynckit/lib/abort.js
 var require_abort = __commonJS({
-  "../node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/abort.js"(exports2, module2) {
+  "node_modules/asynckit/lib/abort.js"(exports2, module2) {
     module2.exports = abort;
     function abort(state) {
       Object.keys(state.jobs).forEach(clean.bind(state));
@@ -8966,9 +8972,9 @@ var require_abort = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/iterate.js
+// node_modules/asynckit/lib/iterate.js
 var require_iterate = __commonJS({
-  "../node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/iterate.js"(exports2, module2) {
+  "node_modules/asynckit/lib/iterate.js"(exports2, module2) {
     var async = require_async();
     var abort = require_abort();
     module2.exports = iterate;
@@ -8999,9 +9005,9 @@ var require_iterate = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/state.js
+// node_modules/asynckit/lib/state.js
 var require_state = __commonJS({
-  "../node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/state.js"(exports2, module2) {
+  "node_modules/asynckit/lib/state.js"(exports2, module2) {
     module2.exports = state;
     function state(list, sortMethod) {
       var isNamedList = !Array.isArray(list), initState = {
@@ -9021,9 +9027,9 @@ var require_state = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/terminator.js
+// node_modules/asynckit/lib/terminator.js
 var require_terminator = __commonJS({
-  "../node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/lib/terminator.js"(exports2, module2) {
+  "node_modules/asynckit/lib/terminator.js"(exports2, module2) {
     var abort = require_abort();
     var async = require_async();
     module2.exports = terminator;
@@ -9038,9 +9044,9 @@ var require_terminator = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/parallel.js
+// node_modules/asynckit/parallel.js
 var require_parallel = __commonJS({
-  "../node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/parallel.js"(exports2, module2) {
+  "node_modules/asynckit/parallel.js"(exports2, module2) {
     var iterate = require_iterate();
     var initState = require_state();
     var terminator = require_terminator();
@@ -9065,9 +9071,9 @@ var require_parallel = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/serialOrdered.js
+// node_modules/asynckit/serialOrdered.js
 var require_serialOrdered = __commonJS({
-  "../node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/serialOrdered.js"(exports2, module2) {
+  "node_modules/asynckit/serialOrdered.js"(exports2, module2) {
     var iterate = require_iterate();
     var initState = require_state();
     var terminator = require_terminator();
@@ -9099,9 +9105,9 @@ var require_serialOrdered = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/serial.js
+// node_modules/asynckit/serial.js
 var require_serial = __commonJS({
-  "../node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/serial.js"(exports2, module2) {
+  "node_modules/asynckit/serial.js"(exports2, module2) {
     var serialOrdered = require_serialOrdered();
     module2.exports = serial;
     function serial(list, iterator2, callback) {
@@ -9110,9 +9116,9 @@ var require_serial = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/index.js
+// node_modules/asynckit/index.js
 var require_asynckit = __commonJS({
-  "../node_modules/.pnpm/asynckit@0.4.0/node_modules/asynckit/index.js"(exports2, module2) {
+  "node_modules/asynckit/index.js"(exports2, module2) {
     module2.exports = {
       parallel: require_parallel(),
       serial: require_serial(),
@@ -9121,121 +9127,121 @@ var require_asynckit = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/es-object-atoms@1.1.1/node_modules/es-object-atoms/index.js
+// node_modules/es-object-atoms/index.js
 var require_es_object_atoms = __commonJS({
-  "../node_modules/.pnpm/es-object-atoms@1.1.1/node_modules/es-object-atoms/index.js"(exports2, module2) {
+  "node_modules/es-object-atoms/index.js"(exports2, module2) {
     "use strict";
     module2.exports = Object;
   }
 });
 
-// ../node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/index.js
+// node_modules/es-errors/index.js
 var require_es_errors = __commonJS({
-  "../node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/index.js"(exports2, module2) {
+  "node_modules/es-errors/index.js"(exports2, module2) {
     "use strict";
     module2.exports = Error;
   }
 });
 
-// ../node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/eval.js
+// node_modules/es-errors/eval.js
 var require_eval = __commonJS({
-  "../node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/eval.js"(exports2, module2) {
+  "node_modules/es-errors/eval.js"(exports2, module2) {
     "use strict";
     module2.exports = EvalError;
   }
 });
 
-// ../node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/range.js
+// node_modules/es-errors/range.js
 var require_range = __commonJS({
-  "../node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/range.js"(exports2, module2) {
+  "node_modules/es-errors/range.js"(exports2, module2) {
     "use strict";
     module2.exports = RangeError;
   }
 });
 
-// ../node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/ref.js
+// node_modules/es-errors/ref.js
 var require_ref = __commonJS({
-  "../node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/ref.js"(exports2, module2) {
+  "node_modules/es-errors/ref.js"(exports2, module2) {
     "use strict";
     module2.exports = ReferenceError;
   }
 });
 
-// ../node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/syntax.js
+// node_modules/es-errors/syntax.js
 var require_syntax = __commonJS({
-  "../node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/syntax.js"(exports2, module2) {
+  "node_modules/es-errors/syntax.js"(exports2, module2) {
     "use strict";
     module2.exports = SyntaxError;
   }
 });
 
-// ../node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/type.js
+// node_modules/es-errors/type.js
 var require_type = __commonJS({
-  "../node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/type.js"(exports2, module2) {
+  "node_modules/es-errors/type.js"(exports2, module2) {
     "use strict";
     module2.exports = TypeError;
   }
 });
 
-// ../node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/uri.js
+// node_modules/es-errors/uri.js
 var require_uri = __commonJS({
-  "../node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/uri.js"(exports2, module2) {
+  "node_modules/es-errors/uri.js"(exports2, module2) {
     "use strict";
     module2.exports = URIError;
   }
 });
 
-// ../node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/abs.js
+// node_modules/math-intrinsics/abs.js
 var require_abs = __commonJS({
-  "../node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/abs.js"(exports2, module2) {
+  "node_modules/math-intrinsics/abs.js"(exports2, module2) {
     "use strict";
     module2.exports = Math.abs;
   }
 });
 
-// ../node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/floor.js
+// node_modules/math-intrinsics/floor.js
 var require_floor = __commonJS({
-  "../node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/floor.js"(exports2, module2) {
+  "node_modules/math-intrinsics/floor.js"(exports2, module2) {
     "use strict";
     module2.exports = Math.floor;
   }
 });
 
-// ../node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/max.js
+// node_modules/math-intrinsics/max.js
 var require_max = __commonJS({
-  "../node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/max.js"(exports2, module2) {
+  "node_modules/math-intrinsics/max.js"(exports2, module2) {
     "use strict";
     module2.exports = Math.max;
   }
 });
 
-// ../node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/min.js
+// node_modules/math-intrinsics/min.js
 var require_min = __commonJS({
-  "../node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/min.js"(exports2, module2) {
+  "node_modules/math-intrinsics/min.js"(exports2, module2) {
     "use strict";
     module2.exports = Math.min;
   }
 });
 
-// ../node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/pow.js
+// node_modules/math-intrinsics/pow.js
 var require_pow = __commonJS({
-  "../node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/pow.js"(exports2, module2) {
+  "node_modules/math-intrinsics/pow.js"(exports2, module2) {
     "use strict";
     module2.exports = Math.pow;
   }
 });
 
-// ../node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/round.js
+// node_modules/math-intrinsics/round.js
 var require_round = __commonJS({
-  "../node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/round.js"(exports2, module2) {
+  "node_modules/math-intrinsics/round.js"(exports2, module2) {
     "use strict";
     module2.exports = Math.round;
   }
 });
 
-// ../node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/isNaN.js
+// node_modules/math-intrinsics/isNaN.js
 var require_isNaN = __commonJS({
-  "../node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/isNaN.js"(exports2, module2) {
+  "node_modules/math-intrinsics/isNaN.js"(exports2, module2) {
     "use strict";
     module2.exports = Number.isNaN || function isNaN2(a) {
       return a !== a;
@@ -9243,9 +9249,9 @@ var require_isNaN = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/sign.js
+// node_modules/math-intrinsics/sign.js
 var require_sign = __commonJS({
-  "../node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/sign.js"(exports2, module2) {
+  "node_modules/math-intrinsics/sign.js"(exports2, module2) {
     "use strict";
     var $isNaN = require_isNaN();
     module2.exports = function sign(number) {
@@ -9257,17 +9263,17 @@ var require_sign = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/gopd@1.2.0/node_modules/gopd/gOPD.js
+// node_modules/gopd/gOPD.js
 var require_gOPD = __commonJS({
-  "../node_modules/.pnpm/gopd@1.2.0/node_modules/gopd/gOPD.js"(exports2, module2) {
+  "node_modules/gopd/gOPD.js"(exports2, module2) {
     "use strict";
     module2.exports = Object.getOwnPropertyDescriptor;
   }
 });
 
-// ../node_modules/.pnpm/gopd@1.2.0/node_modules/gopd/index.js
+// node_modules/gopd/index.js
 var require_gopd = __commonJS({
-  "../node_modules/.pnpm/gopd@1.2.0/node_modules/gopd/index.js"(exports2, module2) {
+  "node_modules/gopd/index.js"(exports2, module2) {
     "use strict";
     var $gOPD = require_gOPD();
     if ($gOPD) {
@@ -9281,9 +9287,9 @@ var require_gopd = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/es-define-property@1.0.1/node_modules/es-define-property/index.js
+// node_modules/es-define-property/index.js
 var require_es_define_property = __commonJS({
-  "../node_modules/.pnpm/es-define-property@1.0.1/node_modules/es-define-property/index.js"(exports2, module2) {
+  "node_modules/es-define-property/index.js"(exports2, module2) {
     "use strict";
     var $defineProperty = Object.defineProperty || false;
     if ($defineProperty) {
@@ -9297,9 +9303,9 @@ var require_es_define_property = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/has-symbols@1.1.0/node_modules/has-symbols/shams.js
+// node_modules/has-symbols/shams.js
 var require_shams = __commonJS({
-  "../node_modules/.pnpm/has-symbols@1.1.0/node_modules/has-symbols/shams.js"(exports2, module2) {
+  "node_modules/has-symbols/shams.js"(exports2, module2) {
     "use strict";
     module2.exports = function hasSymbols() {
       if (typeof Symbol !== "function" || typeof Object.getOwnPropertySymbols !== "function") {
@@ -9309,7 +9315,7 @@ var require_shams = __commonJS({
         return true;
       }
       var obj = {};
-      var sym = /* @__PURE__ */ Symbol("test");
+      var sym = Symbol("test");
       var symObj = Object(sym);
       if (typeof sym === "string") {
         return false;
@@ -9352,9 +9358,9 @@ var require_shams = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/has-symbols@1.1.0/node_modules/has-symbols/index.js
+// node_modules/has-symbols/index.js
 var require_has_symbols = __commonJS({
-  "../node_modules/.pnpm/has-symbols@1.1.0/node_modules/has-symbols/index.js"(exports2, module2) {
+  "node_modules/has-symbols/index.js"(exports2, module2) {
     "use strict";
     var origSymbol = typeof Symbol !== "undefined" && Symbol;
     var hasSymbolSham = require_shams();
@@ -9368,7 +9374,7 @@ var require_has_symbols = __commonJS({
       if (typeof origSymbol("foo") !== "symbol") {
         return false;
       }
-      if (typeof /* @__PURE__ */ Symbol("bar") !== "symbol") {
+      if (typeof Symbol("bar") !== "symbol") {
         return false;
       }
       return hasSymbolSham();
@@ -9376,26 +9382,26 @@ var require_has_symbols = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/get-proto@1.0.1/node_modules/get-proto/Reflect.getPrototypeOf.js
+// node_modules/get-proto/Reflect.getPrototypeOf.js
 var require_Reflect_getPrototypeOf = __commonJS({
-  "../node_modules/.pnpm/get-proto@1.0.1/node_modules/get-proto/Reflect.getPrototypeOf.js"(exports2, module2) {
+  "node_modules/get-proto/Reflect.getPrototypeOf.js"(exports2, module2) {
     "use strict";
     module2.exports = typeof Reflect !== "undefined" && Reflect.getPrototypeOf || null;
   }
 });
 
-// ../node_modules/.pnpm/get-proto@1.0.1/node_modules/get-proto/Object.getPrototypeOf.js
+// node_modules/get-proto/Object.getPrototypeOf.js
 var require_Object_getPrototypeOf = __commonJS({
-  "../node_modules/.pnpm/get-proto@1.0.1/node_modules/get-proto/Object.getPrototypeOf.js"(exports2, module2) {
+  "node_modules/get-proto/Object.getPrototypeOf.js"(exports2, module2) {
     "use strict";
     var $Object = require_es_object_atoms();
     module2.exports = $Object.getPrototypeOf || null;
   }
 });
 
-// ../node_modules/.pnpm/function-bind@1.1.2/node_modules/function-bind/implementation.js
+// node_modules/function-bind/implementation.js
 var require_implementation = __commonJS({
-  "../node_modules/.pnpm/function-bind@1.1.2/node_modules/function-bind/implementation.js"(exports2, module2) {
+  "node_modules/function-bind/implementation.js"(exports2, module2) {
     "use strict";
     var ERROR_MESSAGE = "Function.prototype.bind called on incompatible ";
     var toStr = Object.prototype.toString;
@@ -9469,42 +9475,42 @@ var require_implementation = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/function-bind@1.1.2/node_modules/function-bind/index.js
+// node_modules/function-bind/index.js
 var require_function_bind = __commonJS({
-  "../node_modules/.pnpm/function-bind@1.1.2/node_modules/function-bind/index.js"(exports2, module2) {
+  "node_modules/function-bind/index.js"(exports2, module2) {
     "use strict";
     var implementation = require_implementation();
     module2.exports = Function.prototype.bind || implementation;
   }
 });
 
-// ../node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/functionCall.js
+// node_modules/call-bind-apply-helpers/functionCall.js
 var require_functionCall = __commonJS({
-  "../node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/functionCall.js"(exports2, module2) {
+  "node_modules/call-bind-apply-helpers/functionCall.js"(exports2, module2) {
     "use strict";
     module2.exports = Function.prototype.call;
   }
 });
 
-// ../node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/functionApply.js
+// node_modules/call-bind-apply-helpers/functionApply.js
 var require_functionApply = __commonJS({
-  "../node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/functionApply.js"(exports2, module2) {
+  "node_modules/call-bind-apply-helpers/functionApply.js"(exports2, module2) {
     "use strict";
     module2.exports = Function.prototype.apply;
   }
 });
 
-// ../node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/reflectApply.js
+// node_modules/call-bind-apply-helpers/reflectApply.js
 var require_reflectApply = __commonJS({
-  "../node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/reflectApply.js"(exports2, module2) {
+  "node_modules/call-bind-apply-helpers/reflectApply.js"(exports2, module2) {
     "use strict";
     module2.exports = typeof Reflect !== "undefined" && Reflect && Reflect.apply;
   }
 });
 
-// ../node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/actualApply.js
+// node_modules/call-bind-apply-helpers/actualApply.js
 var require_actualApply = __commonJS({
-  "../node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/actualApply.js"(exports2, module2) {
+  "node_modules/call-bind-apply-helpers/actualApply.js"(exports2, module2) {
     "use strict";
     var bind2 = require_function_bind();
     var $apply = require_functionApply();
@@ -9514,9 +9520,9 @@ var require_actualApply = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/index.js
+// node_modules/call-bind-apply-helpers/index.js
 var require_call_bind_apply_helpers = __commonJS({
-  "../node_modules/.pnpm/call-bind-apply-helpers@1.0.2/node_modules/call-bind-apply-helpers/index.js"(exports2, module2) {
+  "node_modules/call-bind-apply-helpers/index.js"(exports2, module2) {
     "use strict";
     var bind2 = require_function_bind();
     var $TypeError = require_type();
@@ -9531,9 +9537,9 @@ var require_call_bind_apply_helpers = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/dunder-proto@1.0.1/node_modules/dunder-proto/get.js
+// node_modules/dunder-proto/get.js
 var require_get = __commonJS({
-  "../node_modules/.pnpm/dunder-proto@1.0.1/node_modules/dunder-proto/get.js"(exports2, module2) {
+  "node_modules/dunder-proto/get.js"(exports2, module2) {
     "use strict";
     var callBind = require_call_bind_apply_helpers();
     var gOPD = require_gopd();
@@ -9562,9 +9568,9 @@ var require_get = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/get-proto@1.0.1/node_modules/get-proto/index.js
+// node_modules/get-proto/index.js
 var require_get_proto = __commonJS({
-  "../node_modules/.pnpm/get-proto@1.0.1/node_modules/get-proto/index.js"(exports2, module2) {
+  "node_modules/get-proto/index.js"(exports2, module2) {
     "use strict";
     var reflectGetProto = require_Reflect_getPrototypeOf();
     var originalGetProto = require_Object_getPrototypeOf();
@@ -9582,9 +9588,9 @@ var require_get_proto = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/hasown@2.0.2/node_modules/hasown/index.js
+// node_modules/hasown/index.js
 var require_hasown = __commonJS({
-  "../node_modules/.pnpm/hasown@2.0.2/node_modules/hasown/index.js"(exports2, module2) {
+  "node_modules/hasown/index.js"(exports2, module2) {
     "use strict";
     var call = Function.prototype.call;
     var $hasOwn = Object.prototype.hasOwnProperty;
@@ -9593,9 +9599,9 @@ var require_hasown = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/get-intrinsic@1.3.0/node_modules/get-intrinsic/index.js
+// node_modules/get-intrinsic/index.js
 var require_get_intrinsic = __commonJS({
-  "../node_modules/.pnpm/get-intrinsic@1.3.0/node_modules/get-intrinsic/index.js"(exports2, module2) {
+  "node_modules/get-intrinsic/index.js"(exports2, module2) {
     "use strict";
     var undefined2;
     var $Object = require_es_object_atoms();
@@ -9625,7 +9631,7 @@ var require_get_intrinsic = __commonJS({
     var throwTypeError = function() {
       throw new $TypeError();
     };
-    var ThrowTypeError = $gOPD ? (function() {
+    var ThrowTypeError = $gOPD ? function() {
       try {
         arguments.callee;
         return throwTypeError;
@@ -9636,7 +9642,7 @@ var require_get_intrinsic = __commonJS({
           return throwTypeError;
         }
       }
-    })() : throwTypeError;
+    }() : throwTypeError;
     var hasSymbols = require_has_symbols()();
     var getProto = require_get_proto();
     var $ObjectGPO = require_Object_getPrototypeOf();
@@ -9900,7 +9906,7 @@ var require_get_intrinsic = __commonJS({
             if (!allowMissing) {
               throw new $TypeError("base intrinsic for " + name + " exists, but the property is not available.");
             }
-            return void undefined2;
+            return void 0;
           }
           if ($gOPD && i + 1 >= parts.length) {
             var desc = $gOPD(value, part);
@@ -9924,9 +9930,9 @@ var require_get_intrinsic = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/has-tostringtag@1.0.2/node_modules/has-tostringtag/shams.js
+// node_modules/has-tostringtag/shams.js
 var require_shams2 = __commonJS({
-  "../node_modules/.pnpm/has-tostringtag@1.0.2/node_modules/has-tostringtag/shams.js"(exports2, module2) {
+  "node_modules/has-tostringtag/shams.js"(exports2, module2) {
     "use strict";
     var hasSymbols = require_shams();
     module2.exports = function hasToStringTagShams() {
@@ -9935,9 +9941,9 @@ var require_shams2 = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/es-set-tostringtag@2.1.0/node_modules/es-set-tostringtag/index.js
+// node_modules/es-set-tostringtag/index.js
 var require_es_set_tostringtag = __commonJS({
-  "../node_modules/.pnpm/es-set-tostringtag@2.1.0/node_modules/es-set-tostringtag/index.js"(exports2, module2) {
+  "node_modules/es-set-tostringtag/index.js"(exports2, module2) {
     "use strict";
     var GetIntrinsic = require_get_intrinsic();
     var $defineProperty = GetIntrinsic("%Object.defineProperty%", true);
@@ -9967,9 +9973,9 @@ var require_es_set_tostringtag = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/form-data@4.0.5/node_modules/form-data/lib/populate.js
+// node_modules/form-data/lib/populate.js
 var require_populate = __commonJS({
-  "../node_modules/.pnpm/form-data@4.0.5/node_modules/form-data/lib/populate.js"(exports2, module2) {
+  "node_modules/form-data/lib/populate.js"(exports2, module2) {
     "use strict";
     module2.exports = function(dst, src) {
       Object.keys(src).forEach(function(prop) {
@@ -9980,9 +9986,9 @@ var require_populate = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/form-data@4.0.5/node_modules/form-data/lib/form_data.js
+// node_modules/form-data/lib/form_data.js
 var require_form_data = __commonJS({
-  "../node_modules/.pnpm/form-data@4.0.5/node_modules/form-data/lib/form_data.js"(exports2, module2) {
+  "node_modules/form-data/lib/form_data.js"(exports2, module2) {
     "use strict";
     var CombinedStream = require_combined_stream();
     var util3 = require("util");
@@ -9990,7 +9996,7 @@ var require_form_data = __commonJS({
     var http3 = require("http");
     var https2 = require("https");
     var parseUrl = require("url").parse;
-    var fs = require("fs");
+    var fs2 = require("fs");
     var Stream = require("stream").Stream;
     var crypto2 = require("crypto");
     var mime = require_mime_types();
@@ -10057,7 +10063,7 @@ var require_form_data = __commonJS({
         if (value.end != void 0 && value.end != Infinity && value.start != void 0) {
           callback(null, value.end + 1 - (value.start ? value.start : 0));
         } else {
-          fs.stat(value.path, function(err, stat) {
+          fs2.stat(value.path, function(err, stat) {
             if (err) {
               callback(err);
               return;
@@ -10299,9 +10305,9 @@ var require_form_data = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/proxy-from-env@1.1.0/node_modules/proxy-from-env/index.js
+// node_modules/proxy-from-env/index.js
 var require_proxy_from_env = __commonJS({
-  "../node_modules/.pnpm/proxy-from-env@1.1.0/node_modules/proxy-from-env/index.js"(exports2) {
+  "node_modules/proxy-from-env/index.js"(exports2) {
     "use strict";
     var parseUrl = require("url").parse;
     var DEFAULT_PORTS = {
@@ -10369,14 +10375,797 @@ var require_proxy_from_env = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/debug.js
+// node_modules/ms/index.js
+var require_ms = __commonJS({
+  "node_modules/ms/index.js"(exports2, module2) {
+    var s = 1e3;
+    var m = s * 60;
+    var h = m * 60;
+    var d = h * 24;
+    var w = d * 7;
+    var y = d * 365.25;
+    module2.exports = function(val, options) {
+      options = options || {};
+      var type = typeof val;
+      if (type === "string" && val.length > 0) {
+        return parse(val);
+      } else if (type === "number" && isFinite(val)) {
+        return options.long ? fmtLong(val) : fmtShort(val);
+      }
+      throw new Error(
+        "val is not a non-empty string or a valid number. val=" + JSON.stringify(val)
+      );
+    };
+    function parse(str) {
+      str = String(str);
+      if (str.length > 100) {
+        return;
+      }
+      var match = /^(-?(?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)?$/i.exec(
+        str
+      );
+      if (!match) {
+        return;
+      }
+      var n = parseFloat(match[1]);
+      var type = (match[2] || "ms").toLowerCase();
+      switch (type) {
+        case "years":
+        case "year":
+        case "yrs":
+        case "yr":
+        case "y":
+          return n * y;
+        case "weeks":
+        case "week":
+        case "w":
+          return n * w;
+        case "days":
+        case "day":
+        case "d":
+          return n * d;
+        case "hours":
+        case "hour":
+        case "hrs":
+        case "hr":
+        case "h":
+          return n * h;
+        case "minutes":
+        case "minute":
+        case "mins":
+        case "min":
+        case "m":
+          return n * m;
+        case "seconds":
+        case "second":
+        case "secs":
+        case "sec":
+        case "s":
+          return n * s;
+        case "milliseconds":
+        case "millisecond":
+        case "msecs":
+        case "msec":
+        case "ms":
+          return n;
+        default:
+          return void 0;
+      }
+    }
+    function fmtShort(ms) {
+      var msAbs = Math.abs(ms);
+      if (msAbs >= d) {
+        return Math.round(ms / d) + "d";
+      }
+      if (msAbs >= h) {
+        return Math.round(ms / h) + "h";
+      }
+      if (msAbs >= m) {
+        return Math.round(ms / m) + "m";
+      }
+      if (msAbs >= s) {
+        return Math.round(ms / s) + "s";
+      }
+      return ms + "ms";
+    }
+    function fmtLong(ms) {
+      var msAbs = Math.abs(ms);
+      if (msAbs >= d) {
+        return plural(ms, msAbs, d, "day");
+      }
+      if (msAbs >= h) {
+        return plural(ms, msAbs, h, "hour");
+      }
+      if (msAbs >= m) {
+        return plural(ms, msAbs, m, "minute");
+      }
+      if (msAbs >= s) {
+        return plural(ms, msAbs, s, "second");
+      }
+      return ms + " ms";
+    }
+    function plural(ms, msAbs, n, name) {
+      var isPlural = msAbs >= n * 1.5;
+      return Math.round(ms / n) + " " + name + (isPlural ? "s" : "");
+    }
+  }
+});
+
+// node_modules/debug/src/common.js
+var require_common = __commonJS({
+  "node_modules/debug/src/common.js"(exports2, module2) {
+    function setup(env2) {
+      createDebug.debug = createDebug;
+      createDebug.default = createDebug;
+      createDebug.coerce = coerce;
+      createDebug.disable = disable;
+      createDebug.enable = enable;
+      createDebug.enabled = enabled;
+      createDebug.humanize = require_ms();
+      createDebug.destroy = destroy;
+      Object.keys(env2).forEach((key) => {
+        createDebug[key] = env2[key];
+      });
+      createDebug.names = [];
+      createDebug.skips = [];
+      createDebug.formatters = {};
+      function selectColor(namespace) {
+        let hash = 0;
+        for (let i = 0; i < namespace.length; i++) {
+          hash = (hash << 5) - hash + namespace.charCodeAt(i);
+          hash |= 0;
+        }
+        return createDebug.colors[Math.abs(hash) % createDebug.colors.length];
+      }
+      createDebug.selectColor = selectColor;
+      function createDebug(namespace) {
+        let prevTime;
+        let enableOverride = null;
+        let namespacesCache;
+        let enabledCache;
+        function debug(...args) {
+          if (!debug.enabled) {
+            return;
+          }
+          const self2 = debug;
+          const curr = Number(/* @__PURE__ */ new Date());
+          const ms = curr - (prevTime || curr);
+          self2.diff = ms;
+          self2.prev = prevTime;
+          self2.curr = curr;
+          prevTime = curr;
+          args[0] = createDebug.coerce(args[0]);
+          if (typeof args[0] !== "string") {
+            args.unshift("%O");
+          }
+          let index = 0;
+          args[0] = args[0].replace(/%([a-zA-Z%])/g, (match, format) => {
+            if (match === "%%") {
+              return "%";
+            }
+            index++;
+            const formatter = createDebug.formatters[format];
+            if (typeof formatter === "function") {
+              const val = args[index];
+              match = formatter.call(self2, val);
+              args.splice(index, 1);
+              index--;
+            }
+            return match;
+          });
+          createDebug.formatArgs.call(self2, args);
+          const logFn = self2.log || createDebug.log;
+          logFn.apply(self2, args);
+        }
+        debug.namespace = namespace;
+        debug.useColors = createDebug.useColors();
+        debug.color = createDebug.selectColor(namespace);
+        debug.extend = extend2;
+        debug.destroy = createDebug.destroy;
+        Object.defineProperty(debug, "enabled", {
+          enumerable: true,
+          configurable: false,
+          get: () => {
+            if (enableOverride !== null) {
+              return enableOverride;
+            }
+            if (namespacesCache !== createDebug.namespaces) {
+              namespacesCache = createDebug.namespaces;
+              enabledCache = createDebug.enabled(namespace);
+            }
+            return enabledCache;
+          },
+          set: (v) => {
+            enableOverride = v;
+          }
+        });
+        if (typeof createDebug.init === "function") {
+          createDebug.init(debug);
+        }
+        return debug;
+      }
+      function extend2(namespace, delimiter) {
+        const newDebug = createDebug(this.namespace + (typeof delimiter === "undefined" ? ":" : delimiter) + namespace);
+        newDebug.log = this.log;
+        return newDebug;
+      }
+      function enable(namespaces) {
+        createDebug.save(namespaces);
+        createDebug.namespaces = namespaces;
+        createDebug.names = [];
+        createDebug.skips = [];
+        const split = (typeof namespaces === "string" ? namespaces : "").trim().replace(/\s+/g, ",").split(",").filter(Boolean);
+        for (const ns of split) {
+          if (ns[0] === "-") {
+            createDebug.skips.push(ns.slice(1));
+          } else {
+            createDebug.names.push(ns);
+          }
+        }
+      }
+      function matchesTemplate(search, template) {
+        let searchIndex = 0;
+        let templateIndex = 0;
+        let starIndex = -1;
+        let matchIndex = 0;
+        while (searchIndex < search.length) {
+          if (templateIndex < template.length && (template[templateIndex] === search[searchIndex] || template[templateIndex] === "*")) {
+            if (template[templateIndex] === "*") {
+              starIndex = templateIndex;
+              matchIndex = searchIndex;
+              templateIndex++;
+            } else {
+              searchIndex++;
+              templateIndex++;
+            }
+          } else if (starIndex !== -1) {
+            templateIndex = starIndex + 1;
+            matchIndex++;
+            searchIndex = matchIndex;
+          } else {
+            return false;
+          }
+        }
+        while (templateIndex < template.length && template[templateIndex] === "*") {
+          templateIndex++;
+        }
+        return templateIndex === template.length;
+      }
+      function disable() {
+        const namespaces = [
+          ...createDebug.names,
+          ...createDebug.skips.map((namespace) => "-" + namespace)
+        ].join(",");
+        createDebug.enable("");
+        return namespaces;
+      }
+      function enabled(name) {
+        for (const skip of createDebug.skips) {
+          if (matchesTemplate(name, skip)) {
+            return false;
+          }
+        }
+        for (const ns of createDebug.names) {
+          if (matchesTemplate(name, ns)) {
+            return true;
+          }
+        }
+        return false;
+      }
+      function coerce(val) {
+        if (val instanceof Error) {
+          return val.stack || val.message;
+        }
+        return val;
+      }
+      function destroy() {
+        console.warn("Instance method `debug.destroy()` is deprecated and no longer does anything. It will be removed in the next major version of `debug`.");
+      }
+      createDebug.enable(createDebug.load());
+      return createDebug;
+    }
+    module2.exports = setup;
+  }
+});
+
+// node_modules/debug/src/browser.js
+var require_browser = __commonJS({
+  "node_modules/debug/src/browser.js"(exports2, module2) {
+    exports2.formatArgs = formatArgs;
+    exports2.save = save;
+    exports2.load = load;
+    exports2.useColors = useColors;
+    exports2.storage = localstorage();
+    exports2.destroy = /* @__PURE__ */ (() => {
+      let warned = false;
+      return () => {
+        if (!warned) {
+          warned = true;
+          console.warn("Instance method `debug.destroy()` is deprecated and no longer does anything. It will be removed in the next major version of `debug`.");
+        }
+      };
+    })();
+    exports2.colors = [
+      "#0000CC",
+      "#0000FF",
+      "#0033CC",
+      "#0033FF",
+      "#0066CC",
+      "#0066FF",
+      "#0099CC",
+      "#0099FF",
+      "#00CC00",
+      "#00CC33",
+      "#00CC66",
+      "#00CC99",
+      "#00CCCC",
+      "#00CCFF",
+      "#3300CC",
+      "#3300FF",
+      "#3333CC",
+      "#3333FF",
+      "#3366CC",
+      "#3366FF",
+      "#3399CC",
+      "#3399FF",
+      "#33CC00",
+      "#33CC33",
+      "#33CC66",
+      "#33CC99",
+      "#33CCCC",
+      "#33CCFF",
+      "#6600CC",
+      "#6600FF",
+      "#6633CC",
+      "#6633FF",
+      "#66CC00",
+      "#66CC33",
+      "#9900CC",
+      "#9900FF",
+      "#9933CC",
+      "#9933FF",
+      "#99CC00",
+      "#99CC33",
+      "#CC0000",
+      "#CC0033",
+      "#CC0066",
+      "#CC0099",
+      "#CC00CC",
+      "#CC00FF",
+      "#CC3300",
+      "#CC3333",
+      "#CC3366",
+      "#CC3399",
+      "#CC33CC",
+      "#CC33FF",
+      "#CC6600",
+      "#CC6633",
+      "#CC9900",
+      "#CC9933",
+      "#CCCC00",
+      "#CCCC33",
+      "#FF0000",
+      "#FF0033",
+      "#FF0066",
+      "#FF0099",
+      "#FF00CC",
+      "#FF00FF",
+      "#FF3300",
+      "#FF3333",
+      "#FF3366",
+      "#FF3399",
+      "#FF33CC",
+      "#FF33FF",
+      "#FF6600",
+      "#FF6633",
+      "#FF9900",
+      "#FF9933",
+      "#FFCC00",
+      "#FFCC33"
+    ];
+    function useColors() {
+      if (typeof window !== "undefined" && window.process && (window.process.type === "renderer" || window.process.__nwjs)) {
+        return true;
+      }
+      if (typeof navigator !== "undefined" && navigator.userAgent && navigator.userAgent.toLowerCase().match(/(edge|trident)\/(\d+)/)) {
+        return false;
+      }
+      let m;
+      return typeof document !== "undefined" && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance || // Is firebug? http://stackoverflow.com/a/398120/376773
+      typeof window !== "undefined" && window.console && (window.console.firebug || window.console.exception && window.console.table) || // Is firefox >= v31?
+      // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
+      typeof navigator !== "undefined" && navigator.userAgent && (m = navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/)) && parseInt(m[1], 10) >= 31 || // Double check webkit in userAgent just in case we are in a worker
+      typeof navigator !== "undefined" && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/);
+    }
+    function formatArgs(args) {
+      args[0] = (this.useColors ? "%c" : "") + this.namespace + (this.useColors ? " %c" : " ") + args[0] + (this.useColors ? "%c " : " ") + "+" + module2.exports.humanize(this.diff);
+      if (!this.useColors) {
+        return;
+      }
+      const c = "color: " + this.color;
+      args.splice(1, 0, c, "color: inherit");
+      let index = 0;
+      let lastC = 0;
+      args[0].replace(/%[a-zA-Z%]/g, (match) => {
+        if (match === "%%") {
+          return;
+        }
+        index++;
+        if (match === "%c") {
+          lastC = index;
+        }
+      });
+      args.splice(lastC, 0, c);
+    }
+    exports2.log = console.debug || console.log || (() => {
+    });
+    function save(namespaces) {
+      try {
+        if (namespaces) {
+          exports2.storage.setItem("debug", namespaces);
+        } else {
+          exports2.storage.removeItem("debug");
+        }
+      } catch (error) {
+      }
+    }
+    function load() {
+      let r;
+      try {
+        r = exports2.storage.getItem("debug") || exports2.storage.getItem("DEBUG");
+      } catch (error) {
+      }
+      if (!r && typeof process !== "undefined" && "env" in process) {
+        r = process.env.DEBUG;
+      }
+      return r;
+    }
+    function localstorage() {
+      try {
+        return localStorage;
+      } catch (error) {
+      }
+    }
+    module2.exports = require_common()(exports2);
+    var { formatters } = module2.exports;
+    formatters.j = function(v) {
+      try {
+        return JSON.stringify(v);
+      } catch (error) {
+        return "[UnexpectedJSONParseError]: " + error.message;
+      }
+    };
+  }
+});
+
+// node_modules/supports-color/index.js
+var supports_color_exports = {};
+__export(supports_color_exports, {
+  createSupportsColor: () => createSupportsColor,
+  default: () => supports_color_default
+});
+function hasFlag(flag, argv = globalThis.Deno ? globalThis.Deno.args : import_node_process.default.argv) {
+  const prefix = flag.startsWith("-") ? "" : flag.length === 1 ? "-" : "--";
+  const position = argv.indexOf(prefix + flag);
+  const terminatorPosition = argv.indexOf("--");
+  return position !== -1 && (terminatorPosition === -1 || position < terminatorPosition);
+}
+function envForceColor() {
+  if ("FORCE_COLOR" in env) {
+    if (env.FORCE_COLOR === "true") {
+      return 1;
+    }
+    if (env.FORCE_COLOR === "false") {
+      return 0;
+    }
+    return env.FORCE_COLOR.length === 0 ? 1 : Math.min(Number.parseInt(env.FORCE_COLOR, 10), 3);
+  }
+}
+function translateLevel(level) {
+  if (level === 0) {
+    return false;
+  }
+  return {
+    level,
+    hasBasic: true,
+    has256: level >= 2,
+    has16m: level >= 3
+  };
+}
+function _supportsColor(haveStream, { streamIsTTY, sniffFlags = true } = {}) {
+  const noFlagForceColor = envForceColor();
+  if (noFlagForceColor !== void 0) {
+    flagForceColor = noFlagForceColor;
+  }
+  const forceColor = sniffFlags ? flagForceColor : noFlagForceColor;
+  if (forceColor === 0) {
+    return 0;
+  }
+  if (sniffFlags) {
+    if (hasFlag("color=16m") || hasFlag("color=full") || hasFlag("color=truecolor")) {
+      return 3;
+    }
+    if (hasFlag("color=256")) {
+      return 2;
+    }
+  }
+  if ("TF_BUILD" in env && "AGENT_NAME" in env) {
+    return 1;
+  }
+  if (haveStream && !streamIsTTY && forceColor === void 0) {
+    return 0;
+  }
+  const min = forceColor || 0;
+  if (env.TERM === "dumb") {
+    return min;
+  }
+  if (import_node_process.default.platform === "win32") {
+    const osRelease = import_node_os.default.release().split(".");
+    if (Number(osRelease[0]) >= 10 && Number(osRelease[2]) >= 10586) {
+      return Number(osRelease[2]) >= 14931 ? 3 : 2;
+    }
+    return 1;
+  }
+  if ("CI" in env) {
+    if ("GITHUB_ACTIONS" in env || "GITEA_ACTIONS" in env) {
+      return 3;
+    }
+    if (["TRAVIS", "CIRCLECI", "APPVEYOR", "GITLAB_CI", "BUILDKITE", "DRONE"].some((sign) => sign in env) || env.CI_NAME === "codeship") {
+      return 1;
+    }
+    return min;
+  }
+  if ("TEAMCITY_VERSION" in env) {
+    return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(env.TEAMCITY_VERSION) ? 1 : 0;
+  }
+  if (env.COLORTERM === "truecolor") {
+    return 3;
+  }
+  if (env.TERM === "xterm-kitty") {
+    return 3;
+  }
+  if ("TERM_PROGRAM" in env) {
+    const version = Number.parseInt((env.TERM_PROGRAM_VERSION || "").split(".")[0], 10);
+    switch (env.TERM_PROGRAM) {
+      case "iTerm.app": {
+        return version >= 3 ? 3 : 2;
+      }
+      case "Apple_Terminal": {
+        return 2;
+      }
+    }
+  }
+  if (/-256(color)?$/i.test(env.TERM)) {
+    return 2;
+  }
+  if (/^screen|^xterm|^vt100|^vt220|^rxvt|color|ansi|cygwin|linux/i.test(env.TERM)) {
+    return 1;
+  }
+  if ("COLORTERM" in env) {
+    return 1;
+  }
+  return min;
+}
+function createSupportsColor(stream4, options = {}) {
+  const level = _supportsColor(stream4, {
+    streamIsTTY: stream4 && stream4.isTTY,
+    ...options
+  });
+  return translateLevel(level);
+}
+var import_node_process, import_node_os, import_node_tty, env, flagForceColor, supportsColor, supports_color_default;
+var init_supports_color = __esm({
+  "node_modules/supports-color/index.js"() {
+    import_node_process = __toESM(require("node:process"), 1);
+    import_node_os = __toESM(require("node:os"), 1);
+    import_node_tty = __toESM(require("node:tty"), 1);
+    ({ env } = import_node_process.default);
+    if (hasFlag("no-color") || hasFlag("no-colors") || hasFlag("color=false") || hasFlag("color=never")) {
+      flagForceColor = 0;
+    } else if (hasFlag("color") || hasFlag("colors") || hasFlag("color=true") || hasFlag("color=always")) {
+      flagForceColor = 1;
+    }
+    supportsColor = {
+      stdout: createSupportsColor({ isTTY: import_node_tty.default.isatty(1) }),
+      stderr: createSupportsColor({ isTTY: import_node_tty.default.isatty(2) })
+    };
+    supports_color_default = supportsColor;
+  }
+});
+
+// node_modules/debug/src/node.js
+var require_node = __commonJS({
+  "node_modules/debug/src/node.js"(exports2, module2) {
+    var tty2 = require("tty");
+    var util3 = require("util");
+    exports2.init = init;
+    exports2.log = log;
+    exports2.formatArgs = formatArgs;
+    exports2.save = save;
+    exports2.load = load;
+    exports2.useColors = useColors;
+    exports2.destroy = util3.deprecate(
+      () => {
+      },
+      "Instance method `debug.destroy()` is deprecated and no longer does anything. It will be removed in the next major version of `debug`."
+    );
+    exports2.colors = [6, 2, 3, 4, 5, 1];
+    try {
+      const supportsColor2 = (init_supports_color(), __toCommonJS(supports_color_exports));
+      if (supportsColor2 && (supportsColor2.stderr || supportsColor2).level >= 2) {
+        exports2.colors = [
+          20,
+          21,
+          26,
+          27,
+          32,
+          33,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          56,
+          57,
+          62,
+          63,
+          68,
+          69,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          92,
+          93,
+          98,
+          99,
+          112,
+          113,
+          128,
+          129,
+          134,
+          135,
+          148,
+          149,
+          160,
+          161,
+          162,
+          163,
+          164,
+          165,
+          166,
+          167,
+          168,
+          169,
+          170,
+          171,
+          172,
+          173,
+          178,
+          179,
+          184,
+          185,
+          196,
+          197,
+          198,
+          199,
+          200,
+          201,
+          202,
+          203,
+          204,
+          205,
+          206,
+          207,
+          208,
+          209,
+          214,
+          215,
+          220,
+          221
+        ];
+      }
+    } catch (error) {
+    }
+    exports2.inspectOpts = Object.keys(process.env).filter((key) => {
+      return /^debug_/i.test(key);
+    }).reduce((obj, key) => {
+      const prop = key.substring(6).toLowerCase().replace(/_([a-z])/g, (_, k) => {
+        return k.toUpperCase();
+      });
+      let val = process.env[key];
+      if (/^(yes|on|true|enabled)$/i.test(val)) {
+        val = true;
+      } else if (/^(no|off|false|disabled)$/i.test(val)) {
+        val = false;
+      } else if (val === "null") {
+        val = null;
+      } else {
+        val = Number(val);
+      }
+      obj[prop] = val;
+      return obj;
+    }, {});
+    function useColors() {
+      return "colors" in exports2.inspectOpts ? Boolean(exports2.inspectOpts.colors) : tty2.isatty(process.stderr.fd);
+    }
+    function formatArgs(args) {
+      const { namespace: name, useColors: useColors2 } = this;
+      if (useColors2) {
+        const c = this.color;
+        const colorCode = "\x1B[3" + (c < 8 ? c : "8;5;" + c);
+        const prefix = `  ${colorCode};1m${name} \x1B[0m`;
+        args[0] = prefix + args[0].split("\n").join("\n" + prefix);
+        args.push(colorCode + "m+" + module2.exports.humanize(this.diff) + "\x1B[0m");
+      } else {
+        args[0] = getDate() + name + " " + args[0];
+      }
+    }
+    function getDate() {
+      if (exports2.inspectOpts.hideDate) {
+        return "";
+      }
+      return (/* @__PURE__ */ new Date()).toISOString() + " ";
+    }
+    function log(...args) {
+      return process.stderr.write(util3.formatWithOptions(exports2.inspectOpts, ...args) + "\n");
+    }
+    function save(namespaces) {
+      if (namespaces) {
+        process.env.DEBUG = namespaces;
+      } else {
+        delete process.env.DEBUG;
+      }
+    }
+    function load() {
+      return process.env.DEBUG;
+    }
+    function init(debug) {
+      debug.inspectOpts = {};
+      const keys = Object.keys(exports2.inspectOpts);
+      for (let i = 0; i < keys.length; i++) {
+        debug.inspectOpts[keys[i]] = exports2.inspectOpts[keys[i]];
+      }
+    }
+    module2.exports = require_common()(exports2);
+    var { formatters } = module2.exports;
+    formatters.o = function(v) {
+      this.inspectOpts.colors = this.useColors;
+      return util3.inspect(v, this.inspectOpts).split("\n").map((str) => str.trim()).join(" ");
+    };
+    formatters.O = function(v) {
+      this.inspectOpts.colors = this.useColors;
+      return util3.inspect(v, this.inspectOpts);
+    };
+  }
+});
+
+// node_modules/debug/src/index.js
+var require_src = __commonJS({
+  "node_modules/debug/src/index.js"(exports2, module2) {
+    if (typeof process === "undefined" || process.type === "renderer" || process.browser === true || process.__nwjs) {
+      module2.exports = require_browser();
+    } else {
+      module2.exports = require_node();
+    }
+  }
+});
+
+// node_modules/follow-redirects/debug.js
 var require_debug = __commonJS({
-  "../node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/debug.js"(exports2, module2) {
+  "node_modules/follow-redirects/debug.js"(exports2, module2) {
     var debug;
     module2.exports = function() {
       if (!debug) {
         try {
-          debug = require("debug")("follow-redirects");
+          debug = require_src()("follow-redirects");
         } catch (error) {
         }
         if (typeof debug !== "function") {
@@ -10389,9 +11178,9 @@ var require_debug = __commonJS({
   }
 });
 
-// ../node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/index.js
+// node_modules/follow-redirects/index.js
 var require_follow_redirects = __commonJS({
-  "../node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/index.js"(exports2, module2) {
+  "node_modules/follow-redirects/index.js"(exports2, module2) {
     var url2 = require("url");
     var URL2 = url2.URL;
     var http3 = require("http");
@@ -10885,6 +11674,630 @@ var require_follow_redirects = __commonJS({
   }
 });
 
+// node_modules/agent-base/dist/helpers.js
+var require_helpers = __commonJS({
+  "node_modules/agent-base/dist/helpers.js"(exports2) {
+    "use strict";
+    var __createBinding = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
+      if (k2 === void 0)
+        k2 = k;
+      var desc = Object.getOwnPropertyDescriptor(m, k);
+      if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+        desc = { enumerable: true, get: function() {
+          return m[k];
+        } };
+      }
+      Object.defineProperty(o, k2, desc);
+    } : function(o, m, k, k2) {
+      if (k2 === void 0)
+        k2 = k;
+      o[k2] = m[k];
+    });
+    var __setModuleDefault = exports2 && exports2.__setModuleDefault || (Object.create ? function(o, v) {
+      Object.defineProperty(o, "default", { enumerable: true, value: v });
+    } : function(o, v) {
+      o["default"] = v;
+    });
+    var __importStar = exports2 && exports2.__importStar || function(mod) {
+      if (mod && mod.__esModule)
+        return mod;
+      var result = {};
+      if (mod != null) {
+        for (var k in mod)
+          if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k))
+            __createBinding(result, mod, k);
+      }
+      __setModuleDefault(result, mod);
+      return result;
+    };
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.req = exports2.json = exports2.toBuffer = void 0;
+    var http3 = __importStar(require("http"));
+    var https2 = __importStar(require("https"));
+    async function toBuffer(stream4) {
+      let length = 0;
+      const chunks = [];
+      for await (const chunk of stream4) {
+        length += chunk.length;
+        chunks.push(chunk);
+      }
+      return Buffer.concat(chunks, length);
+    }
+    exports2.toBuffer = toBuffer;
+    async function json(stream4) {
+      const buf = await toBuffer(stream4);
+      const str = buf.toString("utf8");
+      try {
+        return JSON.parse(str);
+      } catch (_err) {
+        const err = _err;
+        err.message += ` (input: ${str})`;
+        throw err;
+      }
+    }
+    exports2.json = json;
+    function req(url2, opts = {}) {
+      const href = typeof url2 === "string" ? url2 : url2.href;
+      const req2 = (href.startsWith("https:") ? https2 : http3).request(url2, opts);
+      const promise = new Promise((resolve, reject) => {
+        req2.once("response", resolve).once("error", reject).end();
+      });
+      req2.then = promise.then.bind(promise);
+      return req2;
+    }
+    exports2.req = req;
+  }
+});
+
+// node_modules/agent-base/dist/index.js
+var require_dist = __commonJS({
+  "node_modules/agent-base/dist/index.js"(exports2) {
+    "use strict";
+    var __createBinding = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
+      if (k2 === void 0)
+        k2 = k;
+      var desc = Object.getOwnPropertyDescriptor(m, k);
+      if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+        desc = { enumerable: true, get: function() {
+          return m[k];
+        } };
+      }
+      Object.defineProperty(o, k2, desc);
+    } : function(o, m, k, k2) {
+      if (k2 === void 0)
+        k2 = k;
+      o[k2] = m[k];
+    });
+    var __setModuleDefault = exports2 && exports2.__setModuleDefault || (Object.create ? function(o, v) {
+      Object.defineProperty(o, "default", { enumerable: true, value: v });
+    } : function(o, v) {
+      o["default"] = v;
+    });
+    var __importStar = exports2 && exports2.__importStar || function(mod) {
+      if (mod && mod.__esModule)
+        return mod;
+      var result = {};
+      if (mod != null) {
+        for (var k in mod)
+          if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k))
+            __createBinding(result, mod, k);
+      }
+      __setModuleDefault(result, mod);
+      return result;
+    };
+    var __exportStar = exports2 && exports2.__exportStar || function(m, exports3) {
+      for (var p in m)
+        if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports3, p))
+          __createBinding(exports3, m, p);
+    };
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.Agent = void 0;
+    var net = __importStar(require("net"));
+    var http3 = __importStar(require("http"));
+    var https_1 = require("https");
+    __exportStar(require_helpers(), exports2);
+    var INTERNAL = Symbol("AgentBaseInternalState");
+    var Agent = class extends http3.Agent {
+      constructor(opts) {
+        super(opts);
+        this[INTERNAL] = {};
+      }
+      /**
+       * Determine whether this is an `http` or `https` request.
+       */
+      isSecureEndpoint(options) {
+        if (options) {
+          if (typeof options.secureEndpoint === "boolean") {
+            return options.secureEndpoint;
+          }
+          if (typeof options.protocol === "string") {
+            return options.protocol === "https:";
+          }
+        }
+        const { stack } = new Error();
+        if (typeof stack !== "string")
+          return false;
+        return stack.split("\n").some((l) => l.indexOf("(https.js:") !== -1 || l.indexOf("node:https:") !== -1);
+      }
+      // In order to support async signatures in `connect()` and Node's native
+      // connection pooling in `http.Agent`, the array of sockets for each origin
+      // has to be updated synchronously. This is so the length of the array is
+      // accurate when `addRequest()` is next called. We achieve this by creating a
+      // fake socket and adding it to `sockets[origin]` and incrementing
+      // `totalSocketCount`.
+      incrementSockets(name) {
+        if (this.maxSockets === Infinity && this.maxTotalSockets === Infinity) {
+          return null;
+        }
+        if (!this.sockets[name]) {
+          this.sockets[name] = [];
+        }
+        const fakeSocket = new net.Socket({ writable: false });
+        this.sockets[name].push(fakeSocket);
+        this.totalSocketCount++;
+        return fakeSocket;
+      }
+      decrementSockets(name, socket) {
+        if (!this.sockets[name] || socket === null) {
+          return;
+        }
+        const sockets = this.sockets[name];
+        const index = sockets.indexOf(socket);
+        if (index !== -1) {
+          sockets.splice(index, 1);
+          this.totalSocketCount--;
+          if (sockets.length === 0) {
+            delete this.sockets[name];
+          }
+        }
+      }
+      // In order to properly update the socket pool, we need to call `getName()` on
+      // the core `https.Agent` if it is a secureEndpoint.
+      getName(options) {
+        const secureEndpoint = this.isSecureEndpoint(options);
+        if (secureEndpoint) {
+          return https_1.Agent.prototype.getName.call(this, options);
+        }
+        return super.getName(options);
+      }
+      createSocket(req, options, cb) {
+        const connectOpts = {
+          ...options,
+          secureEndpoint: this.isSecureEndpoint(options)
+        };
+        const name = this.getName(connectOpts);
+        const fakeSocket = this.incrementSockets(name);
+        Promise.resolve().then(() => this.connect(req, connectOpts)).then((socket) => {
+          this.decrementSockets(name, fakeSocket);
+          if (socket instanceof http3.Agent) {
+            try {
+              return socket.addRequest(req, connectOpts);
+            } catch (err) {
+              return cb(err);
+            }
+          }
+          this[INTERNAL].currentSocket = socket;
+          super.createSocket(req, options, cb);
+        }, (err) => {
+          this.decrementSockets(name, fakeSocket);
+          cb(err);
+        });
+      }
+      createConnection() {
+        const socket = this[INTERNAL].currentSocket;
+        this[INTERNAL].currentSocket = void 0;
+        if (!socket) {
+          throw new Error("No socket was returned in the `connect()` function");
+        }
+        return socket;
+      }
+      get defaultPort() {
+        return this[INTERNAL].defaultPort ?? (this.protocol === "https:" ? 443 : 80);
+      }
+      set defaultPort(v) {
+        if (this[INTERNAL]) {
+          this[INTERNAL].defaultPort = v;
+        }
+      }
+      get protocol() {
+        return this[INTERNAL].protocol ?? (this.isSecureEndpoint() ? "https:" : "http:");
+      }
+      set protocol(v) {
+        if (this[INTERNAL]) {
+          this[INTERNAL].protocol = v;
+        }
+      }
+    };
+    exports2.Agent = Agent;
+  }
+});
+
+// node_modules/https-proxy-agent/dist/parse-proxy-response.js
+var require_parse_proxy_response = __commonJS({
+  "node_modules/https-proxy-agent/dist/parse-proxy-response.js"(exports2) {
+    "use strict";
+    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
+      return mod && mod.__esModule ? mod : { "default": mod };
+    };
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.parseProxyResponse = void 0;
+    var debug_1 = __importDefault(require_src());
+    var debug = (0, debug_1.default)("https-proxy-agent:parse-proxy-response");
+    function parseProxyResponse(socket) {
+      return new Promise((resolve, reject) => {
+        let buffersLength = 0;
+        const buffers = [];
+        function read() {
+          const b = socket.read();
+          if (b)
+            ondata(b);
+          else
+            socket.once("readable", read);
+        }
+        function cleanup() {
+          socket.removeListener("end", onend);
+          socket.removeListener("error", onerror);
+          socket.removeListener("readable", read);
+        }
+        function onend() {
+          cleanup();
+          debug("onend");
+          reject(new Error("Proxy connection ended before receiving CONNECT response"));
+        }
+        function onerror(err) {
+          cleanup();
+          debug("onerror %o", err);
+          reject(err);
+        }
+        function ondata(b) {
+          buffers.push(b);
+          buffersLength += b.length;
+          const buffered = Buffer.concat(buffers, buffersLength);
+          const endOfHeaders = buffered.indexOf("\r\n\r\n");
+          if (endOfHeaders === -1) {
+            debug("have not received end of HTTP headers yet...");
+            read();
+            return;
+          }
+          const headerParts = buffered.slice(0, endOfHeaders).toString("ascii").split("\r\n");
+          const firstLine = headerParts.shift();
+          if (!firstLine) {
+            socket.destroy();
+            return reject(new Error("No header received from proxy CONNECT response"));
+          }
+          const firstLineParts = firstLine.split(" ");
+          const statusCode = +firstLineParts[1];
+          const statusText = firstLineParts.slice(2).join(" ");
+          const headers = {};
+          for (const header of headerParts) {
+            if (!header)
+              continue;
+            const firstColon = header.indexOf(":");
+            if (firstColon === -1) {
+              socket.destroy();
+              return reject(new Error(`Invalid header from proxy CONNECT response: "${header}"`));
+            }
+            const key = header.slice(0, firstColon).toLowerCase();
+            const value = header.slice(firstColon + 1).trimStart();
+            const current = headers[key];
+            if (typeof current === "string") {
+              headers[key] = [current, value];
+            } else if (Array.isArray(current)) {
+              current.push(value);
+            } else {
+              headers[key] = value;
+            }
+          }
+          debug("got proxy server response: %o %o", firstLine, headers);
+          cleanup();
+          resolve({
+            connect: {
+              statusCode,
+              statusText,
+              headers
+            },
+            buffered
+          });
+        }
+        socket.on("error", onerror);
+        socket.on("end", onend);
+        read();
+      });
+    }
+    exports2.parseProxyResponse = parseProxyResponse;
+  }
+});
+
+// node_modules/https-proxy-agent/dist/index.js
+var require_dist2 = __commonJS({
+  "node_modules/https-proxy-agent/dist/index.js"(exports2) {
+    "use strict";
+    var __createBinding = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
+      if (k2 === void 0)
+        k2 = k;
+      var desc = Object.getOwnPropertyDescriptor(m, k);
+      if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+        desc = { enumerable: true, get: function() {
+          return m[k];
+        } };
+      }
+      Object.defineProperty(o, k2, desc);
+    } : function(o, m, k, k2) {
+      if (k2 === void 0)
+        k2 = k;
+      o[k2] = m[k];
+    });
+    var __setModuleDefault = exports2 && exports2.__setModuleDefault || (Object.create ? function(o, v) {
+      Object.defineProperty(o, "default", { enumerable: true, value: v });
+    } : function(o, v) {
+      o["default"] = v;
+    });
+    var __importStar = exports2 && exports2.__importStar || function(mod) {
+      if (mod && mod.__esModule)
+        return mod;
+      var result = {};
+      if (mod != null) {
+        for (var k in mod)
+          if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k))
+            __createBinding(result, mod, k);
+      }
+      __setModuleDefault(result, mod);
+      return result;
+    };
+    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
+      return mod && mod.__esModule ? mod : { "default": mod };
+    };
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.HttpsProxyAgent = void 0;
+    var net = __importStar(require("net"));
+    var tls = __importStar(require("tls"));
+    var assert_1 = __importDefault(require("assert"));
+    var debug_1 = __importDefault(require_src());
+    var agent_base_1 = require_dist();
+    var url_1 = require("url");
+    var parse_proxy_response_1 = require_parse_proxy_response();
+    var debug = (0, debug_1.default)("https-proxy-agent");
+    var setServernameFromNonIpHost = (options) => {
+      if (options.servername === void 0 && options.host && !net.isIP(options.host)) {
+        return {
+          ...options,
+          servername: options.host
+        };
+      }
+      return options;
+    };
+    var HttpsProxyAgent2 = class extends agent_base_1.Agent {
+      constructor(proxy, opts) {
+        super(opts);
+        this.options = { path: void 0 };
+        this.proxy = typeof proxy === "string" ? new url_1.URL(proxy) : proxy;
+        this.proxyHeaders = opts?.headers ?? {};
+        debug("Creating new HttpsProxyAgent instance: %o", this.proxy.href);
+        const host = (this.proxy.hostname || this.proxy.host).replace(/^\[|\]$/g, "");
+        const port = this.proxy.port ? parseInt(this.proxy.port, 10) : this.proxy.protocol === "https:" ? 443 : 80;
+        this.connectOpts = {
+          // Attempt to negotiate http/1.1 for proxy servers that support http/2
+          ALPNProtocols: ["http/1.1"],
+          ...opts ? omit(opts, "headers") : null,
+          host,
+          port
+        };
+      }
+      /**
+       * Called when the node-core HTTP client library is creating a
+       * new HTTP request.
+       */
+      async connect(req, opts) {
+        const { proxy } = this;
+        if (!opts.host) {
+          throw new TypeError('No "host" provided');
+        }
+        let socket;
+        if (proxy.protocol === "https:") {
+          debug("Creating `tls.Socket`: %o", this.connectOpts);
+          socket = tls.connect(setServernameFromNonIpHost(this.connectOpts));
+        } else {
+          debug("Creating `net.Socket`: %o", this.connectOpts);
+          socket = net.connect(this.connectOpts);
+        }
+        const headers = typeof this.proxyHeaders === "function" ? this.proxyHeaders() : { ...this.proxyHeaders };
+        const host = net.isIPv6(opts.host) ? `[${opts.host}]` : opts.host;
+        let payload = `CONNECT ${host}:${opts.port} HTTP/1.1\r
+`;
+        if (proxy.username || proxy.password) {
+          const auth = `${decodeURIComponent(proxy.username)}:${decodeURIComponent(proxy.password)}`;
+          headers["Proxy-Authorization"] = `Basic ${Buffer.from(auth).toString("base64")}`;
+        }
+        headers.Host = `${host}:${opts.port}`;
+        if (!headers["Proxy-Connection"]) {
+          headers["Proxy-Connection"] = this.keepAlive ? "Keep-Alive" : "close";
+        }
+        for (const name of Object.keys(headers)) {
+          payload += `${name}: ${headers[name]}\r
+`;
+        }
+        const proxyResponsePromise = (0, parse_proxy_response_1.parseProxyResponse)(socket);
+        socket.write(`${payload}\r
+`);
+        const { connect, buffered } = await proxyResponsePromise;
+        req.emit("proxyConnect", connect);
+        this.emit("proxyConnect", connect, req);
+        if (connect.statusCode === 200) {
+          req.once("socket", resume);
+          if (opts.secureEndpoint) {
+            debug("Upgrading socket connection to TLS");
+            return tls.connect({
+              ...omit(setServernameFromNonIpHost(opts), "host", "path", "port"),
+              socket
+            });
+          }
+          return socket;
+        }
+        socket.destroy();
+        const fakeSocket = new net.Socket({ writable: false });
+        fakeSocket.readable = true;
+        req.once("socket", (s) => {
+          debug("Replaying proxy buffer for failed request");
+          (0, assert_1.default)(s.listenerCount("data") > 0);
+          s.push(buffered);
+          s.push(null);
+        });
+        return fakeSocket;
+      }
+    };
+    HttpsProxyAgent2.protocols = ["http", "https"];
+    exports2.HttpsProxyAgent = HttpsProxyAgent2;
+    function resume(socket) {
+      socket.resume();
+    }
+    function omit(obj, ...keys) {
+      const ret = {};
+      let key;
+      for (key in obj) {
+        if (!keys.includes(key)) {
+          ret[key] = obj[key];
+        }
+      }
+      return ret;
+    }
+  }
+});
+
+// node_modules/http-proxy-agent/dist/index.js
+var require_dist3 = __commonJS({
+  "node_modules/http-proxy-agent/dist/index.js"(exports2) {
+    "use strict";
+    var __createBinding = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
+      if (k2 === void 0)
+        k2 = k;
+      var desc = Object.getOwnPropertyDescriptor(m, k);
+      if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+        desc = { enumerable: true, get: function() {
+          return m[k];
+        } };
+      }
+      Object.defineProperty(o, k2, desc);
+    } : function(o, m, k, k2) {
+      if (k2 === void 0)
+        k2 = k;
+      o[k2] = m[k];
+    });
+    var __setModuleDefault = exports2 && exports2.__setModuleDefault || (Object.create ? function(o, v) {
+      Object.defineProperty(o, "default", { enumerable: true, value: v });
+    } : function(o, v) {
+      o["default"] = v;
+    });
+    var __importStar = exports2 && exports2.__importStar || function(mod) {
+      if (mod && mod.__esModule)
+        return mod;
+      var result = {};
+      if (mod != null) {
+        for (var k in mod)
+          if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k))
+            __createBinding(result, mod, k);
+      }
+      __setModuleDefault(result, mod);
+      return result;
+    };
+    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
+      return mod && mod.__esModule ? mod : { "default": mod };
+    };
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.HttpProxyAgent = void 0;
+    var net = __importStar(require("net"));
+    var tls = __importStar(require("tls"));
+    var debug_1 = __importDefault(require_src());
+    var events_1 = require("events");
+    var agent_base_1 = require_dist();
+    var url_1 = require("url");
+    var debug = (0, debug_1.default)("http-proxy-agent");
+    var HttpProxyAgent2 = class extends agent_base_1.Agent {
+      constructor(proxy, opts) {
+        super(opts);
+        this.proxy = typeof proxy === "string" ? new url_1.URL(proxy) : proxy;
+        this.proxyHeaders = opts?.headers ?? {};
+        debug("Creating new HttpProxyAgent instance: %o", this.proxy.href);
+        const host = (this.proxy.hostname || this.proxy.host).replace(/^\[|\]$/g, "");
+        const port = this.proxy.port ? parseInt(this.proxy.port, 10) : this.proxy.protocol === "https:" ? 443 : 80;
+        this.connectOpts = {
+          ...opts ? omit(opts, "headers") : null,
+          host,
+          port
+        };
+      }
+      addRequest(req, opts) {
+        req._header = null;
+        this.setRequestProps(req, opts);
+        super.addRequest(req, opts);
+      }
+      setRequestProps(req, opts) {
+        const { proxy } = this;
+        const protocol = opts.secureEndpoint ? "https:" : "http:";
+        const hostname = req.getHeader("host") || "localhost";
+        const base = `${protocol}//${hostname}`;
+        const url2 = new url_1.URL(req.path, base);
+        if (opts.port !== 80) {
+          url2.port = String(opts.port);
+        }
+        req.path = String(url2);
+        const headers = typeof this.proxyHeaders === "function" ? this.proxyHeaders() : { ...this.proxyHeaders };
+        if (proxy.username || proxy.password) {
+          const auth = `${decodeURIComponent(proxy.username)}:${decodeURIComponent(proxy.password)}`;
+          headers["Proxy-Authorization"] = `Basic ${Buffer.from(auth).toString("base64")}`;
+        }
+        if (!headers["Proxy-Connection"]) {
+          headers["Proxy-Connection"] = this.keepAlive ? "Keep-Alive" : "close";
+        }
+        for (const name of Object.keys(headers)) {
+          const value = headers[name];
+          if (value) {
+            req.setHeader(name, value);
+          }
+        }
+      }
+      async connect(req, opts) {
+        req._header = null;
+        if (!req.path.includes("://")) {
+          this.setRequestProps(req, opts);
+        }
+        let first;
+        let endOfHeaders;
+        debug("Regenerating stored HTTP header string for request");
+        req._implicitHeader();
+        if (req.outputData && req.outputData.length > 0) {
+          debug("Patching connection write() output buffer with updated header");
+          first = req.outputData[0].data;
+          endOfHeaders = first.indexOf("\r\n\r\n") + 4;
+          req.outputData[0].data = req._header + first.substring(endOfHeaders);
+          debug("Output buffer: %o", req.outputData[0].data);
+        }
+        let socket;
+        if (this.proxy.protocol === "https:") {
+          debug("Creating `tls.Socket`: %o", this.connectOpts);
+          socket = tls.connect(this.connectOpts);
+        } else {
+          debug("Creating `net.Socket`: %o", this.connectOpts);
+          socket = net.connect(this.connectOpts);
+        }
+        await (0, events_1.once)(socket, "connect");
+        return socket;
+      }
+    };
+    HttpProxyAgent2.protocols = ["http", "https"];
+    exports2.HttpProxyAgent = HttpProxyAgent2;
+    function omit(obj, ...keys) {
+      const ret = {};
+      let key;
+      for (key in obj) {
+        if (!keys.includes(key)) {
+          ret[key] = obj[key];
+        }
+      }
+      return ret;
+    }
+  }
+});
+
 // src/extension.ts
 var extension_exports = {};
 __export(extension_exports, {
@@ -10894,15 +12307,17 @@ __export(extension_exports, {
 module.exports = __toCommonJS(extension_exports);
 var vscode = __toESM(require("vscode"));
 var path = __toESM(require("path"));
+var fs = __toESM(require("fs"));
+var cp = __toESM(require("child_process"));
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/bind.js
+// node_modules/axios/lib/helpers/bind.js
 function bind(fn, thisArg) {
   return function wrap() {
     return fn.apply(thisArg, arguments);
   };
 }
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/utils.js
+// node_modules/axios/lib/utils.js
 var { toString } = Object.prototype;
 var { getPrototypeOf } = Object;
 var { iterator, toStringTag } = Symbol;
@@ -11008,7 +12423,8 @@ function findKey(obj, key) {
   return null;
 }
 var _global = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
+  if (typeof globalThis !== "undefined")
+    return globalThis;
   return typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : global;
 })();
 var isContextDefined = (context) => !isUndefined(context) && context !== _global;
@@ -11077,7 +12493,8 @@ var toFlatObject = (sourceObj, destObj, filter2, propFilter) => {
   let prop;
   const merged = {};
   destObj = destObj || {};
-  if (sourceObj == null) return destObj;
+  if (sourceObj == null)
+    return destObj;
   do {
     props = Object.getOwnPropertyNames(sourceObj);
     i = props.length;
@@ -11102,10 +12519,13 @@ var endsWith = (str, searchString, position) => {
   return lastIndex !== -1 && lastIndex === position;
 };
 var toArray = (thing) => {
-  if (!thing) return null;
-  if (isArray(thing)) return thing;
+  if (!thing)
+    return null;
+  if (isArray(thing))
+    return thing;
   let i = thing.length;
-  if (!isNumber(i)) return null;
+  if (!isNumber(i))
+    return null;
   const arr = new Array(i);
   while (i-- > 0) {
     arr[i] = thing[i];
@@ -11162,7 +12582,8 @@ var freezeMethods = (obj) => {
       return false;
     }
     const value = obj[name];
-    if (!isFunction(value)) return;
+    if (!isFunction(value))
+      return;
     descriptor.enumerable = false;
     if ("writable" in descriptor) {
       descriptor.writable = false;
@@ -11302,7 +12723,7 @@ var utils_default = {
   isIterable
 };
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/core/AxiosError.js
+// node_modules/axios/lib/core/AxiosError.js
 var AxiosError = class _AxiosError extends Error {
   static from(error, code, config, request, response, customProps) {
     const axiosError = new _AxiosError(error.message, code || error.code, config, request, response);
@@ -11368,11 +12789,11 @@ AxiosError.ERR_NOT_SUPPORT = "ERR_NOT_SUPPORT";
 AxiosError.ERR_INVALID_URL = "ERR_INVALID_URL";
 var AxiosError_default = AxiosError;
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/platform/node/classes/FormData.js
+// node_modules/axios/lib/platform/node/classes/FormData.js
 var import_form_data = __toESM(require_form_data(), 1);
 var FormData_default = import_form_data.default;
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/toFormData.js
+// node_modules/axios/lib/helpers/toFormData.js
 function isVisitable(thing) {
   return utils_default.isPlainObject(thing) || utils_default.isArray(thing);
 }
@@ -11380,7 +12801,8 @@ function removeBrackets(key) {
   return utils_default.endsWith(key, "[]") ? key.slice(0, -2) : key;
 }
 function renderKey(path2, key, dots) {
-  if (!path2) return key;
+  if (!path2)
+    return key;
   return path2.concat(key).map(function each(token, i) {
     token = removeBrackets(token);
     return !dots && i ? "[" + token + "]" : token;
@@ -11414,7 +12836,8 @@ function toFormData(obj, formData, options) {
     throw new TypeError("visitor must be a function");
   }
   function convertValue(value) {
-    if (value === null) return "";
+    if (value === null)
+      return "";
     if (utils_default.isDate(value)) {
       return value.toISOString();
     }
@@ -11460,7 +12883,8 @@ function toFormData(obj, formData, options) {
     isVisitable
   });
   function build(value, path2) {
-    if (utils_default.isUndefined(value)) return;
+    if (utils_default.isUndefined(value))
+      return;
     if (stack.indexOf(value) !== -1) {
       throw Error("Circular reference detected in " + path2.join("."));
     }
@@ -11487,7 +12911,7 @@ function toFormData(obj, formData, options) {
 }
 var toFormData_default = toFormData;
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/AxiosURLSearchParams.js
+// node_modules/axios/lib/helpers/AxiosURLSearchParams.js
 function encode(str) {
   const charMap = {
     "!": "%21",
@@ -11520,7 +12944,7 @@ prototype.toString = function toString2(encoder) {
 };
 var AxiosURLSearchParams_default = AxiosURLSearchParams;
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/buildURL.js
+// node_modules/axios/lib/helpers/buildURL.js
 function encode2(val) {
   return encodeURIComponent(val).replace(/%3A/gi, ":").replace(/%24/g, "$").replace(/%2C/gi, ",").replace(/%20/g, "+");
 }
@@ -11549,7 +12973,7 @@ function buildURL(url2, params, options) {
   return url2;
 }
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/core/InterceptorManager.js
+// node_modules/axios/lib/core/InterceptorManager.js
 var InterceptorManager = class {
   constructor() {
     this.handlers = [];
@@ -11614,21 +13038,21 @@ var InterceptorManager = class {
 };
 var InterceptorManager_default = InterceptorManager;
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/defaults/transitional.js
+// node_modules/axios/lib/defaults/transitional.js
 var transitional_default = {
   silentJSONParsing: true,
   forcedJSONParsing: true,
   clarifyTimeoutError: false
 };
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/platform/node/index.js
+// node_modules/axios/lib/platform/node/index.js
 var import_crypto = __toESM(require("crypto"), 1);
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/platform/node/classes/URLSearchParams.js
+// node_modules/axios/lib/platform/node/classes/URLSearchParams.js
 var import_url = __toESM(require("url"), 1);
 var URLSearchParams_default = import_url.default.URLSearchParams;
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/platform/node/index.js
+// node_modules/axios/lib/platform/node/index.js
 var ALPHA = "abcdefghijklmnopqrstuvwxyz";
 var DIGIT = "0123456789";
 var ALPHABET = {
@@ -11658,7 +13082,7 @@ var node_default = {
   protocols: ["http", "https", "file", "data"]
 };
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/platform/common/utils.js
+// node_modules/axios/lib/platform/common/utils.js
 var utils_exports = {};
 __export(utils_exports, {
   hasBrowserEnv: () => hasBrowserEnv,
@@ -11676,13 +13100,13 @@ var hasStandardBrowserWebWorkerEnv = (() => {
 })();
 var origin = hasBrowserEnv && window.location.href || "http://localhost";
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/platform/index.js
+// node_modules/axios/lib/platform/index.js
 var platform_default = {
   ...utils_exports,
   ...node_default
 };
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/toURLEncodedForm.js
+// node_modules/axios/lib/helpers/toURLEncodedForm.js
 function toURLEncodedForm(data, options) {
   return toFormData_default(data, new platform_default.classes.URLSearchParams(), {
     visitor: function(value, key, path2, helpers) {
@@ -11696,7 +13120,7 @@ function toURLEncodedForm(data, options) {
   });
 }
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/formDataToJSON.js
+// node_modules/axios/lib/helpers/formDataToJSON.js
 function parsePropPath(name) {
   return utils_default.matchAll(/\w+|\[(\w*)]/g, name).map((match) => {
     return match[0] === "[]" ? "" : match[1] || match[0];
@@ -11717,7 +13141,8 @@ function arrayToObject(arr) {
 function formDataToJSON(formData) {
   function buildPath(path2, value, target, index) {
     let name = path2[index++];
-    if (name === "__proto__") return true;
+    if (name === "__proto__")
+      return true;
     const isNumericKey = Number.isFinite(+name);
     const isLast = index >= path2.length;
     name = !name && utils_default.isArray(target) ? target.length : name;
@@ -11749,7 +13174,7 @@ function formDataToJSON(formData) {
 }
 var formDataToJSON_default = formDataToJSON;
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/defaults/index.js
+// node_modules/axios/lib/defaults/index.js
 function stringifySafely(rawValue, parser, encoder) {
   if (utils_default.isString(rawValue)) {
     try {
@@ -11858,7 +13283,7 @@ utils_default.forEach(["delete", "get", "head", "post", "put", "patch"], (method
 });
 var defaults_default = defaults;
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/parseHeaders.js
+// node_modules/axios/lib/helpers/parseHeaders.js
 var ignoreDuplicateOf = utils_default.toObjectSet([
   "age",
   "authorization",
@@ -11903,8 +13328,8 @@ var parseHeaders_default = (rawHeaders) => {
   return parsed;
 };
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/core/AxiosHeaders.js
-var $internals = /* @__PURE__ */ Symbol("internals");
+// node_modules/axios/lib/core/AxiosHeaders.js
+var $internals = Symbol("internals");
 function normalizeHeader(header) {
   return header && String(header).trim().toLowerCase();
 }
@@ -11931,7 +13356,8 @@ function matchHeaderValue(context, value, header, filter2, isHeaderNameFilter) {
   if (isHeaderNameFilter) {
     value = header;
   }
-  if (!utils_default.isString(value)) return;
+  if (!utils_default.isString(value))
+    return;
   if (utils_default.isString(filter2)) {
     return value.indexOf(filter2) !== -1;
   }
@@ -12132,7 +13558,7 @@ utils_default.reduceDescriptors(AxiosHeaders.prototype, ({ value }, key) => {
 utils_default.freezeMethods(AxiosHeaders);
 var AxiosHeaders_default = AxiosHeaders;
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/core/transformData.js
+// node_modules/axios/lib/core/transformData.js
 function transformData(fns, response) {
   const config = this || defaults_default;
   const context = response || config;
@@ -12145,12 +13571,12 @@ function transformData(fns, response) {
   return data;
 }
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/cancel/isCancel.js
+// node_modules/axios/lib/cancel/isCancel.js
 function isCancel(value) {
   return !!(value && value.__CANCEL__);
 }
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/cancel/CanceledError.js
+// node_modules/axios/lib/cancel/CanceledError.js
 var CanceledError = class extends AxiosError_default {
   /**
    * A `CanceledError` is an object that is thrown when an operation is canceled.
@@ -12169,7 +13595,7 @@ var CanceledError = class extends AxiosError_default {
 };
 var CanceledError_default = CanceledError;
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/core/settle.js
+// node_modules/axios/lib/core/settle.js
 function settle(resolve, reject, response) {
   const validateStatus2 = response.config.validateStatus;
   if (!response.status || !validateStatus2 || validateStatus2(response.status)) {
@@ -12185,17 +13611,17 @@ function settle(resolve, reject, response) {
   }
 }
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/isAbsoluteURL.js
+// node_modules/axios/lib/helpers/isAbsoluteURL.js
 function isAbsoluteURL(url2) {
   return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url2);
 }
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/combineURLs.js
+// node_modules/axios/lib/helpers/combineURLs.js
 function combineURLs(baseURL, relativeURL) {
   return relativeURL ? baseURL.replace(/\/?\/$/, "") + "/" + relativeURL.replace(/^\/+/, "") : baseURL;
 }
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/core/buildFullPath.js
+// node_modules/axios/lib/core/buildFullPath.js
 function buildFullPath(baseURL, requestedURL, allowAbsoluteUrls) {
   let isRelativeUrl = !isAbsoluteURL(requestedURL);
   if (baseURL && (isRelativeUrl || allowAbsoluteUrls == false)) {
@@ -12204,7 +13630,7 @@ function buildFullPath(baseURL, requestedURL, allowAbsoluteUrls) {
   return requestedURL;
 }
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/adapters/http.js
+// node_modules/axios/lib/adapters/http.js
 var import_proxy_from_env = __toESM(require_proxy_from_env(), 1);
 var import_http = __toESM(require("http"), 1);
 var import_https = __toESM(require("https"), 1);
@@ -12213,16 +13639,16 @@ var import_util2 = __toESM(require("util"), 1);
 var import_follow_redirects = __toESM(require_follow_redirects(), 1);
 var import_zlib = __toESM(require("zlib"), 1);
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/env/data.js
+// node_modules/axios/lib/env/data.js
 var VERSION = "1.13.4";
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/parseProtocol.js
+// node_modules/axios/lib/helpers/parseProtocol.js
 function parseProtocol(url2) {
   const match = /^([-+\w]{1,25})(:?\/\/|:)/.exec(url2);
   return match && match[1] || "";
 }
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/fromDataURI.js
+// node_modules/axios/lib/helpers/fromDataURI.js
 var DATA_URL_PATTERN = /^(?:([^;]+);)?(?:[^;]+;)?(base64|),([\s\S]*)$/;
 function fromDataURI(uri, asBlob, options) {
   const _Blob = options && options.Blob || platform_default.classes.Blob;
@@ -12251,12 +13677,12 @@ function fromDataURI(uri, asBlob, options) {
   throw new AxiosError_default("Unsupported protocol " + protocol, AxiosError_default.ERR_NOT_SUPPORT);
 }
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/adapters/http.js
+// node_modules/axios/lib/adapters/http.js
 var import_stream4 = __toESM(require("stream"), 1);
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/AxiosTransformStream.js
+// node_modules/axios/lib/helpers/AxiosTransformStream.js
 var import_stream = __toESM(require("stream"), 1);
-var kInternals = /* @__PURE__ */ Symbol("internals");
+var kInternals = Symbol("internals");
 var AxiosTransformStream = class extends import_stream.default.Transform {
   constructor(options) {
     options = utils_default.toFlatObject(options, {
@@ -12369,14 +13795,14 @@ var AxiosTransformStream = class extends import_stream.default.Transform {
 };
 var AxiosTransformStream_default = AxiosTransformStream;
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/adapters/http.js
+// node_modules/axios/lib/adapters/http.js
 var import_events = require("events");
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/formDataToStream.js
+// node_modules/axios/lib/helpers/formDataToStream.js
 var import_util = __toESM(require("util"), 1);
 var import_stream2 = require("stream");
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/readBlob.js
+// node_modules/axios/lib/helpers/readBlob.js
 var { asyncIterator } = Symbol;
 var readBlob = async function* (blob) {
   if (blob.stream) {
@@ -12391,7 +13817,7 @@ var readBlob = async function* (blob) {
 };
 var readBlob_default = readBlob;
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/formDataToStream.js
+// node_modules/axios/lib/helpers/formDataToStream.js
 var BOUNDARY_ALPHABET = platform_default.ALPHABET.ALPHA_DIGIT + "-_";
 var textEncoder = typeof TextEncoder === "function" ? new TextEncoder() : new import_util.default.TextEncoder();
 var CRLF = "\r\n";
@@ -12460,17 +13886,17 @@ var formDataToStream = (form, headersHandler, options) => {
     computedHeaders["Content-Length"] = contentLength;
   }
   headersHandler && headersHandler(computedHeaders);
-  return import_stream2.Readable.from((async function* () {
+  return import_stream2.Readable.from(async function* () {
     for (const part of parts) {
       yield boundaryBytes;
       yield* part.encode();
     }
     yield footerBytes;
-  })());
+  }());
 };
 var formDataToStream_default = formDataToStream;
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/ZlibHeaderTransformStream.js
+// node_modules/axios/lib/helpers/ZlibHeaderTransformStream.js
 var import_stream3 = __toESM(require("stream"), 1);
 var ZlibHeaderTransformStream = class extends import_stream3.default.Transform {
   __transform(chunk, encoding, callback) {
@@ -12492,7 +13918,7 @@ var ZlibHeaderTransformStream = class extends import_stream3.default.Transform {
 };
 var ZlibHeaderTransformStream_default = ZlibHeaderTransformStream;
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/callbackify.js
+// node_modules/axios/lib/helpers/callbackify.js
 var callbackify = (fn, reducer) => {
   return utils_default.isAsyncFn(fn) ? function(...args) {
     const cb = args.pop();
@@ -12507,7 +13933,7 @@ var callbackify = (fn, reducer) => {
 };
 var callbackify_default = callbackify;
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/speedometer.js
+// node_modules/axios/lib/helpers/speedometer.js
 function speedometer(samplesCount, min) {
   samplesCount = samplesCount || 10;
   const bytes = new Array(samplesCount);
@@ -12543,7 +13969,7 @@ function speedometer(samplesCount, min) {
 }
 var speedometer_default = speedometer;
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/throttle.js
+// node_modules/axios/lib/helpers/throttle.js
 function throttle(fn, freq) {
   let timestamp = 0;
   let threshold = 1e3 / freq;
@@ -12578,7 +14004,7 @@ function throttle(fn, freq) {
 }
 var throttle_default = throttle;
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/progressEventReducer.js
+// node_modules/axios/lib/helpers/progressEventReducer.js
 var progressEventReducer = (listener, isDownloadStream, freq = 3) => {
   let bytesNotified = 0;
   const _speedometer = speedometer_default(50, 250);
@@ -12613,12 +14039,15 @@ var progressEventDecorator = (total, throttled) => {
 };
 var asyncDecorator = (fn) => (...args) => utils_default.asap(() => fn(...args));
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/estimateDataURLDecodedBytes.js
+// node_modules/axios/lib/helpers/estimateDataURLDecodedBytes.js
 function estimateDataURLDecodedBytes(url2) {
-  if (!url2 || typeof url2 !== "string") return 0;
-  if (!url2.startsWith("data:")) return 0;
+  if (!url2 || typeof url2 !== "string")
+    return 0;
+  if (!url2.startsWith("data:"))
+    return 0;
   const comma = url2.indexOf(",");
-  if (comma < 0) return 0;
+  if (comma < 0)
+    return 0;
   const meta = url2.slice(5, comma);
   const body = url2.slice(comma + 1);
   const isBase64 = /;base64/i.test(meta);
@@ -12664,7 +14093,7 @@ function estimateDataURLDecodedBytes(url2) {
   return Buffer.byteLength(body, "utf8");
 }
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/adapters/http.js
+// node_modules/axios/lib/adapters/http.js
 var zlibOptions = {
   flush: import_zlib.default.constants.Z_SYNC_FLUSH,
   finishFlush: import_zlib.default.constants.Z_SYNC_FLUSH
@@ -12803,7 +14232,8 @@ var wrapAsync = (asyncExecutor) => {
     let onDone;
     let isDone;
     const done = (value, isRejected) => {
-      if (isDone) return;
+      if (isDone)
+        return;
       isDone = true;
       onDone && onDone(value, isRejected);
     };
@@ -13134,7 +14564,8 @@ var http_default = isHttpAdapterSupported && function httpAdapter(config) {
       options.insecureHTTPParser = config.insecureHTTPParser;
     }
     req = transport.request(options, function handleResponse(res) {
-      if (req.destroyed) return;
+      if (req.destroyed)
+        return;
       const streams = [res];
       const responseLength = utils_default.toFiniteNumber(res.headers["content-length"]);
       if (onDownloadProgress || maxDownloadRate) {
@@ -13157,7 +14588,6 @@ var http_default = isHttpAdapterSupported && function httpAdapter(config) {
           delete res.headers["content-encoding"];
         }
         switch ((res.headers["content-encoding"] || "").toLowerCase()) {
-          /*eslint default-case:0*/
           case "gzip":
           case "x-gzip":
           case "compress":
@@ -13219,7 +14649,8 @@ var http_default = isHttpAdapterSupported && function httpAdapter(config) {
           reject(err);
         });
         responseStream.on("error", function handleStreamError(err) {
-          if (req.destroyed) return;
+          if (req.destroyed)
+            return;
           reject(AxiosError_default.from(err, null, config, lastRequest));
         });
         responseStream.on("end", function handleStreamEnd() {
@@ -13270,7 +14701,8 @@ var http_default = isHttpAdapterSupported && function httpAdapter(config) {
         return;
       }
       req.setTimeout(timeout, function handleRequestTimeout() {
-        if (isDone) return;
+        if (isDone)
+          return;
         let timeoutErrorMessage = config.timeout ? "timeout of " + config.timeout + "ms exceeded" : "timeout exceeded";
         const transitional2 = config.transitional || transitional_default;
         if (config.timeoutErrorMessage) {
@@ -13309,7 +14741,7 @@ var http_default = isHttpAdapterSupported && function httpAdapter(config) {
   });
 };
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/isURLSameOrigin.js
+// node_modules/axios/lib/helpers/isURLSameOrigin.js
 var isURLSameOrigin_default = platform_default.hasStandardBrowserEnv ? /* @__PURE__ */ ((origin2, isMSIE) => (url2) => {
   url2 = new URL(url2, platform_default.origin);
   return origin2.protocol === url2.protocol && origin2.host === url2.host && (isMSIE || origin2.port === url2.port);
@@ -13318,12 +14750,13 @@ var isURLSameOrigin_default = platform_default.hasStandardBrowserEnv ? /* @__PUR
   platform_default.navigator && /(msie|trident)/i.test(platform_default.navigator.userAgent)
 ) : () => true;
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/cookies.js
+// node_modules/axios/lib/helpers/cookies.js
 var cookies_default = platform_default.hasStandardBrowserEnv ? (
   // Standard browser envs support document.cookie
   {
     write(name, value, expires, path2, domain, secure, sameSite) {
-      if (typeof document === "undefined") return;
+      if (typeof document === "undefined")
+        return;
       const cookie = [`${name}=${encodeURIComponent(value)}`];
       if (utils_default.isNumber(expires)) {
         cookie.push(`expires=${new Date(expires).toUTCString()}`);
@@ -13343,7 +14776,8 @@ var cookies_default = platform_default.hasStandardBrowserEnv ? (
       document.cookie = cookie.join("; ");
     },
     read(name) {
-      if (typeof document === "undefined") return null;
+      if (typeof document === "undefined")
+        return null;
       const match = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));
       return match ? decodeURIComponent(match[1]) : null;
     },
@@ -13364,7 +14798,7 @@ var cookies_default = platform_default.hasStandardBrowserEnv ? (
   }
 );
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/core/mergeConfig.js
+// node_modules/axios/lib/core/mergeConfig.js
 var headersToObject = (thing) => thing instanceof AxiosHeaders_default ? { ...thing } : thing;
 function mergeConfig(config1, config2) {
   config2 = config2 || {};
@@ -13444,7 +14878,7 @@ function mergeConfig(config1, config2) {
   return config;
 }
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/resolveConfig.js
+// node_modules/axios/lib/helpers/resolveConfig.js
 var resolveConfig_default = (config) => {
   const newConfig = mergeConfig({}, config);
   let { data, withXSRFToken, xsrfHeaderName, xsrfCookieName, headers, auth } = newConfig;
@@ -13481,7 +14915,7 @@ var resolveConfig_default = (config) => {
   return newConfig;
 };
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/adapters/xhr.js
+// node_modules/axios/lib/adapters/xhr.js
 var isXHRAdapterSupported = typeof XMLHttpRequest !== "undefined";
 var xhr_default = isXHRAdapterSupported && function(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -13611,7 +15045,7 @@ var xhr_default = isXHRAdapterSupported && function(config) {
   });
 };
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/composeSignals.js
+// node_modules/axios/lib/helpers/composeSignals.js
 var composeSignals = (signals, timeout) => {
   const { length } = signals = signals ? signals.filter(Boolean) : [];
   if (timeout || length) {
@@ -13647,7 +15081,7 @@ var composeSignals = (signals, timeout) => {
 };
 var composeSignals_default = composeSignals;
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/trackStream.js
+// node_modules/axios/lib/helpers/trackStream.js
 var streamChunk = function* (chunk, chunkSize) {
   let len = chunk.byteLength;
   if (!chunkSize || len < chunkSize) {
@@ -13724,7 +15158,7 @@ var trackStream = (stream4, chunkSize, onProgress, onFinish) => {
   });
 };
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/adapters/fetch.js
+// node_modules/axios/lib/adapters/fetch.js
 var DEFAULT_CHUNK_SIZE = 64 * 1024;
 var { isFunction: isFunction2 } = utils_default;
 var globalFetchAPI = (({ Request, Response }) => ({
@@ -13742,11 +15176,11 @@ var test = (fn, ...args) => {
     return false;
   }
 };
-var factory = (env) => {
-  env = utils_default.merge.call({
+var factory = (env2) => {
+  env2 = utils_default.merge.call({
     skipUndefined: true
-  }, globalFetchAPI, env);
-  const { fetch: envFetch, Request, Response } = env;
+  }, globalFetchAPI, env2);
+  const { fetch: envFetch, Request, Response } = env2;
   const isFetchSupported = envFetch ? isFunction2(envFetch) : typeof fetch === "function";
   const isRequestSupported = isFunction2(Request);
   const isResponseSupported = isFunction2(Response);
@@ -13915,8 +15349,8 @@ var factory = (env) => {
 };
 var seedCache = /* @__PURE__ */ new Map();
 var getFetch = (config) => {
-  let env = config && config.env || {};
-  const { fetch: fetch2, Request, Response } = env;
+  let env2 = config && config.env || {};
+  const { fetch: fetch2, Request, Response } = env2;
   const seeds = [
     Request,
     Response,
@@ -13926,14 +15360,14 @@ var getFetch = (config) => {
   while (i--) {
     seed = seeds[i];
     target = map.get(seed);
-    target === void 0 && map.set(seed, target = i ? /* @__PURE__ */ new Map() : factory(env));
+    target === void 0 && map.set(seed, target = i ? /* @__PURE__ */ new Map() : factory(env2));
     map = target;
   }
   return target;
 };
 var adapter = getFetch();
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/adapters/adapters.js
+// node_modules/axios/lib/adapters/adapters.js
 var knownAdapters = {
   http: http_default,
   xhr: xhr_default,
@@ -13998,7 +15432,7 @@ var adapters_default = {
   adapters: knownAdapters
 };
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/core/dispatchRequest.js
+// node_modules/axios/lib/core/dispatchRequest.js
 function throwIfCancellationRequested(config) {
   if (config.cancelToken) {
     config.cancelToken.throwIfRequested();
@@ -14043,7 +15477,7 @@ function dispatchRequest(config) {
   });
 }
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/validator.js
+// node_modules/axios/lib/helpers/validator.js
 var validators = {};
 ["object", "boolean", "number", "function", "string", "symbol"].forEach((type, i) => {
   validators[type] = function validator(thing) {
@@ -14107,7 +15541,7 @@ var validator_default = {
   validators
 };
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/core/Axios.js
+// node_modules/axios/lib/core/Axios.js
 var validators2 = validator_default.validators;
 var Axios = class {
   constructor(instanceConfig) {
@@ -14279,7 +15713,7 @@ utils_default.forEach(["post", "put", "patch"], function forEachMethodWithData(m
 });
 var Axios_default = Axios;
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/cancel/CancelToken.js
+// node_modules/axios/lib/cancel/CancelToken.js
 var CancelToken = class _CancelToken {
   constructor(executor) {
     if (typeof executor !== "function") {
@@ -14291,7 +15725,8 @@ var CancelToken = class _CancelToken {
     });
     const token = this;
     this.promise.then((cancel) => {
-      if (!token._listeners) return;
+      if (!token._listeners)
+        return;
       let i = token._listeners.length;
       while (i-- > 0) {
         token._listeners[i](cancel);
@@ -14377,19 +15812,19 @@ var CancelToken = class _CancelToken {
 };
 var CancelToken_default = CancelToken;
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/spread.js
+// node_modules/axios/lib/helpers/spread.js
 function spread(callback) {
   return function wrap(arr) {
     return callback.apply(null, arr);
   };
 }
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/isAxiosError.js
+// node_modules/axios/lib/helpers/isAxiosError.js
 function isAxiosError(payload) {
   return utils_default.isObject(payload) && payload.isAxiosError === true;
 }
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/helpers/HttpStatusCode.js
+// node_modules/axios/lib/helpers/HttpStatusCode.js
 var HttpStatusCode = {
   Continue: 100,
   SwitchingProtocols: 101,
@@ -14466,7 +15901,7 @@ Object.entries(HttpStatusCode).forEach(([key, value]) => {
 });
 var HttpStatusCode_default = HttpStatusCode;
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/lib/axios.js
+// node_modules/axios/lib/axios.js
 function createInstance(defaultConfig) {
   const context = new Axios_default(defaultConfig);
   const instance = bind(Axios_default.prototype.request, context);
@@ -14486,8 +15921,8 @@ axios.VERSION = VERSION;
 axios.toFormData = toFormData_default;
 axios.AxiosError = AxiosError_default;
 axios.Cancel = axios.CanceledError;
-axios.all = function all(promises) {
-  return Promise.all(promises);
+axios.all = function all(promises2) {
+  return Promise.all(promises2);
 };
 axios.spread = spread;
 axios.isAxiosError = isAxiosError;
@@ -14499,7 +15934,7 @@ axios.HttpStatusCode = HttpStatusCode_default;
 axios.default = axios;
 var axios_default = axios;
 
-// ../node_modules/.pnpm/axios@1.13.4/node_modules/axios/index.js
+// node_modules/axios/index.js
 var {
   Axios: Axios2,
   AxiosError: AxiosError2,
@@ -14520,963 +15955,2394 @@ var {
 } = axios_default;
 
 // src/extension.ts
-var LLMACompletionItem = class extends vscode.CompletionItem {
-  constructor(label, kind, isAI = false) {
-    super(label, kind);
-    this.isAI = isAI;
-    if (isAI) {
-      this.detail = "\u{1F916} LLMA \u667A\u80FD\u5EFA\u8BAE";
-      this.sortText = `zzz_${label}`;
-      this.preselect = false;
+var import_https_proxy_agent = __toESM(require_dist2());
+var import_http_proxy_agent = __toESM(require_dist3());
+var statusBarItem;
+var runTerminal;
+var globalChatProvider;
+function activate(context) {
+  console.log("=== LLMA \u5DF2\u6FC0\u6D3B ===");
+  statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+  statusBarItem.command = "llma.toggle";
+  updateStatusBar(false);
+  statusBarItem.show();
+  const provider = new LLMAInlineCompletionProvider();
+  const selector = { pattern: "**" };
+  const inlineProvider = vscode.languages.registerInlineCompletionItemProvider(selector, provider);
+  const chatProvider = new LLMAChatProvider(context.extensionUri);
+  globalChatProvider = chatProvider;
+  const chatView = vscode.window.registerWebviewViewProvider("llma.chatView", chatProvider, {
+    webviewOptions: { retainContextWhenHidden: true }
+  });
+  const generateCommand = vscode.commands.registerCommand("llma.aiCodeComplete", async () => {
+    await handleExplicitCodeGeneration();
+  });
+  const toggleCommand = vscode.commands.registerCommand("llma.toggle", () => {
+    const config = vscode.workspace.getConfiguration("llma");
+    const currentState = config.get("enableAutoCompletion");
+    config.update("enableAutoCompletion", !currentState, vscode.ConfigurationTarget.Global);
+    vscode.window.showInformationMessage(`LLMA \u81EA\u52A8\u9884\u6D4B\u5DF2${!currentState ? "\u5F00\u542F" : "\u5173\u95ED"}`);
+  });
+  const manualTriggerCommand = vscode.commands.registerCommand("llma.trigger", () => {
+    vscode.commands.executeCommand("editor.action.inlineSuggest.trigger");
+  });
+  const compileCommand = vscode.commands.registerCommand("llma.compileCurrentFile", async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showWarningMessage("\u8BF7\u5148\u6253\u5F00\u4E00\u4E2A\u7F16\u8F91\u5668");
+      return;
     }
+    await compileFile(editor.document.uri.fsPath);
+  });
+  const compileWithOptionsCommand = vscode.commands.registerCommand("llma.compileWithOptions", async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showWarningMessage("\u8BF7\u5148\u6253\u5F00\u4E00\u4E2A\u7F16\u8F91\u5668");
+      return;
+    }
+    await showCompilationOptions(editor.document.uri.fsPath);
+  });
+  const configListener = vscode.workspace.onDidChangeConfiguration((e) => {
+    if (e.affectsConfiguration("llma")) {
+      updateStatusBar(false);
+    }
+  });
+  context.subscriptions.push(
+    statusBarItem,
+    inlineProvider,
+    chatView,
+    generateCommand,
+    toggleCommand,
+    manualTriggerCommand,
+    compileCommand,
+    compileWithOptionsCommand,
+    configListener
+  );
+}
+function deactivate() {
+  if (runTerminal) {
+    runTerminal.dispose();
+  }
+  console.log("LLMA Pro \u5DF2\u505C\u7528");
+}
+async function compileFile(filePath, options = {}) {
+  try {
+    const config = vscode.workspace.getConfiguration("llma");
+    const compilers = config.get("compilation.compilers") || {};
+    const defaultOutputDir = config.get("compilation.defaultOutputDir") || "build";
+    const fileExt = path.extname(filePath).toLowerCase();
+    const fileName = path.basename(filePath);
+    const fileNameWithoutExt = path.basename(filePath, fileExt);
+    const fileDir = path.dirname(filePath);
+    const language = getLanguageFromExtension(fileExt);
+    if (!language) {
+      vscode.window.showErrorMessage(`\u4E0D\u652F\u6301\u7684\u6587\u4EF6\u7C7B\u578B: ${fileExt}`);
+      return;
+    }
+    let outputDir;
+    if (options.outputPath) {
+      outputDir = path.dirname(options.outputPath);
+    } else {
+      outputDir = path.join(fileDir, defaultOutputDir);
+    }
+    const executableName = getExecutableName(fileNameWithoutExt, language);
+    const outputPath = options.outputPath || path.join(outputDir, executableName);
+    let compileCommand = options.customCommand || compilers[language];
+    if (!compileCommand) {
+      vscode.window.showErrorMessage(`\u672A\u914D\u7F6E ${language} \u8BED\u8A00\u7684\u7F16\u8BD1\u547D\u4EE4`);
+      return;
+    }
+    if (language === "java" && !options.customCommand) {
+      compileCommand = compilers["java"] || `javac -d "{outputDir}" "{file}"`;
+    }
+    compileCommand = compileCommand.replace(/{file}/g, `"${filePath}"`).replace(/{executable}/g, `"${outputPath}"`).replace(/{fileDir}/g, `"${fileDir}"`).replace(/{fileName}/g, fileName).replace(/{fileNameWithoutExt}/g, fileNameWithoutExt).replace(/{outputDir}/g, `"${outputDir}"`);
+    if (options.args && options.args.length > 0) {
+      compileCommand += ` ${options.args.join(" ")}`;
+    }
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
+    if (globalChatProvider) {
+      globalChatProvider.postMessageToWebview({
+        type: "addSystemMessage",
+        text: `\u23F3 \u6B63\u5728\u7F16\u8BD1/\u68C0\u67E5: ${fileName}...`
+      });
+    } else {
+      vscode.window.setStatusBarMessage(`\u6B63\u5728\u7F16\u8BD1: ${fileName}...`, 3e3);
+    }
+    await executeCompilationSilent(compileCommand, filePath, outputPath, language, fileDir);
+  } catch (error) {
+    vscode.window.showErrorMessage(`\u7F16\u8BD1\u6D41\u7A0B\u9519\u8BEF: ${error.message}`);
+  }
+}
+async function showCompilationOptions(filePath) {
+  const config = vscode.workspace.getConfiguration("llma");
+  const compilers = config.get("compilation.compilers") || {};
+  const fileExt = path.extname(filePath).toLowerCase();
+  const language = getLanguageFromExtension(fileExt);
+  if (!language) {
+    vscode.window.showErrorMessage(`\u4E0D\u652F\u6301\u7684\u6587\u4EF6\u7C7B\u578B: ${fileExt}`);
+    return;
+  }
+  const defaultCommand = compilers[language] || "";
+  const customCommand = await vscode.window.showInputBox({
+    prompt: `\u8BF7\u8F93\u5165 ${language} \u7F16\u8BD1\u547D\u4EE4`,
+    value: defaultCommand,
+    placeHolder: `\u4F8B\u5982: gcc "{file}" -o "{executable}" -Wall`
+  });
+  if (customCommand === void 0) {
+    return;
+  }
+  const additionalArgs = await vscode.window.showInputBox({
+    prompt: "\u8BF7\u8F93\u5165\u989D\u5916\u53C2\u6570\uFF08\u53EF\u9009\uFF09",
+    placeHolder: "\u4F8B\u5982: -O2 -g"
+  });
+  const outputPath = await vscode.window.showSaveDialog({
+    defaultUri: vscode.Uri.file(path.join(
+      path.dirname(filePath),
+      "build",
+      getExecutableName(path.basename(filePath, fileExt), language)
+    )),
+    filters: {
+      "\u53EF\u6267\u884C\u6587\u4EF6": ["exe", "out", "class", ""],
+      "\u6240\u6709\u6587\u4EF6": ["*"]
+    }
+  });
+  await compileFile(filePath, {
+    customCommand,
+    outputPath: outputPath?.fsPath,
+    args: additionalArgs && additionalArgs.trim() ? additionalArgs.split(" ") : []
+  });
+}
+async function executeCompilationSilent(command, sourcePath, outputPath, language, cwd) {
+  cp.exec(command, { cwd }, (error, stdout, stderr) => {
+    const output = (stdout || "") + (stderr || "");
+    if (error) {
+      if (globalChatProvider) {
+        globalChatProvider.postMessageToWebview({
+          type: "compilationResult",
+          success: false,
+          message: `\u274C **\u7F16\u8BD1\u5931\u8D25**
+
+\`\`\`
+${output.trim()}
+\`\`\``,
+          filePath: sourcePath,
+          executablePath: outputPath,
+          language
+        });
+      } else {
+        vscode.window.showErrorMessage(`\u7F16\u8BD1\u5931\u8D25:
+${output}`);
+      }
+      return;
+    }
+    let successMessage = "";
+    let runTarget = sourcePath;
+    if (["c", "cpp", "rust", "go", "cangjie"].includes(language)) {
+      runTarget = outputPath;
+      successMessage = `\u2705 **\u7F16\u8BD1\u6210\u529F\uFF01**
+\u751F\u6210\u6587\u4EF6: \`${path.basename(outputPath)}\``;
+    } else if (language === "java") {
+      runTarget = outputPath;
+      successMessage = `\u2705 **Java \u7F16\u8BD1\u6210\u529F\uFF01**`;
+    } else if (["python", "javascript", "typescript"].includes(language)) {
+      successMessage = `\u2705 **\u8BED\u6CD5/\u7C7B\u578B\u68C0\u67E5\u901A\u8FC7\uFF01**`;
+    } else {
+      successMessage = `\u2705 **\u5904\u7406\u5B8C\u6210\u3002**`;
+    }
+    if (globalChatProvider) {
+      globalChatProvider.postMessageToWebview({
+        type: "compilationResult",
+        success: true,
+        message: successMessage,
+        filePath: sourcePath,
+        executablePath: runTarget,
+        language
+      });
+    } else {
+      vscode.window.showInformationMessage("\u7F16\u8BD1/\u68C0\u67E5\u6210\u529F");
+    }
+  });
+}
+async function runExecutable(targetPath, language) {
+  const ext = path.extname(targetPath);
+  const baseName = path.basename(targetPath);
+  const terminalName = `LLMA Run: ${baseName}`;
+  if (runTerminal) {
+    runTerminal.dispose();
+  }
+  runTerminal = vscode.window.createTerminal({
+    name: terminalName,
+    shellPath: getShellPath()
+  });
+  runTerminal.show(false);
+  let runCommand = "";
+  let execDir = path.dirname(targetPath);
+  if (language === "java" && ext === ".class") {
+    const className = path.basename(targetPath, ".class");
+    runTerminal.sendText(getChangeDirectoryCommand(execDir));
+    runCommand = `java ${className}`;
+  } else if (language === "python" || ext === ".py") {
+    const pythonInfo = await getPythonRunCommand(targetPath);
+    runTerminal.sendText(getChangeDirectoryCommand(execDir));
+    if (process.platform === "win32") {
+      runCommand = `& '${pythonInfo.interpreter}' '${baseName}'`;
+    } else {
+      runCommand = `"${pythonInfo.interpreter}" "${baseName}"`;
+    }
+  } else if (language === "javascript" || ext === ".js") {
+    runTerminal.sendText(getChangeDirectoryCommand(execDir));
+    runCommand = `node "${baseName}"`;
+  } else if (language === "typescript" || ext === ".ts") {
+    runTerminal.sendText(getChangeDirectoryCommand(execDir));
+    runCommand = `npx ts-node "${baseName}"`;
+  } else {
+    runTerminal.sendText(getChangeDirectoryCommand(execDir));
+    if (process.platform === "win32") {
+      runCommand = `& ".\\${baseName}"`;
+    } else {
+      runCommand = `"./${baseName}"`;
+    }
+  }
+  if (process.platform !== "win32") {
+    runTerminal.sendText("clear");
+  }
+  runTerminal.sendText(runCommand);
+}
+function getLanguageFromExtension(ext) {
+  const languageMap = {
+    ".c": "c",
+    ".cpp": "cpp",
+    ".cc": "cpp",
+    ".cxx": "cpp",
+    ".java": "java",
+    ".class": "java",
+    ".jar": "java",
+    ".py": "python",
+    ".js": "javascript",
+    ".ts": "typescript",
+    ".rs": "rust",
+    ".go": "go",
+    ".cs": "csharp",
+    ".php": "php",
+    ".rb": "ruby",
+    ".swift": "swift",
+    ".m": "objective-c",
+    ".cj": "cangjie"
+  };
+  return languageMap[ext] || null;
+}
+function getExecutableName(baseName, language) {
+  if (process.platform === "win32") {
+    if (language === "java")
+      return `${baseName}.class`;
+    return `${baseName}.exe`;
+  }
+  if (["python", "javascript", "ruby", "php", "typescript"].includes(language)) {
+    return baseName;
+  }
+  if (language === "java")
+    return `${baseName}.class`;
+  return baseName;
+}
+function getShellPath() {
+  if (process.platform === "win32") {
+    return process.env.PSModulePath ? "powershell.exe" : process.env.COMSPEC || "cmd.exe";
+  }
+  return process.env.SHELL || "/bin/bash";
+}
+function getChangeDirectoryCommand(dirPath) {
+  const normalizedPath = dirPath.replace(/\\/g, "\\\\");
+  if (process.platform === "win32") {
+    return process.env.PSModulePath ? `Set-Location -Path '${normalizedPath}'` : `cd /d "${normalizedPath}"`;
+  } else {
+    return `cd "${normalizedPath}"`;
+  }
+}
+function getPythonInterpreterPath() {
+  const config = vscode.workspace.getConfiguration("llma");
+  const interpreterPath = config.get("python.interpreterPath");
+  if (interpreterPath && interpreterPath.trim() !== "") {
+    if (path.isAbsolute(interpreterPath))
+      return interpreterPath;
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+    if (workspaceFolders && workspaceFolders.length > 0) {
+      const absolutePath = path.join(workspaceFolders[0].uri.fsPath, interpreterPath);
+      if (fs.existsSync(absolutePath))
+        return absolutePath;
+    }
+  }
+  return void 0;
+}
+function detectPythonInterpreter() {
+  const config = vscode.workspace.getConfiguration("llma");
+  const preferredCommand = config.get("python.preferredCommand") || "auto";
+  const configuredPath = getPythonInterpreterPath();
+  if (configuredPath)
+    return configuredPath;
+  if (preferredCommand !== "auto")
+    return preferredCommand;
+  return process.platform === "win32" ? "py" : "python3";
+}
+function detectVirtualEnv(filePath) {
+  const config = vscode.workspace.getConfiguration("llma");
+  if (!config.get("python.autoDetectVirtualEnv"))
+    return void 0;
+  const fileDir = path.dirname(filePath);
+  const venvDirs = ["venv", ".venv", "env", ".env", "virtualenv", ".virtualenv"];
+  let currentDir = fileDir;
+  let maxDepth = 5;
+  while (maxDepth-- > 0 && currentDir !== path.dirname(currentDir)) {
+    for (const venvDir of venvDirs) {
+      const venvPath = path.join(currentDir, venvDir);
+      if (fs.existsSync(venvPath)) {
+        let pythonPath = process.platform === "win32" ? path.join(venvPath, "Scripts", "python.exe") : path.join(venvPath, "bin", "python");
+        if (fs.existsSync(pythonPath))
+          return pythonPath;
+      }
+    }
+    currentDir = path.dirname(currentDir);
+  }
+  return void 0;
+}
+async function checkPythonVersion(pythonPath) {
+  try {
+    const { exec: exec2 } = require("child_process");
+    return new Promise((resolve) => {
+      exec2(`"${pythonPath}" --version`, (error, stdout, stderr) => {
+        if (error) {
+          resolve(void 0);
+          return;
+        }
+        const versionOutput = (stdout || stderr).trim();
+        const versionMatch = versionOutput.match(/Python\s+(\d+\.\d+\.\d+)/);
+        resolve(versionMatch ? versionMatch[1] : void 0);
+      });
+    });
+  } catch {
+    return void 0;
+  }
+}
+async function getPythonRunCommand(filePath) {
+  const config = vscode.workspace.getConfiguration("llma");
+  const venvPython = detectVirtualEnv(filePath);
+  const configuredPython = getPythonInterpreterPath();
+  const autoDetectedPython = detectPythonInterpreter();
+  let pythonInterpreter = venvPython || configuredPython || autoDetectedPython;
+  let version;
+  if (config.get("python.versionCheck")) {
+    version = await checkPythonVersion(pythonInterpreter);
+  }
+  const baseName = path.basename(filePath);
+  let runCommand = process.platform === "win32" ? `"${pythonInterpreter}" "${baseName}"` : `"${pythonInterpreter}" "${baseName}"`;
+  return { command: runCommand, interpreter: pythonInterpreter, version };
+}
+var LLMAChatProvider = class {
+  constructor(_extensionUri) {
+    this._extensionUri = _extensionUri;
+    this.fileBackupMap = /* @__PURE__ */ new Map();
+    // 添加 AbortController 用于管理请求取消
+    this._abortController = null;
+  }
+  resolveWebviewView(webviewView, context, _token) {
+    this._view = webviewView;
+    webviewView.webview.options = {
+      enableScripts: true,
+      localResourceRoots: [this._extensionUri]
+    };
+    webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
+    vscode.window.onDidChangeTextEditorSelection((e) => {
+      if (this._view && e.textEditor === vscode.window.activeTextEditor) {
+        this.updateContextStatus(e.textEditor);
+      }
+    });
+    webviewView.webview.onDidReceiveMessage(async (data) => {
+      switch (data.type) {
+        case "sendMessage":
+          await this.handleUserMessage(data.text, data.history, data.model, data.mode, data.files, data.useWebSearch);
+          break;
+        case "stopGeneration":
+          if (this._abortController) {
+            this._abortController.abort();
+            this._abortController = null;
+          }
+          break;
+        case "applyFileChange":
+          await this.handleApplyFileChange(data.filepath, data.content);
+          break;
+        case "saveFile":
+          await this.handleSaveFile(data.filepath);
+          break;
+        case "revertFile":
+          await this.handleRevertFile(data.filepath);
+          break;
+        case "compileCurrentFile":
+          await vscode.commands.executeCommand("llma.compileCurrentFile");
+          break;
+        case "runExecutable":
+          await runExecutable(data.path, data.language);
+          break;
+        case "revealInExplorer":
+          if (data.path)
+            vscode.commands.executeCommand("revealFileInOS", vscode.Uri.file(data.path));
+          break;
+        case "refreshContext":
+          if (vscode.window.activeTextEditor)
+            this.updateContextStatus(vscode.window.activeTextEditor);
+          break;
+        case "selectContextFiles":
+          await this.handleSelectContextFiles();
+          break;
+        case "getSettings":
+          await this.sendSettingsToWebview();
+          break;
+        case "saveSettings":
+          await this.handleSaveSettings(data.settings);
+          break;
+      }
+    });
+  }
+  postMessageToWebview(message) {
+    this._view?.webview.postMessage(message);
+  }
+  resolveFilePath(filepath) {
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+    if (!workspaceFolders)
+      return null;
+    return path.isAbsolute(filepath) ? vscode.Uri.file(filepath) : vscode.Uri.joinPath(workspaceFolders[0].uri, filepath);
+  }
+  async handleApplyFileChange(filepath, content) {
+    const targetUri = this.resolveFilePath(filepath);
+    if (!targetUri) {
+      vscode.window.showErrorMessage("\u8BF7\u5148\u6253\u5F00\u4E00\u4E2A\u5DE5\u4F5C\u533A\u6587\u4EF6\u5939");
+      return;
+    }
+    let fileExists = false;
+    try {
+      await vscode.workspace.fs.stat(targetUri);
+      fileExists = true;
+    } catch {
+      fileExists = false;
+    }
+    try {
+      const edit = new vscode.WorkspaceEdit();
+      if (fileExists) {
+        const doc = await vscode.workspace.openTextDocument(targetUri);
+        if (!this.fileBackupMap.has(targetUri.fsPath)) {
+          this.fileBackupMap.set(targetUri.fsPath, doc.getText());
+        }
+        const fullRange = new vscode.Range(doc.positionAt(0), doc.positionAt(doc.getText().length));
+        edit.replace(targetUri, fullRange, content);
+        await vscode.workspace.applyEdit(edit);
+        await vscode.window.showTextDocument(doc, { preview: false });
+        this._view?.webview.postMessage({ type: "fileChangeApplied", filepath, isNew: false });
+      } else {
+        if (!this.fileBackupMap.has(targetUri.fsPath)) {
+          this.fileBackupMap.set(targetUri.fsPath, null);
+        }
+        edit.createFile(targetUri, { ignoreIfExists: true });
+        edit.insert(targetUri, new vscode.Position(0, 0), content);
+        await vscode.workspace.applyEdit(edit);
+        const doc = await vscode.workspace.openTextDocument(targetUri);
+        await vscode.window.showTextDocument(doc, { preview: false });
+        this._view?.webview.postMessage({ type: "fileChangeApplied", filepath, isNew: true });
+      }
+    } catch (e) {
+      vscode.window.showErrorMessage(`\u4FEE\u6539\u51FA\u9519: ${e.message}`);
+      this._view?.webview.postMessage({ type: "fileChangeError", filepath, error: e.message });
+    }
+  }
+  async handleSaveFile(filepath) {
+    const targetUri = this.resolveFilePath(filepath);
+    if (!targetUri)
+      return;
+    try {
+      const doc = await vscode.workspace.openTextDocument(targetUri);
+      await doc.save();
+      vscode.window.setStatusBarMessage(`\u5DF2\u4FDD\u5B58 ${path.basename(filepath)}`, 3e3);
+      this._view?.webview.postMessage({ type: "fileChangeSaved", filepath });
+    } catch (e) {
+      vscode.window.showErrorMessage(`\u4FDD\u5B58\u5931\u8D25: ${e.message}`);
+    }
+  }
+  async handleRevertFile(filepath) {
+    const targetUri = this.resolveFilePath(filepath);
+    if (!targetUri)
+      return;
+    try {
+      const fsPath = targetUri.fsPath;
+      if (this.fileBackupMap.has(fsPath)) {
+        const originalContent = this.fileBackupMap.get(fsPath);
+        const edit = new vscode.WorkspaceEdit();
+        if (originalContent === null || originalContent === void 0) {
+          edit.deleteFile(targetUri, { ignoreIfNotExists: true });
+        } else {
+          const doc = await vscode.workspace.openTextDocument(targetUri);
+          const fullRange = new vscode.Range(doc.positionAt(0), doc.positionAt(doc.getText().length));
+          edit.replace(targetUri, fullRange, originalContent);
+        }
+        await vscode.workspace.applyEdit(edit);
+        vscode.window.setStatusBarMessage(`\u5DF2\u64A4\u9500 ${path.basename(filepath)}`, 3e3);
+        this._view?.webview.postMessage({ type: "fileChangeReverted", filepath });
+      } else {
+        vscode.window.showWarningMessage("\u672A\u627E\u5230\u5386\u53F2\u5907\u4EFD");
+      }
+    } catch (e) {
+      vscode.window.showErrorMessage(`\u64A4\u9500\u5931\u8D25: ${e.message}`);
+    }
+  }
+  async handleSelectContextFiles() {
+    const uris = await vscode.window.showOpenDialog({
+      canSelectMany: true,
+      openLabel: "\u6DFB\u52A0\u5230\u4E0A\u4E0B\u6587",
+      title: "\u9009\u62E9\u53C2\u8003\u6587\u4EF6"
+    });
+    if (uris && uris.length > 0) {
+      this._view?.webview.postMessage({
+        type: "filesSelected",
+        files: uris.map((u) => ({ name: path.basename(u.fsPath), path: u.fsPath }))
+      });
+    }
+  }
+  async sendSettingsToWebview() {
+    const config = vscode.workspace.getConfiguration("llma");
+    this._view?.webview.postMessage({
+      type: "updateSettings",
+      settings: {
+        deepseekApiKey: config.get("deepseekApiKey") || "",
+        qwenApiKey: config.get("qwenApiKey") || "",
+        doubanApiKey: config.get("doubanApiKey") || "",
+        doubanModel: config.get("doubanModel") || "",
+        zhipuApiKey: config.get("zhipuApiKey") || "",
+        huggingfaceApiKey: config.get("huggingfaceApiKey") || "",
+        huggingfaceModel: config.get("huggingfaceModel") || "",
+        localModelEnabled: config.get("localModel.enabled") || false,
+        localModelBaseUrl: config.get("localModel.baseUrl") || "http://localhost:11434/v1",
+        localModelName: config.get("localModel.modelName") || "llama3",
+        localModelTimeout: config.get("localModel.timeout") || 12e4,
+        enableWebSearch: config.get("enableWebSearch") || false,
+        webSearchEngine: config.get("webSearchEngine") || "google",
+        serpApiKey: config.get("serpApiKey") || ""
+      }
+    });
+  }
+  async handleSaveSettings(settings) {
+    const config = vscode.workspace.getConfiguration("llma");
+    try {
+      if (settings.deepseekApiKey !== void 0)
+        await config.update("deepseekApiKey", settings.deepseekApiKey, vscode.ConfigurationTarget.Global);
+      if (settings.qwenApiKey !== void 0)
+        await config.update("qwenApiKey", settings.qwenApiKey, vscode.ConfigurationTarget.Global);
+      if (settings.doubanApiKey !== void 0)
+        await config.update("doubanApiKey", settings.doubanApiKey, vscode.ConfigurationTarget.Global);
+      if (settings.doubanModel !== void 0)
+        await config.update("doubanModel", settings.doubanModel, vscode.ConfigurationTarget.Global);
+      if (settings.zhipuApiKey !== void 0)
+        await config.update("zhipuApiKey", settings.zhipuApiKey, vscode.ConfigurationTarget.Global);
+      if (settings.huggingfaceApiKey !== void 0)
+        await config.update("huggingfaceApiKey", settings.huggingfaceApiKey, vscode.ConfigurationTarget.Global);
+      if (settings.huggingfaceModel !== void 0)
+        await config.update("huggingfaceModel", settings.huggingfaceModel, vscode.ConfigurationTarget.Global);
+      if (settings.localModelEnabled !== void 0)
+        await config.update("localModel.enabled", settings.localModelEnabled, vscode.ConfigurationTarget.Global);
+      if (settings.localModelBaseUrl !== void 0)
+        await config.update("localModel.baseUrl", settings.localModelBaseUrl, vscode.ConfigurationTarget.Global);
+      if (settings.localModelName !== void 0)
+        await config.update("localModel.modelName", settings.localModelName, vscode.ConfigurationTarget.Global);
+      if (settings.localModelTimeout !== void 0)
+        await config.update("localModel.timeout", settings.localModelTimeout, vscode.ConfigurationTarget.Global);
+      if (settings.enableWebSearch !== void 0)
+        await config.update("enableWebSearch", settings.enableWebSearch, vscode.ConfigurationTarget.Global);
+      if (settings.serpApiKey !== void 0)
+        await config.update("serpApiKey", settings.serpApiKey, vscode.ConfigurationTarget.Global);
+      vscode.window.showInformationMessage("\u914D\u7F6E\u5DF2\u66F4\u65B0\uFF01");
+      await this.sendSettingsToWebview();
+    } catch (e) {
+      vscode.window.showErrorMessage(`\u914D\u7F6E\u4FDD\u5B58\u5931\u8D25: ${e.message}`);
+    }
+  }
+  updateContextStatus(editor) {
+    const fileName = path.basename(editor.document.fileName);
+    const lineCount = editor.selection.isEmpty ? 0 : editor.selection.end.line - editor.selection.start.line + 1;
+    const contextInfo = editor.selection.isEmpty ? `\u5F53\u524D\u7F16\u8F91\u5668: ${fileName}` : `\u9009\u4E2D\u4EE3\u7801: ${fileName} (${lineCount} \u884C)`;
+    this._view?.webview.postMessage({ type: "updateContextInfo", text: contextInfo });
+  }
+  async handleUserMessage(userText, history, selectedModel, mode, attachedFiles, useWebSearch) {
+    if (!this._view)
+      return;
+    if (this._abortController) {
+      this._abortController.abort();
+    }
+    this._abortController = new AbortController();
+    const signal = this._abortController.signal;
+    const editor = vscode.window.activeTextEditor;
+    let contextPrompt = "";
+    const maxContextLength = mode === "agent" ? 8e3 : 4e3;
+    if (editor) {
+      const document2 = editor.document;
+      const selection = editor.selection;
+      const fileName = path.basename(document2.fileName);
+      const relativePath = vscode.workspace.asRelativePath(document2.uri);
+      const language = document2.languageId;
+      let codeContext = "";
+      if (!selection.isEmpty) {
+        codeContext = document2.getText(selection);
+      } else {
+        const cursorLine = selection.active.line;
+        const startLine = Math.max(0, cursorLine - 200);
+        const endLine = Math.min(document2.lineCount - 1, cursorLine + 50);
+        const range = new vscode.Range(startLine, 0, endLine, document2.lineAt(endLine).range.end.character);
+        codeContext = document2.getText(range);
+      }
+      if (codeContext.length > maxContextLength) {
+        codeContext = codeContext.substring(0, maxContextLength) + "\n... (truncated)";
+      }
+      contextPrompt += `
+
+[Active File: ${relativePath}]
+\`\`\`${language}
+${codeContext}
+\`\`\`
+`;
+    }
+    if (attachedFiles && attachedFiles.length > 0) {
+      contextPrompt += `
+
+=== User Attached Files ===
+`;
+      for (const filePath of attachedFiles) {
+        try {
+          const content = await fs.promises.readFile(filePath, "utf-8");
+          const truncatedContent = content.length > 1e4 ? content.substring(0, 1e4) + "\n... (Truncated)" : content;
+          contextPrompt += `
+[File: ${vscode.workspace.asRelativePath(filePath)}]
+\`\`\`
+${truncatedContent}
+\`\`\`
+`;
+        } catch (e) {
+          contextPrompt += `
+[File: ${path.basename(filePath)}] (Error reading file)
+`;
+        }
+      }
+    }
+    const config = vscode.workspace.getConfiguration("llma");
+    const model = selectedModel || config.get("currentModel") || "deepseek";
+    const apiKey = getApiKey(config, model);
+    if (model !== "local" && !apiKey) {
+      this._view.webview.postMessage({ type: "addErrorResponse", text: `\u26A0\uFE0F \u8BF7\u5148\u914D\u7F6E ${model} \u7684 API Key` });
+      this._abortController = null;
+      return;
+    }
+    try {
+      let webSearchResults = "";
+      const serpApiKey = config.get("serpApiKey") || "";
+      const searchEngine = config.get("webSearchEngine") || "google";
+      if (useWebSearch) {
+        if (!serpApiKey) {
+          this._view.webview.postMessage({ type: "addErrorResponse", text: "\u26A0\uFE0F \u65E0\u6CD5\u8FDB\u884C\u7F51\u7EDC\u641C\u7D22\uFF1A\u8BF7\u5148\u5728\u8BBE\u7F6E\u4E2D\u914D\u7F6E SerpApi API Key\u3002" });
+          this._abortController = null;
+          return;
+        }
+        this._view.webview.postMessage({ type: "showSearchStatus", text: "\u{1F50D} \u6B63\u5728\u641C\u7D22..." });
+        try {
+          const results = await searchWeb(userText, serpApiKey, searchEngine);
+          webSearchResults = formatSearchResults(results);
+        } catch (searchError) {
+          webSearchResults = `
+
+\u26A0\uFE0F \u641C\u7D22\u5931\u8D25: ${searchError.message}
+`;
+        }
+      }
+      let systemPrompt = "";
+      if (mode === "agent") {
+        systemPrompt = `\u4F60\u662F\u4E00\u4E2A\u9AD8\u7EA7 AI \u4EE3\u7801 Agent\uFF0C\u5177\u5907\u76F4\u63A5\u5728 VS Code \u4E2D\u4FEE\u6539\u3001\u521B\u5EFA\u548C\u7F16\u8BD1\u6587\u4EF6\u7684\u80FD\u529B\u3002
+\u4F60\u7684\u4EFB\u52A1\u662F\u6839\u636E\u7528\u6237\u9700\u6C42\u76F4\u63A5\u7ED9\u51FA\u53EF\u6267\u884C\u7684\u6587\u4EF6\u53D8\u66F4\u3002
+
+\u3010\u5F3A\u5236\u6307\u4EE4\u534F\u8BAE (Modification)\u3011
+\u5982\u679C\u4F60\u9700\u8981\u4FEE\u6539\u73B0\u6709\u6587\u4EF6\u6216\u521B\u5EFA\u65B0\u6587\u4EF6\uFF0C**\u5FC5\u987B**\u5728\u4EE3\u7801\u5757\u4E4B\u524D\u5355\u72EC\u7A7A\u4E00\u884C\u8F93\u51FA\u6587\u4EF6\u6807\u8BB0\uFF1A
+\`> FILE: path/to/file\`
+\u7D27\u63A5\u7740\u8F93\u51FA\u5B8C\u6574\u7684\u5305\u542B\u6240\u6709\u4FEE\u6539\u5185\u5BB9\u7684\u4EE3\u7801\u5757\u3002
+\u793A\u4F8B\uFF1A
+> FILE: src/main.ts
+\`\`\`typescript
+// \u5B8C\u6574\u7684\u4EE3\u7801\u5185\u5BB9
+\`\`\`
+\u6CE8\u610F\uFF1A\u5FC5\u987B\u8F93\u51FA\u4FEE\u6539\u540E\u7684**\u5B8C\u6574\u6587\u4EF6\u5185\u5BB9**\uFF0C\u4E0D\u8981\u53EA\u8F93\u51FA\u5DEE\u5F02\u90E8\u5206\u3002
+
+\u3010\u7F16\u8BD1\u4E0E\u8FD0\u884C\u6307\u5BFC\u3011
+- \u5982\u679C\u7528\u6237\u8BE2\u95EE\u5982\u4F55\u8FD0\u884C\uFF0C\u544A\u8BC9\u4ED6\u4EEC\u53EF\u4EE5\u4F7F\u7528\u53F3\u4E0A\u89D2\u7684 "\u25B6\uFE0F" \u6309\u94AE\u6216\u5FEB\u6377\u952E \`Ctrl+Shift+B\` \u7F16\u8BD1\u3002
+- \u5BF9\u4E8E C/C++\uFF0C\u5EFA\u8BAE\u7528\u6237\u68C0\u67E5 build \u76EE\u5F55\u4E0B\u7684\u53EF\u6267\u884C\u6587\u4EF6\u3002
+- \u5BF9\u4E8E Java\uFF0C\u7F16\u8BD1\u540E\u4F1A\u751F\u6210 .class \u6587\u4EF6\u5728 build \u76EE\u5F55\u4E0B\u3002
+- \u5BF9\u4E8E Python \u548C JS/TS\uFF0C\u8FD0\u884C\u7684\u662F\u6E90\u6587\u4EF6\uFF0C\u4E0D\u9700\u8981\u7F16\u8BD1\u751F\u6210\u53EF\u6267\u884C\u6587\u4EF6\u3002`;
+      } else if (useWebSearch && webSearchResults) {
+        systemPrompt = `\u4F60\u662F\u4E00\u4E2A\u5177\u6709\u8054\u7F51\u68C0\u7D22\u80FD\u529B\u7684\u4E13\u4E1A VS Code \u7F16\u7A0B\u52A9\u624B\u3002
+\u7528\u6237\u7684\u95EE\u9898\u4E2D\u5305\u542B\u4E86\u6700\u65B0\u68C0\u7D22\u5230\u7684\u7F51\u7EDC\u641C\u7D22\u7ED3\u679C\uFF08[\u{1F310} \u7F51\u7EDC\u641C\u7D22\u7ED3\u679C]\uFF09\u3002
+\u8BF7\u4ED4\u7EC6\u9605\u8BFB\u5E76\u7EFC\u5408\u8FD9\u4E9B\u641C\u7D22\u7ED3\u679C\uFF0C\u7ED3\u5408\u4F60\u7684\u7F16\u7A0B\u4E13\u4E1A\u77E5\u8BC6\uFF0C\u4E3A\u7528\u6237\u63D0\u4F9B\u6700\u65B0\u3001\u6700\u51C6\u786E\u7684\u89E3\u7B54\u3002`;
+      } else {
+        systemPrompt = `\u4F60\u662F\u4E00\u4E2A\u4E13\u4E1A\u7684 VS Code AI \u7F16\u7A0B\u52A9\u624B\u3002
+\u4F60\u7684\u6838\u5FC3\u4EFB\u52A1\u662F\u89E3\u7B54\u7528\u6237\u7684\u7F16\u7A0B\u95EE\u9898\u3001\u89E3\u91CA\u4EE3\u7801\u3001\u63D0\u4F9B\u4EE3\u7801\u5EFA\u8BAE\u548C\u91CD\u6784\u65B9\u6848\u3002
+\u6240\u6709\u7684\u4EE3\u7801\u7247\u6BB5\u5FC5\u987B\u4F7F\u7528 Markdown \u4EE3\u7801\u5757\u5305\u88F9\u3002`;
+      }
+      let enhancedUserText = userText;
+      if (webSearchResults)
+        enhancedUserText = userText + "\n\n" + webSearchResults;
+      const messages = [
+        { role: "system", content: systemPrompt },
+        ...history,
+        { role: "user", content: enhancedUserText + contextPrompt }
+      ];
+      const temp = mode === "agent" ? 0.1 : 0.7;
+      this._view.webview.postMessage({ type: "streamStart" });
+      await callChatAI(model, apiKey, messages, config, 4e3, temp, signal, (contentDelta, reasoningDelta) => {
+        this._view?.webview.postMessage({
+          type: "streamUpdate",
+          content: contentDelta,
+          reasoning: reasoningDelta
+        });
+      });
+      this._view.webview.postMessage({ type: "streamEnd" });
+    } catch (error) {
+      if (axios_default.isCancel(error) || error.name === "CanceledError" || error.message === "canceled") {
+        this._view.webview.postMessage({
+          type: "addWarningResponse",
+          text: "\u26A0\uFE0F \u5DF2\u505C\u6B62\u751F\u6210\u5BF9\u8BDD"
+        });
+      } else {
+        const errorMsg = `\u274C \u9519\u8BEF: ${error.message}`;
+        if (model === "local") {
+          const baseUrl = config.get("localModel.baseUrl") || "http://localhost:11434/v1";
+          this._view.webview.postMessage({
+            type: "addErrorResponse",
+            text: `${errorMsg}
+
+\u672C\u5730\u6A21\u578B\u8FDE\u63A5\u5931\u8D25\uFF0C\u8BF7\u68C0\u67E5\u670D\u52A1\u5730\u5740: ${baseUrl}`
+          });
+        } else {
+          this._view.webview.postMessage({ type: "addErrorResponse", text: errorMsg });
+        }
+      }
+    } finally {
+      this._abortController = null;
+      this._view?.webview.postMessage({ type: "streamEnd" });
+    }
+  }
+  _getHtmlForWebview(webview) {
+    const config = vscode.workspace.getConfiguration("llma");
+    const defaultModel = config.get("currentModel") || "deepseek";
+    const cspSource = webview.cspSource;
+    const csp = `default-src 'none'; style-src ${cspSource} 'unsafe-inline'; script-src ${cspSource} 'unsafe-inline'; font-src ${cspSource} data:; img-src ${cspSource} data: https:;`;
+    return `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="${csp}">
+  <title>LLMA Pro - AI \u7F16\u7A0B\u52A9\u624B</title>
+  <style>
+    :root {
+      --primary-color: #007acc;
+      --primary-hover: #005fa3;
+      --success-color: #2ecc71;
+      --warning-color: #f39c12;
+      --danger-color: #e74c3c;
+      --info-color: #3498db;
+      --bg-light: var(--vscode-sideBar-background);
+      --bg-lighter: var(--vscode-sideBarSectionHeader-background);
+      --border-color: var(--vscode-widget-border);
+      --text-primary: var(--vscode-foreground);
+      --text-secondary: var(--vscode-descriptionForeground);
+      --text-tertiary: var(--vscode-disabledForeground);
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+      --shadow-md: 0 4px 8px rgba(0,0,0,0.15);
+      --transition-fast: 0.15s ease;
+      --transition-normal: 0.25s ease;
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      background: var(--bg-light);
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      line-height: 1.5;
+    }
+    
+    /* ===== \u9876\u90E8\u5DE5\u5177\u680F ===== */
+    .header-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--bg-lighter);
+      border-bottom: 1px solid var(--border-color);
+      min-height: 44px;
+    }
+    
+    .model-selector { flex: 1; position: relative; }
+    
+    .model-select {
+      width: 100%;
+      padding: 5px 8px;
+      background: var(--vscode-dropdown-background);
+      color: var(--vscode-dropdown-foreground);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      outline: none;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+    
+    .model-select:hover { border-color: var(--primary-color); }
+    .model-select:focus { border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2); }
+    
+    .btn-icon {
+      display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; background: transparent;
+      border: 1px solid transparent; border-radius: var(--radius-sm);
+      color: var(--text-secondary); cursor: pointer; transition: var(--transition-fast); font-size: 13px;
+    }
+    
+    .btn-icon:hover { background: var(--vscode-toolbar-hoverBackground); color: var(--text-primary); border-color: var(--border-color); }
+    .btn-icon.active { background: var(--primary-color); color: white; }
+    
+    .btn-icon.compile { background: linear-gradient(135deg, var(--success-color), #27ae60); color: white; border: none; }
+    .btn-icon.compile:hover { background: linear-gradient(135deg, #27ae60, #219653); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+    
+    /* ===== \u6A21\u5F0F\u5207\u6362\u5668 ===== */
+    .mode-toggle {
+      display: flex; background: var(--vscode-input-background);
+      border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+      padding: 2px; gap: 2px;
+    }
+    
+    .mode-btn {
+      padding: 4px 8px; font-size: 11px; font-weight: 500;
+      background: transparent; border: none; border-radius: 3px;
+      color: var(--text-secondary); cursor: pointer; transition: var(--transition-fast); white-space: nowrap;
+    }
+    
+    .mode-btn:hover { color: var(--text-primary); }
+    .mode-btn.active { background: var(--primary-color); color: white; }
+    
+    /* ===== \u4E0A\u4E0B\u6587\u680F ===== */
+    .context-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 5px 12px; background: var(--vscode-list-hoverBackground);
+      border-bottom: 1px solid var(--border-color); font-size: 11px; color: var(--text-secondary);
+    }
+    
+    .context-info { display: flex; align-items: center; gap: 6px; overflow: hidden; }
+    .context-icon { font-size: 11px; opacity: 0.7; }
+    .context-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .context-actions { display: flex; gap: 4px; }
+    
+    /* ===== \u804A\u5929\u5BB9\u5668 ===== */
+    .chat-container {
+      flex: 1; overflow-y: auto; padding: 12px;
+      display: flex; flex-direction: column; gap: 12px;
+      background: var(--vscode-editor-background);
+    }
+    
+    .welcome-message {
+      background: linear-gradient(135deg, var(--primary-color), #3498db);
+      color: white; border-radius: var(--radius-md); padding: 14px;
+      margin-bottom: 6px; box-shadow: var(--shadow-sm);
+    }
+    
+    .welcome-message h3 { font-size: 13px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+    .welcome-message ul { list-style: none; padding-left: 0; }
+    .welcome-message li { margin-bottom: 5px; font-size: 11px; display: flex; align-items: center; gap: 5px; }
+    
+    .feature-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+    .badge { background: rgba(255, 255, 255, 0.2); padding: 2px 6px; border-radius: 10px; font-size: 9px; font-weight: 500; }
+    
+    /* \u6D88\u606F\u6837\u5F0F */
+    .message {
+      max-width: 85%; padding: 10px 14px; border-radius: var(--radius-md);
+      position: relative; animation: fadeIn 0.3s ease; line-height: 1.4;
+      font-size: 13px; word-break: break-word;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .user-message {
+      align-self: flex-end; background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+      color: white; border-bottom-right-radius: var(--radius-sm);
+    }
+    
+    .ai-message {
+      align-self: flex-start; background: var(--vscode-editor-inactiveSelectionBackground);
+      border: 1px solid var(--border-color); border-bottom-left-radius: var(--radius-sm); width: 100%;
+    }
+    
+    .system-message {
+      text-align: center; font-size: 11px; color: var(--text-secondary);
+      margin: 5px 0; font-style: italic; opacity: 0.8;
+    }
+    
+    .warning-message {
+      align-self: center;
+      background: linear-gradient(135deg, var(--warning-color), #e67e22);
+      color: white;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      padding: 4px 12px;
+      margin: 8px 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .message-time { font-size: 9px; opacity: 0.6; margin-top: 4px; text-align: right; }
+    
+    /* === \u601D\u8003\u8FC7\u7A0B\u6837\u5F0F === */
+    .reasoning-block {
+      margin-bottom: 10px; border-radius: var(--radius-sm);
+      background: rgba(0, 0, 0, 0.03); border-left: 3px solid var(--text-tertiary); overflow: hidden;
+    }
+    
+    .reasoning-block summary {
+      cursor: pointer; font-size: 11px; color: var(--text-tertiary);
+      padding: 6px 10px; user-select: none; font-style: italic; outline: none;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .reasoning-block summary:hover { background: rgba(0, 0, 0, 0.05); }
+    
+    .reasoning-content {
+      padding: 4px 10px 10px 10px; font-size: 11.5px; color: #777;
+      font-style: italic; white-space: pre-wrap; line-height: 1.5;
+      border-top: 1px dashed rgba(0,0,0,0.05);
+    }
+
+    /* \u4EE3\u7801\u5757 */
+    .code-block { position: relative; margin: 6px 0; border-radius: var(--radius-sm); overflow: hidden; }
+    
+    .code-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 5px 8px; background: var(--vscode-textBlockQuote-background);
+      border-bottom: 1px solid var(--border-color);
+      font-family: 'Consolas', 'Monaco', monospace; font-size: 10px; color: var(--text-secondary);
+    }
+    
+    .language-tag {
+      background: var(--primary-color); color: white; padding: 1px 5px;
+      border-radius: 3px; font-size: 9px; font-weight: 500;
+    }
+    
+    pre {
+      margin: 0; padding: 10px; background: var(--vscode-textBlockQuote-background);
+      overflow-x: auto; font-family: 'Consolas', 'Monaco', monospace; font-size: 12px; line-height: 1.4;
+    }
+    
+    code { font-family: inherit; }
+    
+    /* \u6587\u4EF6\u64CD\u4F5C\u533A\u57DF */
+    .file-action-card {
+      background: var(--vscode-editor-lineHighlightBackground);
+      border-left: 3px solid var(--info-color); border-radius: var(--radius-md);
+      padding: 10px; margin: 10px 0; animation: slideIn 0.3s ease;
+    }
+
+    .file-action-card.generation-pending {
+      border-left-color: var(--warning-color); opacity: 0.8; animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(-10px); opacity: 0; }
+      to { transform: translateX(10px); opacity: 1; }
+    }
+    
+    .file-header { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+    .file-icon { font-size: 14px; color: var(--info-color); }
+    .file-path { font-family: 'Consolas', 'Monaco', monospace; font-size: 11px; color: var(--text-primary); font-weight: 500; }
+    .action-buttons { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
+    
+    /* === \u7F16\u8BD1\u7ED3\u679C\u5361\u7247 === */
+    .compilation-card {
+      border: 1px solid var(--border-color); background: var(--vscode-editor-background);
+      border-radius: var(--radius-md); padding: 12px; margin: 10px 0;
+      box-shadow: var(--shadow-sm); animation: slideIn 0.3s ease;
+    }
+    .compilation-card.success { border-left: 4px solid var(--success-color); }
+    .compilation-card.error { border-left: 4px solid var(--danger-color); }
+    
+    .comp-header { font-weight: bold; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; font-size: 13px; }
+    .comp-details { font-size: 12px; margin-bottom: 12px; white-space: pre-wrap; font-family: 'Consolas', 'Monaco', monospace; color: var(--text-secondary); }
+    .comp-actions { display: flex; gap: 8px; }
+    
+    .btn-run { 
+      background: linear-gradient(135deg, var(--success-color), #27ae60); 
+      color: white; border: none; padding: 5px 12px; border-radius: var(--radius-sm); 
+      cursor: pointer; display: flex; align-items: center; gap: 4px; font-size: 11px; 
+    }
+    .btn-run:hover { opacity: 0.9; transform: translateY(-1px); }
+    
+    .btn-reveal { 
+      background: transparent; border: 1px solid var(--border-color); 
+      color: var(--text-primary); padding: 5px 12px; border-radius: var(--radius-sm); 
+      cursor: pointer; font-size: 11px; 
+    }
+    .btn-reveal:hover { background: var(--vscode-toolbar-hoverBackground); }
+    
+    /* ===== \u6587\u4EF6\u9644\u4EF6\u533A\u57DF ===== */
+    .attachments-bar {
+      padding: 6px 12px; border-top: 1px solid var(--border-color);
+      background: var(--bg-lighter); display: flex; align-items: center; gap: 6px;
+      overflow-x: auto; min-height: 36px;
+    }
+    
+    .attachments-label { font-size: 10px; color: var(--text-secondary); white-space: nowrap; }
+    
+    .file-chips { display: flex; gap: 5px; flex: 1; overflow-x: auto; padding: 2px; }
+    
+    .file-chip {
+      display: flex; align-items: center; gap: 5px;
+      background: var(--vscode-badge-background); color: var(--vscode-badge-foreground);
+      padding: 3px 8px; border-radius: 12px; font-size: 10px; white-space: nowrap;
+      transition: var(--transition-fast);
+    }
+    .file-chip:hover { background: var(--vscode-badge-hoverBackground); }
+    
+    .remove-chip { cursor: pointer; opacity: 0.7; transition: var(--transition-fast); font-size: 12px; line-height: 1; }
+    .remove-chip:hover { opacity: 1; transform: scale(1.1); }
+    
+    /* ===== \u8F93\u5165\u533A\u57DF ===== */
+    .input-area {
+      padding: 12px 12px; border-top: 1px solid var(--border-color);
+      background: var(--bg-lighter); position: relative;
+    }
+    
+    .textarea-wrapper { position: relative; margin-bottom: 0; }
+    
+    textarea {
+      width: 100%; min-height: 80px; max-height: 120px;
+      padding: 10px 12px 40px 12px; background: var(--vscode-input-background);
+      color: var(--vscode-input-foreground); border: 1px solid var(--border-color);
+      border-radius: var(--radius-md); font-family: inherit; font-size: 13px;
+      line-height: 1.4; resize: none; outline: none; transition: var(--transition-fast);
+    }
+    
+    textarea:focus { border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2); }
+    textarea::placeholder { color: var(--text-tertiary); }
+    
+    .input-actions {
+      position: absolute; right: 10px; bottom: 10px;
+      display: flex; align-items: center; gap: 6px; z-index: 10;
+    }
+    
+    .btn-attach, .btn-websearch {
+      display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; background: var(--vscode-button-secondaryBackground);
+      border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+      color: var(--text-secondary); font-size: 12px; cursor: pointer;
+      transition: var(--transition-fast); padding: 0;
+    }
+    .btn-attach:hover, .btn-websearch:hover { background: var(--vscode-button-secondaryHoverBackground); color: var(--text-primary); }
+    .btn-websearch.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+    
+    .btn-send {
+      padding: 6px 16px; background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+      color: white; border: none; border-radius: var(--radius-sm); font-size: 12px; font-weight: 500;
+      cursor: pointer; transition: var(--transition-normal); min-width: 60px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn-send:hover:not(:disabled) { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+    .btn-send:disabled { opacity: 0.5; cursor: not-allowed; }
+    
+    .btn-stop {
+      padding: 6px 16px; background: linear-gradient(135deg, var(--danger-color), #c0392b);
+      color: white; border: none; border-radius: var(--radius-sm); font-size: 12px; font-weight: 500;
+      cursor: pointer; transition: var(--transition-normal); min-width: 60px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn-stop:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+    
+    /* ===== \u52A0\u8F7D\u52A8\u753B ===== */
+    .loading-indicator {
+      display: flex; align-items: center; gap: 8px; padding: 10px;
+      background: var(--vscode-editor-inactiveSelectionBackground);
+      border-radius: var(--radius-md); margin: 6px 0; animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
+    
+    .loading-dots { display: flex; gap: 3px; }
+    .loading-dot {
+      width: 5px; height: 5px; background: var(--primary-color);
+      border-radius: 50%; animation: bounce 1.4s infinite ease-in-out;
+    }
+    .loading-dot:nth-child(1) { animation-delay: -0.32s; }
+    .loading-dot:nth-child(2) { animation-delay: -0.16s; }
+    @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+    
+    /* ===== \u6A21\u6001\u6846 ===== */
+    .modal-overlay {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.5); z-index: 1000; align-items: center; justify-content: center;
+    }
+    
+    .modal-content {
+      background: var(--vscode-editor-background); border-radius: var(--radius-lg);
+      width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-md);
+    }
+    
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 18px; border-bottom: 1px solid var(--border-color);
+    }
+    
+    .modal-title { font-size: 15px; font-weight: 600; }
+    .modal-close {
+      background: none; border: none; font-size: 16px; color: var(--text-secondary); cursor: pointer;
+      width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-sm);
+    }
+    .modal-close:hover { background: var(--vscode-toolbar-hoverBackground); }
+    
+    .modal-body { padding: 18px; }
+    
+    .settings-tabs { display: flex; gap: 2px; margin-bottom: 18px; border-bottom: 1px solid var(--border-color); }
+    
+    .settings-tab {
+      padding: 6px 14px; background: transparent; border: none; border-bottom: 2px solid transparent;
+      color: var(--text-secondary); font-size: 12px; cursor: pointer;
+    }
+    .settings-tab:hover { color: var(--text-primary); }
+    .settings-tab.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
+    
+    .form-group { margin-bottom: 14px; }
+    .form-label { display: block; margin-bottom: 5px; font-size: 12px; color: var(--text-primary); font-weight: 500; }
+    .form-hint { display: block; margin-top: 3px; font-size: 10px; color: var(--text-tertiary); }
+    
+    .form-input {
+      width: 100%; padding: 7px 10px; background: var(--vscode-input-background);
+      color: var(--vscode-input-foreground); border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm); font-size: 12px; outline: none;
+    }
+    .form-input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2); }
+
+    .checkbox-group { display: flex; align-items: center; gap: 6px; }
+    .checkbox-group input[type="checkbox"] { width: 14px; height: 14px; cursor: pointer; }
+    
+    .modal-footer { padding: 14px 18px; border-top: 1px solid var(--border-color); text-align: right; }
+    
+    .btn-primary {
+      padding: 6px 20px; background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+      color: white; border: none; border-radius: var(--radius-sm); font-size: 12px; font-weight: 500;
+      cursor: pointer; transition: var(--transition-normal);
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+    
+    .btn-success {
+      padding: 6px 14px; background: linear-gradient(135deg, var(--success-color), #27ae60);
+      color: white; border: none; border-radius: var(--radius-sm); font-size: 11px; font-weight: 500;
+      cursor: pointer; transition: var(--transition-normal);
+    }
+    .btn-success:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+
+    .btn-danger {
+      padding: 6px 14px; background: linear-gradient(135deg, var(--danger-color), #c0392b);
+      color: white; border: none; border-radius: var(--radius-sm); font-size: 11px; font-weight: 500;
+      cursor: pointer; transition: var(--transition-normal);
+    }
+    .btn-danger:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+    
+    /* \u6EDA\u52A8\u6761\u7F8E\u5316 */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--vscode-scrollbarSlider-background); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--vscode-scrollbarSlider-hoverBackground); }
+  </style>
+</head>
+<body>
+  <div class="header-toolbar">
+    <div class="model-selector">
+      <select class="model-select" id="model-select" aria-label="\u9009\u62E9 AI \u6A21\u578B">
+        <option value="deepseek" ${defaultModel === "deepseek" ? "selected" : ""}> DeepSeek</option>
+        <option value="qwen" ${defaultModel === "qwen" ? "selected" : ""}> \u901A\u4E49\u5343\u95EE</option>
+        <option value="douban" ${defaultModel === "douban" ? "selected" : ""}> \u8C46\u5305(Volcengine)</option>
+        <option value="zhipu" ${defaultModel === "zhipu" ? "selected" : ""}> \u667A\u666EAI</option>
+        <option value="huggingface" ${defaultModel === "huggingface" ? "selected" : ""}> Hugging Face</option>
+        <option value="local" ${defaultModel === "local" ? "selected" : ""}> \u672C\u5730\u6A21\u578B</option>
+      </select>
+    </div>
+    <button class="btn-icon compile" id="compile-btn" title="\u7F16\u8BD1\u5F53\u524D\u6587\u4EF6 (Ctrl+Shift+B)">\u25B6</button>
+    <button class="btn-icon" id="settings-btn" title="\u8BBE\u7F6E">\u2699\uFE0F</button>
+    <!-- \u65B0\u589E\uFF1A\u65B0\u5BF9\u8BDD\u6309\u94AE -->
+    <button class="btn-icon" id="new-chat-btn" title="\u65B0\u5BF9\u8BDD (\u6E05\u7A7A\u5386\u53F2)">\u2795</button>
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="mode-chat">\u804A\u5929\u6A21\u5F0F</button>
+      <button class="mode-btn" id="mode-agent">Agent \u6A21\u5F0F</button>
+    </div>
+  </div>
+  
+  <div class="context-bar">
+    <div class="context-info">
+      <span class="context-icon">\u{1F4C4}</span>
+      <span class="context-text" id="context-text">\u7B49\u5F85\u7F16\u8F91\u5668\u6FC0\u6D3B...</span>
+    </div>
+    <div class="context-actions">
+      <button class="btn-icon" id="refresh-context" title="\u5237\u65B0\u4E0A\u4E0B\u6587">\u{1F504}</button>
+    </div>
+  </div>
+  
+  <div class="chat-container" id="chat-container">
+    <div class="welcome-message">
+      <h3>\u2728 LLMA Pro \u52A9\u624B\u5DF2\u5C31\u7EEA</h3>
+      <ul>
+        <li>\u{1F504} <strong>\u804A\u5929\u6A21\u5F0F</strong>: \u83B7\u53D6\u4EE3\u7801\u5EFA\u8BAE\u548C\u89E3\u7B54</li>
+        <li>\u{1F916} <strong>Agent \u6A21\u5F0F</strong>: \u521B\u5EFA\u3001\u4FEE\u6539\u6587\u4EF6\u5E76\u7F16\u8BD1\u4EE3\u7801</li>
+        <li>\u26A1\uFE0F <strong>\u5FEB\u6377\u952E</strong>: Ctrl+Shift+B \u5FEB\u901F\u7F16\u8BD1\u5F53\u524D\u6587\u4EF6</li>
+        <li>\u{1F4A1} <strong>\u63D0\u793A</strong>: \u62D6\u62FD\u6587\u4EF6\u6216\u70B9\u51FB \u{1F4CE} \u6DFB\u52A0\u4E0A\u4E0B\u6587\uFF0C\u70B9\u51FB \u{1F310} \u5F00\u542F\u7F51\u7EDC\u641C\u7D22</li>
+      </ul>
+      <div class="feature-badges">
+        <span class="badge">\u4EE3\u7801\u751F\u6210</span>
+        <span class="badge">\u667A\u80FD\u9884\u6D4B</span>
+        <span class="badge">\u6587\u4EF6\u7F16\u8BD1</span>
+        <span class="badge">\u8054\u7F51\u641C\u7D22</span>
+        <span class="badge">\u6D41\u5F0F\u8F93\u51FA</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="attachments-bar" id="attachments-bar">
+    <span class="attachments-label">\u{1F4CE} \u5DF2\u6DFB\u52A0:</span>
+    <div class="file-chips" id="file-chips"></div>
+  </div>
+  
+  <div class="input-area">
+    <div class="textarea-wrapper">
+      <textarea id="message-input" placeholder="\u8F93\u5165\u60A8\u7684\u95EE\u9898\u6216\u6307\u4EE4... (Enter \u53D1\u9001, Shift+Enter \u6362\u884C)"></textarea>
+      <div class="input-actions">
+        <button class="btn-attach" id="attach-btn" title="\u6DFB\u52A0\u6587\u4EF6">\u{1F4CE}</button>
+        <button class="btn-websearch" id="websearch-toggle-btn" title="\u5F00\u542F/\u5173\u95ED\u8054\u7F51\u641C\u7D22">\u{1F310}</button>
+        <button class="btn-stop" id="stop-btn" style="display: none;" title="\u505C\u6B62\u751F\u6210">\u505C\u6B62</button>
+        <button class="btn-send" id="send-btn" title="\u53D1\u9001\u6D88\u606F">\u53D1\u9001</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal-overlay" id="settings-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">\u2699\uFE0F LLMA Pro \u8BBE\u7F6E</h3>
+        <button class="modal-close" id="close-settings">\xD7</button>
+      </div>
+      <div class="modal-body">
+        <div class="settings-tabs">
+          <button class="settings-tab active" data-tab="online">\u5728\u7EBF\u6A21\u578B</button>
+          <button class="settings-tab" data-tab="local">\u672C\u5730\u6A21\u578B</button>
+          <button class="settings-tab" data-tab="websearch">\u8054\u7F51\u641C\u7D22</button>
+        </div>
+        
+        <div id="online-settings" class="tab-content">
+          <div class="form-group"><label class="form-label">DeepSeek API Key</label><input type="password" id="key-deepseek" class="form-input"></div>
+          <div class="form-group"><label class="form-label">\u901A\u4E49\u5343\u95EE API Key</label><input type="password" id="key-qwen" class="form-input"></div>
+          <div class="form-group"><label class="form-label">\u8C46\u5305 API Key</label><input type="password" id="key-douban" class="form-input"></div>
+          <div class="form-group"><label class="form-label">\u8C46\u5305 Endpoint ID</label><input type="text" id="model-douban" class="form-input"></div>
+          <div class="form-group"><label class="form-label">\u667A\u666EAI API Key</label><input type="password" id="key-zhipu" class="form-input"></div>
+          <div class="form-group"><label class="form-label">Hugging Face Token</label><input type="password" id="key-huggingface" class="form-input"></div>
+          <div class="form-group"><label class="form-label">Hugging Face Model ID</label><input type="text" id="model-huggingface" class="form-input" placeholder="Qwen/Qwen2.5-Coder-32B-Instruct"></div>
+        </div>
+        
+        <div id="local-settings" class="tab-content" style="display: none;">
+          <div class="form-group"><div class="checkbox-group"><input type="checkbox" id="local-enabled"><label class="form-label">\u542F\u7528\u672C\u5730\u6A21\u578B</label></div></div>
+          <div class="form-group"><label class="form-label">\u670D\u52A1\u5730\u5740</label><input type="text" id="local-base-url" class="form-input"></div>
+          <div class="form-group"><label class="form-label">\u6A21\u578B\u540D\u79F0</label><input type="text" id="local-model-name" class="form-input"></div>
+          <div class="form-group"><label class="form-label">\u8BF7\u6C42\u8D85\u65F6</label><input type="number" id="local-timeout" class="form-input"></div>
+        </div>
+        
+        <div id="websearch-settings" class="tab-content" style="display: none;">
+          <div class="form-group"><div class="checkbox-group"><input type="checkbox" id="websearch-enabled"><label class="form-label">\u9ED8\u8BA4\u5168\u5C40\u542F\u7528\u8054\u7F51\u641C\u7D22</label></div></div>
+          <div class="form-group"><label class="form-label">SerpApi API Key</label><input type="password" id="serp-api-key" class="form-input"></div>
+        </div>
+      </div>
+      <div class="modal-footer"><button class="btn-primary" id="save-settings-btn">\u4FDD\u5B58\u8BBE\u7F6E</button></div>
+    </div>
+  </div>
+
+  <script>
+    const vscode = acquireVsCodeApi();
+    
+    const chatContainer = document.getElementById('chat-container');
+    const input = document.getElementById('message-input');
+    const sendBtn = document.getElementById('send-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const attachBtn = document.getElementById('attach-btn');
+    const webSearchToggleBtn = document.getElementById('websearch-toggle-btn');
+    const modelSelect = document.getElementById('model-select');
+    const compileBtn = document.getElementById('compile-btn');
+    const refreshBtn = document.getElementById('refresh-context');
+    const settingsBtn = document.getElementById('settings-btn');
+    const closeSettingsBtn = document.getElementById('close-settings');
+    const saveSettingsBtn = document.getElementById('save-settings-btn');
+    const settingsModal = document.getElementById('settings-modal');
+    const modeChatBtn = document.getElementById('mode-chat');
+    const modeAgentBtn = document.getElementById('mode-agent');
+    const fileChips = document.getElementById('file-chips');
+    const attachmentsBar = document.getElementById('attachments-bar');
+    const newChatBtn = document.getElementById('new-chat-btn');
+    
+    let history = [];
+    let currentMode = 'chat';
+    let attachedFiles = [];
+    let isGenerating = false;
+    let isWebSearchEnabled = false;
+    let activeSettingsTab = 'online';
+
+    // \u7528\u4E8E\u6D41\u5F0F\u6E32\u67D3\u7684\u5168\u5C40\u53D8\u91CF
+    let currentAiMessageDiv = null;
+    let currentAiContent = '';
+    let currentAiReasoning = '';
+    
+    function init() {
+      setMode('chat');
+      const savedState = vscode.getState();
+      if (savedState) {
+        if (savedState.attachedFiles) { attachedFiles = savedState.attachedFiles; renderFileChips(); }
+        if (savedState.currentMode) setMode(savedState.currentMode);
+        if (savedState.isWebSearchEnabled !== undefined) {
+          isWebSearchEnabled = savedState.isWebSearchEnabled;
+          webSearchToggleBtn.classList.toggle('active', isWebSearchEnabled);
+        }
+      }
+      bindEvents();
+      vscode.postMessage({ type: 'refreshContext' });
+      updateAttachmentsBar();
+    }
+    
+    function bindEvents() {
+      modeChatBtn.addEventListener('click', () => setMode('chat'));
+      modeAgentBtn.addEventListener('click', () => setMode('agent'));
+      sendBtn.addEventListener('click', sendMessage);
+      stopBtn.addEventListener('click', () => vscode.postMessage({ type: 'stopGeneration' }));
+      
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+      });
+      attachBtn.addEventListener('click', () => vscode.postMessage({ type: 'selectContextFiles' }));
+      webSearchToggleBtn.addEventListener('click', () => {
+        isWebSearchEnabled = !isWebSearchEnabled;
+        webSearchToggleBtn.classList.toggle('active', isWebSearchEnabled);
+        saveState();
+      });
+      compileBtn.addEventListener('click', () => vscode.postMessage({ type: 'compileCurrentFile' }));
+      refreshBtn.addEventListener('click', () => vscode.postMessage({ type: 'refreshContext' }));
+      
+      settingsBtn.addEventListener('click', () => {
+        switchSettingsTab(modelSelect.value === 'local' ? 'local' : 'online');
+        vscode.postMessage({ type: 'getSettings' });
+        settingsModal.style.display = 'flex';
+      });
+      closeSettingsBtn.addEventListener('click', () => settingsModal.style.display = 'none');
+      saveSettingsBtn.addEventListener('click', saveSettings);
+      document.querySelectorAll('.settings-tab').forEach(tab => tab.addEventListener('click', () => switchSettingsTab(tab.dataset.tab)));
+      modelSelect.addEventListener('change', (e) => switchSettingsTab(e.target.value === 'local' ? 'local' : 'online'));
+      input.addEventListener('input', () => {
+        input.style.height = 'auto';
+        input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+      });
+      
+      // \u65B0\u5BF9\u8BDD\u6309\u94AE\u4E8B\u4EF6
+      newChatBtn.addEventListener('click', () => {
+        history = [];
+        chatContainer.innerHTML = '';
+        addWelcomeMessage();
+        saveState();
+      });
+    }
+
+    function addWelcomeMessage() {
+        const welcomeDiv = document.createElement('div');
+        welcomeDiv.className = 'welcome-message';
+        welcomeDiv.innerHTML = \`
+          <h3>\u2728 LLMA Pro \u52A9\u624B\u5DF2\u5C31\u7EEA</h3>
+          <ul>
+            <li>\u{1F504} <strong>\u804A\u5929\u6A21\u5F0F</strong>: \u83B7\u53D6\u4EE3\u7801\u5EFA\u8BAE\u548C\u89E3\u7B54</li>
+            <li>\u{1F916} <strong>Agent \u6A21\u5F0F</strong>: \u521B\u5EFA\u3001\u4FEE\u6539\u6587\u4EF6\u5E76\u7F16\u8BD1\u4EE3\u7801</li>
+            <li>\u26A1\uFE0F <strong>\u5FEB\u6377\u952E</strong>: Ctrl+Shift+B \u5FEB\u901F\u7F16\u8BD1\u5F53\u524D\u6587\u4EF6</li>
+            <li>\u{1F4A1} <strong>\u63D0\u793A</strong>: \u62D6\u62FD\u6587\u4EF6\u6216\u70B9\u51FB \u{1F4CE} \u6DFB\u52A0\u4E0A\u4E0B\u6587\uFF0C\u70B9\u51FB \u{1F310} \u5F00\u542F\u7F51\u7EDC\u641C\u7D22</li>
+          </ul>
+          <div class="feature-badges">
+            <span class="badge">\u4EE3\u7801\u751F\u6210</span>
+            <span class="badge">\u667A\u80FD\u9884\u6D4B</span>
+            <span class="badge">\u6587\u4EF6\u7F16\u8BD1</span>
+            <span class="badge">\u8054\u7F51\u641C\u7D22</span>
+            <span class="badge">\u6D41\u5F0F\u8F93\u51FA</span>
+          </div>
+        \`;
+        chatContainer.appendChild(welcomeDiv);
+    }
+    
+    function setMode(mode) {
+      currentMode = mode;
+      modeChatBtn.classList.remove('active');
+      modeAgentBtn.classList.remove('active');
+      (mode === 'chat' ? modeChatBtn : modeAgentBtn).classList.add('active');
+      input.placeholder = mode === 'agent' ? "\u8F93\u5165\u6307\u4EE4\uFF0C\u4F8B\u5982\uFF1A'\u521B\u5EFA src/utils.ts'..." : "\u8F93\u5165\u95EE\u9898\u6216\u4EE3\u7801\u8BF7\u6C42... (Enter \u53D1\u9001)";
+      saveState();
+    }
+    
+    function sendMessage() {
+      const text = input.value.trim();
+      if (!text || isGenerating) return;
+      
+      addMessage(text, 'user');
+      input.value = '';
+      input.style.height = 'auto';
+      
+      isGenerating = true;
+      updateButtonState();
+      
+      vscode.postMessage({
+        type: 'sendMessage',
+        text: text,
+        history: history,
+        model: modelSelect.value,
+        mode: currentMode,
+        files: attachedFiles.map(f => f.path),
+        useWebSearch: isWebSearchEnabled
+      });
+      history.push({ role: 'user', content: text });
+      saveState();
+    }
+
+    // ========== \u6E32\u67D3\u903B\u8F91 ==========
+    
+    function addMessage(text, type, isError = false) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'message ' + type + '-message';
+
+      if (type === 'warning') {
+        messageDiv.className = 'message warning-message';
+        messageDiv.innerHTML = '<span>' + escapeHtml(text) + '</span>';
+        chatContainer.appendChild(messageDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+        return;
+      }
+      
+      if (isError) {
+        messageDiv.style.background = 'linear-gradient(135deg, var(--danger-color), #c0392b)';
+        messageDiv.style.color = 'white';
+        messageDiv.innerHTML = formatMessageContent(text, type, true);
+      } else if (type === 'ai') {
+        let cleanContent = text;
+        let reasoning = '';
+        const thinkRegex = /<think>([\\s\\S]*?)(?:<\\/think>|$)/gi;
+        let match;
+        while ((match = thinkRegex.exec(text)) !== null) {
+            reasoning += (reasoning ? '\\n' : '') + match[1];
+        }
+        cleanContent = text.replace(/<think>[\\s\\S]*?(?:<\\/think>|$)/gi, '').trimStart();
+        
+        let htmlStr = '';
+        if (reasoning) {
+            htmlStr += '<details class="reasoning-block">' +
+                       '<summary>\u{1F914} \u601D\u8003\u8FC7\u7A0B</summary>' +
+                       '<div class="reasoning-content">' + escapeHtml(reasoning.trim()) + '</div>' +
+                       '</details>';
+        }
+        htmlStr += '<div class="content-block">' + formatMessageContent(cleanContent, type, true) + '</div>';
+        messageDiv.innerHTML = htmlStr;
+      } else {
+        messageDiv.innerHTML = formatMessageContent(text, type, true);
+      }
+      
+      const timeSpan = document.createElement('div');
+      timeSpan.className = 'message-time';
+      timeSpan.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      messageDiv.appendChild(timeSpan);
+      
+      chatContainer.appendChild(messageDiv);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+    
+    function addSystemMessage(text) {
+        const sysDiv = document.createElement('div');
+        sysDiv.className = 'system-message';
+        sysDiv.textContent = text;
+        chatContainer.appendChild(sysDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    function addCompilationCard(success, message, filePath, executablePath, language) {
+        const div = document.createElement('div');
+        div.className = 'compilation-card ' + (success ? 'success' : 'error');
+        
+        let html = '<div class="comp-header">' + (success ? '\u2705 \u7F16\u8BD1\u6210\u529F' : '\u274C \u7F16\u8BD1\u5931\u8D25') + '</div>';
+        
+        // \u7B80\u5355\u683C\u5F0F\u5316 message\uFF0C\u5C06 code block \u5305\u88F9\u7684\u9519\u8BEF\u4FE1\u606F\u8F6C\u4E3A pre
+        // \u8FD9\u91CC\u7684\u6B63\u5219\u8981\u5C0F\u5FC3 HTML \u8F6C\u4E49\u540E\u7684\u5B57\u7B26
+        let formattedMsg = escapeHtml(message)
+            .replace(/&#96;&#96;&#96;([\\s\\S]*?)&#96;&#96;&#96;/g, '<pre>$1</pre>')
+            .replace(/\\n/g, '<br>');
+            
+        // \u7B80\u5355\u66FF\u6362\u4E00\u4E0B\u7C97\u4F53
+        formattedMsg = formattedMsg.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');
+
+        html += '<div class="comp-details">' + formattedMsg + '</div>';
+        
+        if (success) {
+            html += '<div class="comp-actions">';
+            // \u6CE8\u610F\uFF1Aonclick \u4F20\u53C2\u9700\u8981\u8F6C\u4E49
+            const safePath = executablePath.replace(/\\\\/g, '\\\\\\\\').replace(/'/g, "\\\\'");
+            const safeLang = language;
+            html += '<button class="btn-run" onclick="window.runExecutable(\\'' + safePath + '\\', \\'' + safeLang + '\\')">\u25B6\uFE0F \u8FD0\u884C</button>';
+            html += '<button class="btn-reveal" onclick="window.revealInExplorer(\\'' + safePath + '\\')">\u{1F4C2} \u6253\u5F00\u6240\u5728\u6587\u4EF6\u5939</button>';
+            html += '</div>';
+        }
+        
+        div.innerHTML = html;
+        chatContainer.appendChild(div);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+    
+    function formatMessageContent(text, type, isFinal = true) {
+      if (type === 'user') return escapeHtml(text);
+      
+      let html = '';
+      let lines = text.split('\\n');
+      let inCodeBlock = false;
+      let currentLanguage = '';
+      let buffer = '';
+      
+      const mdTicks = String.fromCharCode(96, 96, 96);
+      
+      lines.forEach(line => {
+        if (line.startsWith(mdTicks)) {
+          if (!inCodeBlock) {
+            inCodeBlock = true;
+            currentLanguage = line.substring(3).trim();
+            html += buffer;
+            buffer = '';
+          } else {
+            html += '<div class="code-block">' +
+                    '<div class="code-header">' +
+                    '<span>' + escapeHtml(currentLanguage || 'code') + '</span>' +
+                    '<span class="language-tag">' + escapeHtml(currentLanguage || 'text') + '</span>' +
+                    '</div>' +
+                    '<pre><code>' + escapeHtml(buffer) + '</code></pre>' +
+                    '</div>';
+            buffer = '';
+            inCodeBlock = false;
+            currentLanguage = '';
+          }
+          return;
+        }
+        
+        if (inCodeBlock) {
+          buffer += line + '\\n';
+        } else {
+          if (line.trim().startsWith('> FILE:')) {
+            const filePath = line.substring(7).trim();
+            const safePath = escapeHtml(filePath);
+            
+            if (isFinal) {
+               html += '<div class="file-action-card" data-filepath="' + safePath + '">' +
+                       '<div class="file-header"><span class="file-icon">\u{1F4C4}</span><span class="file-path">' + safePath + '</span></div>' +
+                       '<div class="action-buttons"><button class="btn-primary apply-btn" onclick="applyFileChange(this, &quot;' + safePath + '&quot;)">\u26A1\uFE0F \u5BA1\u67E5\u5E76\u5E94\u7528</button></div>' +
+                       '</div>';
+            } else {
+               html += '<div class="file-action-card generation-pending" data-filepath="' + safePath + '">' +
+                       '<div class="file-header"><span class="file-icon">\u{1F4C4}</span><span class="file-path">' + safePath + '</span><span style="font-size: 11px; color: var(--text-secondary); margin-left: 8px; font-style: italic;">\u23F3 \u6B63\u5728\u751F\u6210\u4EE3\u7801...</span></div>' +
+                       '</div>';
+            }
+          } else if (line.trim()) {
+            html += '<p>' + escapeHtml(line) + '</p>';
+          }
+        }
+      });
+      if (buffer.trim()) html += buffer;
+      return html;
+    }
+    
+    function updateButtonState() {
+      if (isGenerating) {
+        sendBtn.style.display = 'none';
+        stopBtn.style.display = 'flex';
+        input.disabled = true;
+      } else {
+        sendBtn.style.display = 'flex';
+        stopBtn.style.display = 'none';
+        input.disabled = false;
+        input.focus();
+      }
+    }
+    
+    function renderFileChips() {
+      fileChips.innerHTML = '';
+      attachedFiles.forEach((file, index) => {
+        const chip = document.createElement('div');
+        chip.className = 'file-chip';
+        chip.innerHTML = '<span>\u{1F4C4} ' + escapeHtml(file.name) + '</span><span class="remove-chip" data-index="' + index + '">\xD7</span>';
+        fileChips.appendChild(chip);
+      });
+      document.querySelectorAll('.remove-chip').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          attachedFiles.splice(parseInt(btn.dataset.index), 1);
+          renderFileChips();
+          updateAttachmentsBar();
+          saveState();
+        });
+      });
+    }
+    
+    function updateAttachmentsBar() {
+      attachmentsBar.style.display = attachedFiles.length > 0 ? 'flex' : 'none';
+    }
+    
+    function switchSettingsTab(tabId) {
+      document.querySelectorAll('.settings-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tabId));
+      document.getElementById('online-settings').style.display = tabId === 'online' ? 'block' : 'none';
+      document.getElementById('local-settings').style.display = tabId === 'local' ? 'block' : 'none';
+      document.getElementById('websearch-settings').style.display = tabId === 'websearch' ? 'block' : 'none';
+      activeSettingsTab = tabId;
+    }
+    
+    function saveSettings() {
+      const settings = {};
+      if (activeSettingsTab === 'online') {
+        settings.deepseekApiKey = document.getElementById('key-deepseek').value;
+        settings.qwenApiKey = document.getElementById('key-qwen').value;
+        settings.doubanApiKey = document.getElementById('key-douban').value;
+        settings.doubanModel = document.getElementById('model-douban').value;
+        settings.zhipuApiKey = document.getElementById('key-zhipu').value;
+        settings.huggingfaceApiKey = document.getElementById('key-huggingface').value;
+        settings.huggingfaceModel = document.getElementById('model-huggingface').value;
+      } else if (activeSettingsTab === 'local') {
+        settings.localModelEnabled = document.getElementById('local-enabled').checked;
+        settings.localModelBaseUrl = document.getElementById('local-base-url').value;
+        settings.localModelName = document.getElementById('local-model-name').value;
+        settings.localModelTimeout = parseInt(document.getElementById('local-timeout').value) || 120000;
+      } else if (activeSettingsTab === 'websearch') {
+        settings.enableWebSearch = document.getElementById('websearch-enabled').checked;
+        settings.serpApiKey = document.getElementById('serp-api-key').value;
+      }
+      vscode.postMessage({ type: 'saveSettings', settings: settings });
+      document.getElementById('settings-modal').style.display = 'none';
+    }
+    
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+    
+    function saveState() {
+      vscode.setState({ attachedFiles, currentMode, isWebSearchEnabled });
+    }
+    
+    // \u5168\u5C40\u51FD\u6570\uFF1A\u4F9B\u7F16\u8BD1\u7ED3\u679C\u5361\u7247\u8C03\u7528
+    window.runExecutable = function(path, language) {
+        vscode.postMessage({ type: 'runExecutable', path: path, language: language });
+    };
+
+    window.revealInExplorer = function(path) {
+        vscode.postMessage({ type: 'revealInExplorer', path: path });
+    };
+
+    window.applyFileChange = function(btnElem, filePath) {
+      const card = btnElem.closest('.file-action-card');
+      let nextElem = card.nextElementSibling;
+      let codeContent = '';
+      
+      while(nextElem) {
+        if (nextElem.classList.contains('code-block')) {
+          const codeNode = nextElem.querySelector('code');
+          if (codeNode) {
+             codeContent = codeNode.textContent;
+          }
+          break;
+        }
+        if (nextElem.classList.contains('file-action-card')) break;
+        nextElem = nextElem.nextElementSibling;
+      }
+
+      if (!codeContent) {
+        const messageDiv = btnElem.closest('.message');
+        const codeBlocks = Array.from(messageDiv.querySelectorAll('.code-block code'));
+        if (codeBlocks.length > 0) {
+           codeContent = codeBlocks[0].textContent;
+        }
+      }
+
+      if (!codeContent) {
+         btnElem.textContent = '\u274C \u672A\u627E\u5230\u4EE3\u7801\u5757';
+         setTimeout(() => { btnElem.textContent = '\u26A1\uFE0F \u5BA1\u67E5\u5E76\u5E94\u7528'; }, 2000);
+         return;
+      }
+
+      btnElem.textContent = '\u23F3 \u5E94\u7528\u4E2D...';
+      btnElem.disabled = true;
+
+      vscode.postMessage({ type: 'applyFileChange', filepath: filePath, content: codeContent });
+    };
+
+    window.saveFile = function(btnElem, filePath) {
+      btnElem.textContent = '\u23F3 \u4FDD\u5B58\u4E2D...';
+      btnElem.disabled = true;
+      vscode.postMessage({ type: 'saveFile', filepath: filePath });
+    };
+
+    window.revertFile = function(btnElem, filePath) {
+      btnElem.textContent = '\u23F3 \u64A4\u9500\u4E2D...';
+      btnElem.disabled = true;
+      vscode.postMessage({ type: 'revertFile', filepath: filePath });
+    };
+    
+    // ========== \u6D88\u606F\u63A5\u6536\u6838\u5FC3\u5904\u7406 (\u652F\u6301\u6D41\u5F0F) ==========
+    window.addEventListener('message', event => {
+      const message = event.data;
+      
+      switch (message.type) {
+        case 'addResponse':
+          addMessage(message.text, 'ai');
+          const cleanHistoryText = message.text.replace(/<think>[\\s\\S]*?(?:<\\/think>|$)/gi, '').trimStart();
+          history.push({ role: 'assistant', content: cleanHistoryText });
+          isGenerating = false;
+          updateButtonState();
+          break;
+          
+        case 'addErrorResponse':
+          addMessage(message.text, 'ai', true);
+          isGenerating = false;
+          updateButtonState();
+          break;
+
+        case 'addWarningResponse':
+          addMessage(message.text, 'warning');
+          isGenerating = false;
+          updateButtonState();
+          const tempSearch = document.getElementById('temp-search-status');
+          if(tempSearch) tempSearch.remove();
+          break;
+
+        case 'addSystemMessage':
+          addSystemMessage(message.text);
+          break;
+
+        case 'compilationResult':
+          addCompilationCard(message.success, message.message, message.filePath, message.executablePath, message.language);
+          break;
+
+        case 'fileChangeApplied':
+          const safePathApplied = escapeHtml(message.filepath);
+          const applyCards = document.querySelectorAll('div.file-action-card[data-filepath="' + safePathApplied + '"]');
+          if (applyCards.length > 0) {
+              const targetCard = applyCards[applyCards.length - 1];
+              const actionArea = targetCard.querySelector('.action-buttons');
+              if (actionArea) {
+                  actionArea.innerHTML = '<span style="font-size: 11px; margin-right: 8px; color: var(--success-color);">\u2705 \u5DF2\u5199\u5165\u7F16\u8F91\u5668</span>' +
+                                         '<button class="btn-primary apply-btn" onclick="applyFileChange(this, &quot;' + safePathApplied + '&quot;)">\u{1F504} \u91CD\u65B0\u5E94\u7528</button> ' +
+                                         '<button class="btn-success" onclick="saveFile(this, &quot;' + safePathApplied + '&quot;)">\u{1F4BE} \u4FDD\u5B58</button> ' +
+                                         '<button class="btn-danger" onclick="revertFile(this, &quot;' + safePathApplied + '&quot;)">\u21A9\uFE0F \u64A4\u9500</button>';
+              }
+          }
+          break;
+          
+        case 'fileChangeSaved':
+          const safePathSaved = escapeHtml(message.filepath);
+          const savedCards = document.querySelectorAll('div.file-action-card[data-filepath="' + safePathSaved + '"]');
+          if (savedCards.length > 0) {
+              const targetCard = savedCards[savedCards.length - 1];
+              const actionArea = targetCard.querySelector('.action-buttons');
+              if (actionArea) {
+                  actionArea.innerHTML = '<span style="font-size: 11px; margin-right: 8px; color: var(--success-color);">\u2705 \u6587\u4EF6\u5DF2\u56FA\u5316\u4FDD\u5B58</span>' +
+                                         '<button class="btn-primary apply-btn" onclick="applyFileChange(this, &quot;' + safePathSaved + '&quot;)">\u{1F504} \u91CD\u65B0\u5E94\u7528</button> ' +
+                                         '<button class="btn-danger" onclick="revertFile(this, &quot;' + safePathSaved + '&quot;)">\u21A9\uFE0F \u64A4\u9500</button>';
+              }
+          }
+          break;
+          
+        case 'fileChangeReverted':
+          const safePathReverted = escapeHtml(message.filepath);
+          const revertedCards = document.querySelectorAll('div.file-action-card[data-filepath="' + safePathReverted + '"]');
+          if (revertedCards.length > 0) {
+              const targetCard = revertedCards[revertedCards.length - 1];
+              const actionArea = targetCard.querySelector('.action-buttons');
+              if (actionArea) {
+                  actionArea.innerHTML = '<span style="font-size: 11px; margin-right: 8px; color: var(--danger-color);">\u274C \u5DF2\u64A4\u9500\u66F4\u6539</span>' +
+                                         '<button class="btn-primary apply-btn" onclick="applyFileChange(this, &quot;' + safePathReverted + '&quot;)">\u26A1\uFE0F \u91CD\u65B0\u5E94\u7528</button>';
+              }
+          }
+          break;
+
+        case 'fileChangeError':
+          const safePathError = escapeHtml(message.filepath);
+          const errorCards = document.querySelectorAll('div.file-action-card[data-filepath="' + safePathError + '"]');
+          if (errorCards.length > 0) {
+              const targetCard = errorCards[errorCards.length - 1];
+              const applyBtn = targetCard.querySelector('.apply-btn');
+              if (applyBtn) {
+                 applyBtn.textContent = '\u26A1\uFE0F \u91CD\u8BD5\u5E94\u7528';
+                 applyBtn.disabled = false;
+              }
+          }
+          break;
+
+        case 'streamStart':
+          isGenerating = true;
+          updateButtonState();
+          currentAiContent = '';
+          currentAiReasoning = '';
+          
+          currentAiMessageDiv = document.createElement('div');
+          currentAiMessageDiv.className = 'message ai-message';
+          
+          const timeSpanHtml = '<div class="message-time">' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + '</div>';
+          currentAiMessageDiv.dataset.timeHtml = timeSpanHtml;
+          
+          currentAiMessageDiv.innerHTML = '<span style="color:#aaa; font-style:italic;">\u6B63\u5728\u601D\u8003\u4E2D...</span>';
+          chatContainer.appendChild(currentAiMessageDiv);
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+          break;
+          
+        case 'streamUpdate':
+          if (!currentAiMessageDiv) return;
+          
+          if (message.reasoning) currentAiReasoning += message.reasoning;
+          if (message.content) currentAiContent += message.content;
+          
+          let extractedReasoning = currentAiReasoning;
+          let cleanStreamContent = currentAiContent;
+          
+          const thinkRegexUpdate = /<think>([\\s\\S]*?)(?:<\\/think>|$)/gi;
+          let matchUpdate;
+          while ((matchUpdate = thinkRegexUpdate.exec(currentAiContent)) !== null) {
+              extractedReasoning += (extractedReasoning ? '\\n' : '') + matchUpdate[1];
+          }
+          cleanStreamContent = currentAiContent.replace(/<think>[\\s\\S]*?(?:<\\/think>|$)/gi, '').trimStart();
+          
+          let htmlStrUpdate = '';
+          
+          if (extractedReasoning) {
+             htmlStrUpdate += '<details class="reasoning-block" open>' +
+                              '<summary>\u{1F914} \u601D\u8003\u8FC7\u7A0B</summary>' +
+                              '<div class="reasoning-content">' + escapeHtml(extractedReasoning.trim()) + '</div>' +
+                              '</details>';
+          }
+          
+          if (cleanStreamContent) {
+             // isFinal = false \u963B\u6B62\u5728\u6B64\u5904\u751F\u6210\u5E26\u6309\u94AE\u7684\u64CD\u4F5C\u5361\u7247\uFF0C\u4EE5\u9632\u95EA\u70C1
+             htmlStrUpdate += '<div class="content-block">' + formatMessageContent(cleanStreamContent, 'ai', false) + '</div>';
+          } else if (extractedReasoning) {
+             htmlStrUpdate += '<div style="color:#aaa; font-style:italic; font-size:12px; margin-top:5px;">\u601D\u8003\u5B8C\u6BD5\uFF0C\u6B63\u5728\u751F\u6210\u4EE3\u7801...</div>';
+          }
+          
+          htmlStrUpdate += currentAiMessageDiv.dataset.timeHtml;
+          currentAiMessageDiv.innerHTML = htmlStrUpdate;
+          
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+          break;
+          
+        case 'streamEnd':
+          if (currentAiMessageDiv) {
+              const details = currentAiMessageDiv.querySelector('details.reasoning-block');
+              if (details) {
+                  details.removeAttribute('open');
+              }
+              
+              // \u5728\u6D41\u8F93\u51FA\u7ED3\u675F\u65F6\uFF0C\u91CD\u65B0\u6E32\u67D3\u751F\u6210\u62E5\u6709\u5B8C\u5168\u529F\u80FD\u7684\u6309\u94AE (isFinal = true)
+              const finalCleanContent = currentAiContent.replace(/<think>[\\s\\S]*?(?:<\\/think>|$)/gi, '').trimStart();
+              
+              let extractedReasoningEnd = '';
+              const thinkRegexEnd = /<think>([\\s\\S]*?)(?:<\\/think>|$)/gi;
+              let matchEnd;
+              while ((matchEnd = thinkRegexEnd.exec(currentAiContent)) !== null) {
+                  extractedReasoningEnd += (extractedReasoningEnd ? '\\n' : '') + matchEnd[1];
+              }
+
+              let finalHtml = '';
+              if (extractedReasoningEnd) {
+                 finalHtml += '<details class="reasoning-block">' +
+                              '<summary>\u{1F914} \u601D\u8003\u8FC7\u7A0B</summary>' +
+                              '<div class="reasoning-content">' + escapeHtml(extractedReasoningEnd.trim()) + '</div>' +
+                              '</details>';
+              }
+              
+              finalHtml += '<div class="content-block">' + formatMessageContent(finalCleanContent, 'ai', true) + '</div>';
+              finalHtml += currentAiMessageDiv.dataset.timeHtml;
+              currentAiMessageDiv.innerHTML = finalHtml;
+          }
+          
+          const finalCleanContentHistory = currentAiContent.replace(/<think>[\\s\\S]*?(?:<\\/think>|$)/gi, '').trimStart();
+          history.push({ role: 'assistant', content: finalCleanContentHistory });
+          isGenerating = false;
+          updateButtonState();
+          currentAiMessageDiv = null;
+          break;
+          
+        case 'showSearchStatus':
+          const statusDiv = document.createElement('div');
+          statusDiv.className = 'message ai-message';
+          statusDiv.style.background = 'transparent';
+          statusDiv.style.border = 'none';
+          statusDiv.style.color = 'var(--info-color)';
+          statusDiv.style.fontStyle = 'italic';
+          statusDiv.textContent = message.text;
+          chatContainer.appendChild(statusDiv);
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+          statusDiv.id = 'temp-search-status';
+          break;
+
+        case 'updateContextInfo':
+          document.getElementById('context-text').textContent = message.text;
+          break;
+          
+        case 'filesSelected':
+          message.files.forEach(file => { if (!attachedFiles.some(f => f.path === file.path)) attachedFiles.push(file); });
+          renderFileChips();
+          updateAttachmentsBar();
+          saveState();
+          break;
+          
+        case 'updateSettings':
+          if (message.settings.deepseekApiKey) document.getElementById('key-deepseek').value = message.settings.deepseekApiKey;
+          if (message.settings.qwenApiKey) document.getElementById('key-qwen').value = message.settings.qwenApiKey;
+          if (message.settings.doubanApiKey) document.getElementById('key-douban').value = message.settings.doubanApiKey;
+          if (message.settings.doubanModel) document.getElementById('model-douban').value = message.settings.doubanModel;
+          if (message.settings.zhipuApiKey) document.getElementById('key-zhipu').value = message.settings.zhipuApiKey;
+          if (message.settings.huggingfaceApiKey) document.getElementById('key-huggingface').value = message.settings.huggingfaceApiKey;
+          if (message.settings.huggingfaceModel) document.getElementById('model-huggingface').value = message.settings.huggingfaceModel;
+          if (message.settings.localModelEnabled !== undefined) document.getElementById('local-enabled').checked = message.settings.localModelEnabled;
+          if (message.settings.localModelBaseUrl) document.getElementById('local-base-url').value = message.settings.localModelBaseUrl;
+          if (message.settings.localModelName) document.getElementById('local-model-name').value = message.settings.localModelName;
+          if (message.settings.localModelTimeout) document.getElementById('local-timeout').value = message.settings.localModelTimeout;
+          if (message.settings.enableWebSearch !== undefined) {
+             document.getElementById('websearch-enabled').checked = message.settings.enableWebSearch;
+             if (message.settings.enableWebSearch && !isWebSearchEnabled && !vscode.getState()?.hasOwnProperty('isWebSearchEnabled')) {
+                isWebSearchEnabled = true;
+                webSearchToggleBtn.classList.add('active');
+             }
+          }
+          if (message.settings.serpApiKey) document.getElementById('serp-api-key').value = message.settings.serpApiKey;
+          break;
+      }
+      
+      if (message.type === 'streamStart' || message.type === 'addResponse') {
+         const tempSearch = document.getElementById('temp-search-status');
+         if (tempSearch) tempSearch.remove();
+      }
+    });
+    
+    init();
+  </script>
+</body>
+</html>`;
   }
 };
-var LLMACompletionProvider = class {
-  constructor() {
-    this.completionCache = /* @__PURE__ */ new Map();
-    this.lastRequestTime = 0;
-    this.requestDelay = 300;
+async function handleExplicitCodeGeneration() {
+  const editor = vscode.window.activeTextEditor;
+  if (!editor) {
+    vscode.window.showWarningMessage("\u8BF7\u5148\u6253\u5F00\u4E00\u4E2A\u7F16\u8F91\u5668");
+    return;
   }
-  // 请求延迟，避免频繁调用
-  async provideCompletionItems(document2, position, token, context) {
-    const items = [];
-    if (this.shouldTriggerAICompletion(document2, position, context)) {
-      const aiItems = await this.getAICompletionItems(document2, position, token);
-      items.push(...aiItems);
-    }
-    const templateItems = this.getTemplateCompletionItems(document2, position);
-    items.push(...templateItems);
-    return new vscode.CompletionList(items, true);
-  }
-  // 判断是否应该触发AI建议
-  shouldTriggerAICompletion(document2, position, context) {
-    const now = Date.now();
-    if (now - this.lastRequestTime < this.requestDelay) {
-      return false;
-    }
-    const line = document2.lineAt(position.line);
-    const textBeforeCursor = line.text.substring(0, position.character);
-    const aiTriggers = [
-      "//",
-      "/*",
-      "/**",
-      // 注释
-      "function",
-      "def",
-      "func",
-      // 函数定义
-      "class",
-      "interface",
-      // 类定义
-      "if",
-      "for",
-      "while",
-      "switch",
-      // 控制流
-      "try",
-      "catch",
-      "finally",
-      // 异常处理
-      "return",
-      "throw",
-      // 返回/抛出
-      "const",
-      "let",
-      "var",
-      // 变量声明
-      "async",
-      "await",
-      // 异步
-      "new",
-      "this",
-      // 对象
-      "import",
-      "export",
-      "require"
-      // 模块
-    ];
-    for (const trigger of aiTriggers) {
-      if (textBeforeCursor.trim().endsWith(trigger) || textBeforeCursor.includes(` ${trigger}`)) {
-        return true;
-      }
-    }
-    if (textBeforeCursor.includes("//") || textBeforeCursor.includes("/*")) {
-      return true;
-    }
-    return false;
-  }
-  // 获取AI生成的建议
-  async getAICompletionItems(document2, position, token) {
-    try {
-      this.lastRequestTime = Date.now();
+  const document2 = editor.document;
+  const selection = editor.selection;
+  const cursorLine = selection.active.line;
+  const startContextLine = Math.max(0, cursorLine - 100);
+  const endContextLine = Math.min(document2.lineCount - 1, cursorLine + 20);
+  const textBefore = document2.getText(new vscode.Range(startContextLine, 0, selection.start.line, selection.start.character));
+  const textSelected = document2.getText(selection);
+  const textAfter = document2.getText(new vscode.Range(selection.end.line, selection.end.character, endContextLine, document2.lineAt(endContextLine).range.end.character));
+  const currentIndent = document2.lineAt(cursorLine).text.match(/^\s*/)?.[0] || "";
+  try {
+    await vscode.window.withProgress({
+      location: vscode.ProgressLocation.Notification,
+      title: "LLMA \u6B63\u5728\u751F\u6210\u4EE3\u7801...",
+      cancellable: true
+    }, async (progress, token) => {
       const config = vscode.workspace.getConfiguration("llma");
       const currentModel = config.get("currentModel") || "deepseek";
-      const apiKey = this.getApiKey(config, currentModel);
+      const apiKey = getApiKey(config, currentModel);
       if (!apiKey) {
-        return [];
+        vscode.window.showErrorMessage(`\u8BF7\u5148\u914D\u7F6E ${currentModel} \u7684 API \u5BC6\u94A5`);
+        return;
       }
-      const line = document2.lineAt(position.line);
-      const textBeforeCursor = line.text.substring(0, position.character);
-      const textAfterCursor = line.text.substring(position.character);
-      const context = this.getCompletionContext(document2, position);
-      const systemPrompt = `\u4F60\u662F\u4E00\u4E2A\u4EE3\u7801\u8865\u5168\u52A9\u624B\u3002\u8BF7\u6839\u636E\u7528\u6237\u5F53\u524D\u7684\u4EE3\u7801\u4E0A\u4E0B\u6587\uFF0C\u63D0\u4F9B\u63A5\u4E0B\u6765\u6700\u53EF\u80FD\u7684\u4EE3\u7801\u5EFA\u8BAE\u3002
-\u8981\u6C42\uFF1A
-1. \u8FD4\u56DE3-5\u4E2A\u6700\u53EF\u80FD\u7684\u4EE3\u7801\u8865\u5168\u9009\u9879
-2. \u6BCF\u4E2A\u9009\u9879\u7528\u4E00\u884C\u8868\u793A
-3. \u4FDD\u6301\u4E0E\u73B0\u6709\u4EE3\u7801\u4E00\u81F4\u7684\u98CE\u683C
-4. \u53EA\u8FD4\u56DE\u4EE3\u7801\uFF0C\u4E0D\u8981\u89E3\u91CA`;
-      const userPrompt = `\u8BED\u8A00: ${document2.languageId}
-\u5F53\u524D\u4F4D\u7F6E: \u7B2C${position.line + 1}\u884C, \u7B2C${position.character + 1}\u5217
-\u5F53\u524D\u884C: ${line.text}
-\u5149\u6807\u524D: ${textBeforeCursor}
-\u5149\u6807\u540E: ${textAfterCursor}
-${context ? `\u4E0A\u4E0B\u6587:
-${context}` : ""}
+      progress.report({ increment: 20 });
+      const isInsertion = textSelected.trim().length === 0;
+      let systemPrompt = `You are an expert coding assistant. Return ONLY the code block. No markdown fencing, no explanation. Maintain indentation: "${currentIndent}".`;
+      let userPrompt = "";
+      if (isInsertion) {
+        userPrompt = `[FILE: ${path.basename(document2.fileName)}]
+[LANGUAGE: ${document2.languageId}]
+[CODE BEFORE CURSOR]:
+${textBefore}
+<CURSOR>
+[CODE AFTER CURSOR]:
+${textAfter}
 
-\u8BF7\u4E3A\u5F53\u524D\u5149\u6807\u4F4D\u7F6E\u63D0\u4F9B\u4EE3\u7801\u8865\u5168\u5EFA\u8BAE\uFF1A`;
-      const completion = await this.callAIModelQuick(
+INSTRUCTION: Generate the code that belongs at <CURSOR>. Just the code.`;
+      } else {
+        userPrompt = `[FILE: ${path.basename(document2.fileName)}]
+[CONTEXT BEFORE]:
+${textBefore.slice(-500)}
+
+[SELECTED CODE TO PROCESS]:
+${textSelected}
+
+[INSTRUCTION]:
+Optimize, fix, or implement the logic described in the selected code.
+Return only the replaced code.`;
+      }
+      progress.report({ increment: 40 });
+      const completion = await callSimpleAI(
         currentModel,
         apiKey,
         systemPrompt,
-        userPrompt
+        userPrompt,
+        2e3,
+        0.2,
+        config
       );
-      if (!completion) {
-        return [];
+      if (token.isCancellationRequested) {
+        return;
       }
-      return this.parseAICompletions(completion, document2.languageId);
-    } catch (error) {
-      console.error("AI Completion Error:", error);
+      if (completion) {
+        progress.report({ increment: 90 });
+        await editor.edit((editBuilder) => {
+          let cleanCode = completion.replace(/^```[\w]*\n?/, "").replace(/\n?```$/, "");
+          if (selection.isEmpty) {
+            editBuilder.insert(selection.active, cleanCode);
+          } else {
+            editBuilder.replace(selection, cleanCode);
+          }
+        });
+      }
+    });
+  } catch (error) {
+    vscode.window.showErrorMessage(`\u751F\u6210\u5931\u8D25: ${error.message}`);
+  }
+}
+var LLMAInlineCompletionProvider = class {
+  constructor() {
+    this._abortController = null;
+    this._timer = null;
+  }
+  async provideInlineCompletionItems(document2, position, context, token) {
+    const config = vscode.workspace.getConfiguration("llma");
+    if (!config.get("enableAutoCompletion")) {
       return [];
     }
-  }
-  // 快速调用AI模型（用于补全，使用更小的参数）
-  async callAIModelQuick(modelType, apiKey, systemPrompt, userPrompt) {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5e3);
-    try {
-      let url2 = "";
-      let payload = {};
-      switch (modelType) {
-        case "deepseek":
-          url2 = "https://api.deepseek.com/v1/chat/completions";
-          payload = {
-            model: "deepseek-coder",
-            messages: [
-              { role: "system", content: systemPrompt },
-              { role: "user", content: userPrompt }
-            ],
-            max_tokens: 100,
-            temperature: 0.2,
-            stream: false
-          };
-          break;
-        case "qwen":
-          const baseUrl = vscode.workspace.getConfiguration("llma").get("qwenBaseUrl") || "https://dashscope.aliyuncs.com/compatible-mode/v1";
-          url2 = `${baseUrl}/chat/completions`;
-          payload = {
-            model: "qwen-turbo",
-            messages: [
-              { role: "system", content: systemPrompt },
-              { role: "user", content: userPrompt }
-            ],
-            max_tokens: 100,
-            temperature: 0.2,
-            stream: false
-          };
-          break;
-        default:
-          return "";
-      }
-      const response = await axios_default.post(url2, payload, {
-        headers: {
-          "Authorization": `Bearer ${apiKey}`,
-          "Content-Type": "application/json"
-        },
-        signal: controller.signal,
-        timeout: 5e3
-      });
-      clearTimeout(timeout);
-      return response.data.choices[0]?.message?.content?.trim() || "";
-    } catch (error) {
-      clearTimeout(timeout);
-      throw error;
+    if (this._timer) {
+      clearTimeout(this._timer);
     }
-  }
-  // 解析AI返回的建议
-  parseAICompletions(completion, languageId) {
-    const items = [];
-    const lines = completion.split("\n").filter((line) => line.trim());
-    for (const line of lines.slice(0, 5)) {
-      const trimmed = line.trim();
-      if (trimmed) {
-        const kind = this.getCompletionItemKind(trimmed, languageId);
-        const item = new LLMACompletionItem(trimmed, kind, true);
-        item.documentation = new vscode.MarkdownString(`**LLMA \u667A\u80FD\u5EFA\u8BAE**
-
-\`\`\`${languageId}
-${trimmed}
-\`\`\``);
-        items.push(item);
-      }
+    if (this._abortController) {
+      this._abortController.abort();
     }
-    return items;
-  }
-  // 获取完成项的类型
-  getCompletionItemKind(text, languageId) {
-    text = text.trim();
-    if (text.startsWith("function ") || text.includes("=>") || text.includes("def ")) {
-      return vscode.CompletionItemKind.Function;
-    } else if (text.includes("class ") || text.includes("interface ")) {
-      return vscode.CompletionItemKind.Class;
-    } else if (text.includes("const ") || text.includes("let ") || text.includes("var ")) {
-      return vscode.CompletionItemKind.Variable;
-    } else if (text.includes("if ") || text.includes("for ") || text.includes("while ")) {
-      return vscode.CompletionItemKind.Keyword;
-    } else if (text.includes("import ") || text.includes("require(") || text.includes("from ")) {
-      return vscode.CompletionItemKind.Module;
-    } else if (text.includes("return ") || text.includes("throw ")) {
-      return vscode.CompletionItemKind.Keyword;
-    }
-    return vscode.CompletionItemKind.Text;
-  }
-  // 获取API密钥
-  getApiKey(config, modelType) {
-    switch (modelType) {
-      case "deepseek":
-        return config.get("deepseekApiKey");
-      case "qwen":
-        return config.get("qwenApiKey");
-      case "douban":
-        return config.get("doubanApiKey");
-      default:
-        return void 0;
-    }
-  }
-  // 获取补全上下文
-  getCompletionContext(document2, position) {
-    const contextLines = 5;
-    const startLine = Math.max(0, position.line - contextLines);
-    const endLine = Math.min(document2.lineCount - 1, position.line + contextLines);
-    let context = "";
-    for (let i = startLine; i <= endLine; i++) {
-      const line = document2.lineAt(i);
-      const prefix = i === position.line ? "\u2192 " : "  ";
-      context += `${prefix}${line.text}
-`;
-    }
-    return context;
-  }
-  // 获取模板完成项（预设的智能代码片段）
-  getTemplateCompletionItems(document2, position) {
-    const items = [];
-    const languageId = document2.languageId;
-    const line = document2.lineAt(position.line);
-    const textBeforeCursor = line.text.substring(0, position.character);
-    const commonTemplates = [
-      {
-        trigger: ["for", "\u5FAA\u73AF"],
-        template: "for (let i = 0; i < length; i++) {\n  \n}",
-        kind: vscode.CompletionItemKind.Snippet,
-        description: "for\u5FAA\u73AF\u6A21\u677F"
-      },
-      {
-        trigger: ["if", "\u5982\u679C"],
-        template: "if (condition) {\n  \n}",
-        kind: vscode.CompletionItemKind.Snippet,
-        description: "if\u6761\u4EF6\u8BED\u53E5"
-      },
-      {
-        trigger: ["function", "\u51FD\u6570", "def"],
-        template: "function name(params) {\n  \n}",
-        kind: vscode.CompletionItemKind.Snippet,
-        description: "\u51FD\u6570\u5B9A\u4E49"
-      },
-      {
-        trigger: ["try", "\u5C1D\u8BD5"],
-        template: "try {\n  \n} catch (error) {\n  \n}",
-        kind: vscode.CompletionItemKind.Snippet,
-        description: "try-catch\u5F02\u5E38\u5904\u7406"
-      },
-      {
-        trigger: ["async", "\u5F02\u6B65"],
-        template: "async function name() {\n  \n}",
-        kind: vscode.CompletionItemKind.Snippet,
-        description: "\u5F02\u6B65\u51FD\u6570"
-      }
-    ];
-    const languageTemplates = {
-      "javascript": [
-        {
-          trigger: ["console", "\u6253\u5370"],
-          template: "console.log(${1:message});",
-          kind: vscode.CompletionItemKind.Snippet,
-          description: "\u63A7\u5236\u53F0\u8F93\u51FA"
-        },
-        {
-          trigger: ["fetch", "\u8BF7\u6C42"],
-          template: "fetch(url)\n  .then(response => response.json())\n  .then(data => {\n    \n  })\n  .catch(error => {\n    \n  });",
-          kind: vscode.CompletionItemKind.Snippet,
-          description: "fetch\u8BF7\u6C42\u6A21\u677F"
+    const delay = config.get("requestDelay") || 300;
+    return new Promise((resolve) => {
+      this._timer = setTimeout(async () => {
+        if (token.isCancellationRequested) {
+          resolve([]);
+          return;
         }
-      ],
-      "python": [
-        {
-          trigger: ["def", "\u51FD\u6570"],
-          template: 'def function_name(args):\n    """\n    \u51FD\u6570\u8BF4\u660E\n    """\n    ',
-          kind: vscode.CompletionItemKind.Snippet,
-          description: "Python\u51FD\u6570\u5B9A\u4E49"
-        },
-        {
-          trigger: ["print", "\u6253\u5370"],
-          template: "print(${1:message})",
-          kind: vscode.CompletionItemKind.Snippet,
-          description: "\u6253\u5370\u8F93\u51FA"
-        }
-      ],
-      "typescript": [
-        {
-          trigger: ["interface", "\u63A5\u53E3"],
-          template: "interface InterfaceName {\n  \n}",
-          kind: vscode.CompletionItemKind.Snippet,
-          description: "TypeScript\u63A5\u53E3\u5B9A\u4E49"
-        },
-        {
-          trigger: ["type", "\u7C7B\u578B"],
-          template: "type TypeName = {\n  \n};",
-          kind: vscode.CompletionItemKind.Snippet,
-          description: "TypeScript\u7C7B\u578B\u5B9A\u4E49"
-        }
-      ]
-    };
-    const templates = [...commonTemplates, ...languageTemplates[languageId] || []];
-    for (const template of templates) {
-      for (const trigger of template.trigger) {
-        if (textBeforeCursor.toLowerCase().includes(trigger.toLowerCase()) || textBeforeCursor.trim().endsWith(trigger)) {
-          const item = new LLMACompletionItem(
-            `${trigger} - ${template.description}`,
-            template.kind,
-            false
+        try {
+          updateStatusBar(true);
+          this._abortController = new AbortController();
+          const signal = this._abortController.signal;
+          token.onCancellationRequested(() => {
+            this._abortController?.abort();
+            updateStatusBar(false);
+            resolve([]);
+          });
+          const promptData = this.prepareSmartContext(document2, position);
+          if (!promptData) {
+            updateStatusBar(false);
+            resolve([]);
+            return;
+          }
+          const completionText = await this.fetchAICompletion(promptData, config, signal);
+          if (!completionText || completionText.trim().length === 0) {
+            updateStatusBar(false);
+            resolve([]);
+            return;
+          }
+          const item = new vscode.InlineCompletionItem(
+            completionText,
+            new vscode.Range(position, position)
           );
-          item.insertText = new vscode.SnippetString(template.template);
-          item.documentation = new vscode.MarkdownString(`**LLMA \u4EE3\u7801\u6A21\u677F**
-
-\`\`\`${languageId}
-${template.template}
-\`\`\``);
-          item.detail = template.description;
-          items.push(item);
+          updateStatusBar(false);
+          resolve([item]);
+        } catch (error) {
+          updateStatusBar(false);
+          resolve([]);
         }
-      }
-    }
-    return items;
+      }, delay);
+    });
   }
-};
-var LLMAHoverProvider = class {
-  async provideHover(document2, position, token) {
-    const config = vscode.workspace.getConfiguration("llma");
-    const enableHover = config.get("enableHoverExplanation", true);
-    if (!enableHover) {
+  prepareSmartContext(document2, position) {
+    const windowSizeLines = 60;
+    const startLine = Math.max(0, position.line - windowSizeLines);
+    const endLine = Math.min(document2.lineCount - 1, position.line + 10);
+    const rangeBefore = new vscode.Range(startLine, 0, position.line, position.character);
+    const rangeAfter = new vscode.Range(position.line, position.character, endLine, document2.lineAt(endLine).range.end.character);
+    const textBefore = document2.getText(rangeBefore);
+    const textAfter = document2.getText(rangeAfter);
+    if (textBefore.trim().length < 1) {
       return null;
     }
-    const range = document2.getWordRangeAtPosition(position);
-    if (!range) {
-      return null;
-    }
-    const word = document2.getText(range);
-    if (!word || word.length < 2) {
-      return null;
-    }
-    const context = this.getHoverContext(document2, position);
-    try {
-      const systemPrompt = `\u4F60\u662F\u4E00\u4E2A\u4EE3\u7801\u89E3\u91CA\u52A9\u624B\u3002\u8BF7\u89E3\u91CA\u7ED9\u5B9A\u7684\u4EE3\u7801\u6807\u8BC6\u7B26\uFF08\u53D8\u91CF\u3001\u51FD\u6570\u3001\u7C7B\u7B49\uFF09\u7684\u542B\u4E49\u548C\u4F5C\u7528\u3002`;
-      const userPrompt = `\u8BED\u8A00: ${document2.languageId}
-\u6807\u8BC6\u7B26: ${word}
-\u4E0A\u4E0B\u6587: ${context}
-
-\u8BF7\u89E3\u91CA\u8FD9\u4E2A\u6807\u8BC6\u7B26\u7684\u4F5C\u7528\u548C\u542B\u4E49\uFF1A`;
-      const currentModel = config.get("currentModel") || "deepseek";
-      const apiKey = this.getApiKey(config, currentModel);
-      if (!apiKey) {
-        return null;
-      }
-      const explanation = await this.getAIExplanation(currentModel, apiKey, systemPrompt, userPrompt);
-      if (explanation) {
-        const markdown = new vscode.MarkdownString();
-        markdown.appendMarkdown(`### \u{1F916} LLMA \u89E3\u91CA: \`${word}\`
-
-`);
-        markdown.appendMarkdown(explanation);
-        markdown.appendMarkdown(`
-
----
-*\u7531 ${currentModel} \u6A21\u578B\u751F\u6210*`);
-        return new vscode.Hover(markdown, range);
-      }
-    } catch (error) {
-      console.error("Hover explanation error:", error);
-    }
-    return null;
+    return {
+      prefix: textBefore,
+      suffix: textAfter,
+      language: document2.languageId,
+      filename: path.basename(document2.fileName)
+    };
   }
-  async getAIExplanation(modelType, apiKey, systemPrompt, userPrompt) {
-    try {
-      let url2 = "";
-      let payload = {};
-      switch (modelType) {
-        case "deepseek":
-          url2 = "https://api.deepseek.com/v1/chat/completions";
-          payload = {
-            model: "deepseek-chat",
-            messages: [
-              { role: "system", content: systemPrompt },
-              { role: "user", content: userPrompt }
-            ],
-            max_tokens: 200,
-            temperature: 0.3,
-            stream: false
-          };
-          break;
-        case "qwen":
-          const baseUrl = vscode.workspace.getConfiguration("llma").get("qwenBaseUrl") || "https://dashscope.aliyuncs.com/compatible-mode/v1";
-          url2 = `${baseUrl}/chat/completions`;
-          payload = {
-            model: "qwen-turbo",
-            messages: [
-              { role: "system", content: systemPrompt },
-              { role: "user", content: userPrompt }
-            ],
-            max_tokens: 200,
-            temperature: 0.3,
-            stream: false
-          };
-          break;
-        default:
-          return "";
-      }
-      const response = await axios_default.post(url2, payload, {
-        headers: {
-          "Authorization": `Bearer ${apiKey}`,
-          "Content-Type": "application/json"
-        },
-        timeout: 3e3
-      });
-      return response.data.choices[0]?.message?.content?.trim() || "";
-    } catch (error) {
-      console.error("AI Explanation Error:", error);
+  async fetchAICompletion(data, config, signal) {
+    const model = config.get("currentModel") || "deepseek";
+    const apiKey = getApiKey(config, model);
+    if (!apiKey) {
       return "";
     }
-  }
-  getHoverContext(document2, position) {
-    const contextLines = 3;
-    const startLine = Math.max(0, position.line - contextLines);
-    const endLine = Math.min(document2.lineCount - 1, position.line + contextLines);
-    let context = "";
-    for (let i = startLine; i <= endLine; i++) {
-      const line = document2.lineAt(i);
-      context += `${line.text}
-`;
-    }
-    return context;
-  }
-  getApiKey(config, modelType) {
-    switch (modelType) {
-      case "deepseek":
-        return config.get("deepseekApiKey");
-      case "qwen":
-        return config.get("qwenApiKey");
-      case "douban":
-        return config.get("doubanApiKey");
-      default:
-        return void 0;
-    }
+    const systemPrompt = `You are a code completion engine. Output ONLY the code to fill the <CURSOR> gap. DO NOT repeat prefix/suffix. No Markdown.`;
+    const userPrompt = `File: ${data.filename}
+Lang: ${data.language}
+
+[CODE START]
+${data.prefix}<CURSOR>${data.suffix}
+[CODE END]
+
+Task: Fill in <CURSOR>.`;
+    const maxTokens = 100;
+    return await callSimpleAI(model, apiKey, systemPrompt, userPrompt, maxTokens, 0, config, signal);
   }
 };
-function activate(context) {
-  console.log("=== LLMA \u6269\u5C55\u6FC0\u6D3B\u5F00\u59CB ===");
-  console.log("\u7248\u672C: 0.0.1");
-  console.log("\u6FC0\u6D3B\u65F6\u95F4:", (/* @__PURE__ */ new Date()).toLocaleString());
-  const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-  updateStatusBar(statusBarItem);
-  statusBarItem.command = "llma.aiCodeComplete";
-  statusBarItem.show();
-  console.log("\u72B6\u6001\u680F\u9879\u76EE\u5DF2\u521B\u5EFA");
-  const completionProvider = new LLMACompletionProvider();
-  const completionDisposable = vscode.languages.registerCompletionItemProvider(
-    { scheme: "file", language: "*" },
-    completionProvider,
-    ".",
-    " ",
-    "	",
-    "\n",
-    "(",
-    "[",
-    "{",
-    "'",
-    '"',
-    "`"
-    // 触发字符
-  );
-  const hoverProvider = new LLMAHoverProvider();
-  const hoverDisposable = vscode.languages.registerHoverProvider(
-    { scheme: "file", language: "*" },
-    hoverProvider
-  );
-  const disposable = vscode.commands.registerCommand("llma.aiCodeComplete", async () => {
-    console.log("llma.aiCodeComplete \u547D\u4EE4\u88AB\u8C03\u7528");
-    const editor = vscode.window.activeTextEditor;
-    if (!editor) {
-      vscode.window.showWarningMessage("\u8BF7\u5148\u6253\u5F00\u4E00\u4E2A\u7F16\u8F91\u5668");
-      return;
-    }
-    const document2 = editor.document;
-    const selection = editor.selection;
-    const cursorLine = selection.active.line;
-    const cursorCharacter = selection.active.character;
-    console.log(`\u5149\u6807\u4F4D\u7F6E: \u7B2C${cursorLine + 1}\u884C, \u7B2C${cursorCharacter + 1}\u5217`);
-    try {
-      await vscode.window.withProgress({
-        location: vscode.ProgressLocation.Notification,
-        title: "LLMA\u6B63\u5728\u5206\u6790\u4EE3\u7801...",
-        cancellable: true
-      }, async (progress, token) => {
-        token.onCancellationRequested(() => {
-          console.log("\u7528\u6237\u53D6\u6D88\u4E86\u64CD\u4F5C");
-        });
-        progress.report({ increment: 10 });
-        const config = vscode.workspace.getConfiguration("llma");
-        const currentModel = config.get("currentModel") || "deepseek";
-        console.log("\u4F7F\u7528\u6A21\u578B:", currentModel);
-        const apiKey = getApiKey(config, currentModel);
-        if (!apiKey) {
-          const modelName = getModelDisplayName(currentModel);
-          vscode.window.showErrorMessage(`\u8BF7\u5148\u914D\u7F6E${modelName}\u7684API\u5BC6\u94A5`);
-          return;
-        }
-        progress.report({ increment: 30 });
-        const contextInfo = await getCodeContext(editor, cursorLine);
-        console.log(`\u4E0A\u4E0B\u6587\u957F\u5EA6: ${contextInfo.context.length} \u5B57\u7B26`);
-        console.log(`\u5F53\u524D\u51FD\u6570: ${contextInfo.currentFunction || "\u65E0"}`);
-        console.log(`\u5F53\u524D\u7C7B: ${contextInfo.currentClass || "\u65E0"}`);
-        progress.report({ increment: 50 });
-        const userInput = getSelectionOrLineText(editor);
-        if (!userInput.trim()) {
-          vscode.window.showWarningMessage("\u8BF7\u8F93\u5165\u4EE3\u7801\u6216\u6CE8\u91CA\u4F5C\u4E3A\u63D0\u793A");
-          return;
-        }
-        console.log("\u7528\u6237\u8F93\u5165:", userInput.substring(0, 100) + (userInput.length > 100 ? "..." : ""));
-        const systemPrompt = buildSystemPrompt(document2.languageId);
-        const userPrompt = buildUserPrompt(
-          document2,
-          cursorLine,
-          userInput,
-          contextInfo
-        );
-        console.log("\u5F00\u59CB\u8C03\u7528AI\u6A21\u578B...");
-        const completion = await callAIModel(currentModel, apiKey, systemPrompt, userPrompt);
-        if (completion) {
-          progress.report({ increment: 90 });
-          await editor.edit((editBuilder) => {
-            let insertPosition;
-            if (selection.isEmpty) {
-              const line = document2.lineAt(cursorLine);
-              insertPosition = line.range.end;
-            } else {
-              insertPosition = selection.start;
-            }
-            const formattedCompletion = formatCompletion(
-              completion,
-              document2.languageId,
-              editor.options.insertSpaces ? " ".repeat(editor.options.tabSize) : "	"
-            );
-            if (selection.isEmpty) {
-              editBuilder.insert(insertPosition, "\n" + formattedCompletion);
-            } else {
-              editBuilder.replace(selection, formattedCompletion);
-            }
-          });
-          const modelName = getModelDisplayName(currentModel);
-          vscode.window.showInformationMessage(`\u2705 LLMA \u5DF2\u751F\u6210\u4EE3\u7801 (\u4F7F\u7528: ${modelName})`);
-          console.log("\u4EE3\u7801\u751F\u6210\u6210\u529F\uFF0C\u957F\u5EA6:", completion.length);
-        }
-        progress.report({ increment: 100 });
+async function searchWeb(query, apiKey, engine = "google") {
+  const url2 = "https://serpapi.com/search.json";
+  try {
+    const proxyAgent = getProxyAgent(url2);
+    const axiosConfig = {
+      params: { q: query, engine, api_key: apiKey, hl: "zh-cn", gl: "cn" },
+      timeout: 2e4,
+      ...proxyAgent && {
+        httpAgent: proxyAgent,
+        httpsAgent: proxyAgent,
+        proxy: false
+      }
+    };
+    const response = await axios_default.get(url2, axiosConfig);
+    const results = [];
+    if (response.data && response.data.organic_results) {
+      response.data.organic_results.slice(0, 5).forEach((item) => {
+        results.push({ title: item.title, url: item.link, snippet: item.snippet || "\u65E0\u5185\u5BB9\u6458\u8981" });
       });
-    } catch (error) {
-      console.error("LLMA Error:", error);
-      vscode.window.showErrorMessage(`LLMA \u9519\u8BEF: ${error.message}`);
     }
-  });
-  const configDisposable = vscode.workspace.onDidChangeConfiguration((e) => {
-    if (e.affectsConfiguration("llma")) {
-      console.log("LLMA \u914D\u7F6E\u5DF2\u66F4\u65B0");
-      updateStatusBar(statusBarItem);
-      const config = vscode.workspace.getConfiguration("llma");
-      const currentModel = config.get("currentModel") || "deepseek";
-      vscode.window.showInformationMessage(`LLMA \u5DF2\u5207\u6362\u5230 ${getModelDisplayName(currentModel)} \u6A21\u578B`);
-    }
-  });
-  const testDisposable = vscode.commands.registerCommand("llma.helloWorld", () => {
-    console.log("llma.helloWorld \u547D\u4EE4\u88AB\u8C03\u7528");
-    vscode.window.showInformationMessage("Hello World from LLMA!");
-  });
-  const analyzeDisposable = vscode.commands.registerCommand("llma.analyzeCode", async () => {
-    console.log("llma.analyzeCode \u547D\u4EE4\u88AB\u8C03\u7528");
-    const editor = vscode.window.activeTextEditor;
-    if (!editor) {
-      vscode.window.showWarningMessage("\u8BF7\u5148\u6253\u5F00\u4E00\u4E2A\u7F16\u8F91\u5668");
-      return;
-    }
-    const document2 = editor.document;
-    const contextInfo = await getCodeContext(editor, editor.selection.active.line);
-    vscode.window.showInformationMessage(
-      `\u4EE3\u7801\u5206\u6790\u5B8C\u6210\uFF01
-\u6587\u4EF6: ${path.basename(document2.fileName)}
-\u51FD\u6570: ${contextInfo.currentFunction || "\u65E0"}
-\u7C7B: ${contextInfo.currentClass || "\u65E0"}
-\u4E0A\u4E0B\u6587\u884C\u6570: ${contextInfo.contextLines}`
-    );
-  });
-  const quickSuggestDisposable = vscode.commands.registerCommand("llma.quickSuggest", async () => {
-    const editor = vscode.window.activeTextEditor;
-    if (!editor) {
-      return;
-    }
-    vscode.commands.executeCommand("editor.action.triggerSuggest");
-  });
-  context.subscriptions.push(
-    disposable,
-    configDisposable,
-    testDisposable,
-    analyzeDisposable,
-    quickSuggestDisposable,
-    completionDisposable,
-    hoverDisposable,
-    statusBarItem
-  );
-  console.log("=== LLMA \u6269\u5C55\u6FC0\u6D3B\u5B8C\u6210\uFF0C\u5DF2\u6CE8\u518C\u6240\u6709\u529F\u80FD ===");
-  vscode.window.showInformationMessage("\u{1F916} LLMA AI\u52A9\u624B\u5DF2\u6FC0\u6D3B\uFF01\u4F7F\u7528 Ctrl+Shift+A \u751F\u6210\u4EE3\u7801\uFF0C\u6216\u8F93\u5165\u65F6\u83B7\u5F97\u667A\u80FD\u63D0\u793A\u3002");
+    return results;
+  } catch (error) {
+    console.error("\u7F51\u7EDC\u641C\u7D22\u5931\u8D25:", error.message);
+    throw new Error(`\u7F51\u7EDC\u641C\u7D22\u5931\u8D25: ${error.message}`);
+  }
 }
-function updateStatusBar(statusBarItem) {
-  const config = vscode.workspace.getConfiguration("llma");
-  const currentModel = config.get("currentModel") || "deepseek";
-  const modelName = getModelDisplayName(currentModel);
-  statusBarItem.text = `$(wand) LLMA (${modelName})`;
-  statusBarItem.tooltip = `LLMA AI Code Assistant - \u4F7F\u7528 ${modelName} \u6A21\u578B`;
+function formatSearchResults(results) {
+  if (results.length === 0) {
+    return "\u672A\u627E\u5230\u76F8\u5173\u7ED3\u679C\u3002";
+  }
+  let formatted = "\u{1F310} \u7F51\u7EDC\u641C\u7D22\u7ED3\u679C:\n\n";
+  results.forEach((result, index) => {
+    formatted += `${index + 1}. **${result.title}**
+   ${result.snippet}
+   \u6765\u6E90: ${result.url}
+
+`;
+  });
+  return formatted;
 }
-function getModelDisplayName(modelType) {
-  const modelMap = {
-    "deepseek": "DeepSeek",
-    "douban": "\u8C46\u5305",
-    "qwen": "\u901A\u4E49\u5343\u95EE"
+function getProxyAgent(url2) {
+  const proxy = vscode.workspace.getConfiguration("http").get("proxy");
+  if (!proxy)
+    return void 0;
+  const isHttps2 = url2.startsWith("https");
+  return isHttps2 ? new import_https_proxy_agent.HttpsProxyAgent(proxy) : new import_http_proxy_agent.HttpProxyAgent(proxy);
+}
+function isRetryableError(err) {
+  const code = err.code;
+  return code === "ECONNRESET" || code === "ETIMEDOUT" || code === "ECONNABORTED" || err.message?.includes("socket hang up") || err.response?.status >= 500 && err.response?.status < 600;
+}
+async function axiosPostWithRetry(url2, payload, config, retries = 2) {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      return await axios_default.post(url2, payload, config);
+    } catch (err) {
+      const isLast = i === retries;
+      if (isLast || !isRetryableError(err))
+        throw err;
+      const delay = (i + 1) * 1e3;
+      console.log(`\u8BF7\u6C42\u5931\u8D25 (${err.code || err.message})\uFF0C${delay}ms\u540E\u91CD\u8BD5... (${i + 1}/${retries})`);
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
+  }
+  throw new Error("\u91CD\u8BD5\u8017\u5C3D");
+}
+async function callSimpleAI(model, apiKey, systemPrompt, userPrompt, maxTokens, temperature, config, signal) {
+  const messages = [
+    { role: "system", content: systemPrompt },
+    { role: "user", content: userPrompt }
+  ];
+  return await callChatAI(model, apiKey, messages, config, maxTokens, temperature, signal);
+}
+async function callChatAI(model, apiKey, messages, config, maxTokens = 2e3, temperature = 0.7, signal, onUpdate) {
+  let url2 = "";
+  const isStreaming = !!onUpdate;
+  let payload = {
+    messages,
+    max_tokens: maxTokens,
+    temperature,
+    stream: isStreaming
   };
-  return modelMap[modelType] || modelType;
+  const headers = {
+    "Content-Type": "application/json"
+  };
+  if (model === "local") {
+    const baseUrl = config.get("localModel.baseUrl") || "http://localhost:11434/v1";
+    url2 = `${baseUrl}/chat/completions`;
+    payload.model = config.get("localModel.modelName") || "llama3";
+    if (apiKey) {
+      headers["Authorization"] = `Bearer ${apiKey}`;
+    }
+  } else if (model === "deepseek") {
+    url2 = "https://api.deepseek.com/chat/completions";
+    payload.model = "deepseek-coder";
+    headers["Authorization"] = `Bearer ${apiKey}`;
+  } else if (model === "qwen") {
+    const baseUrl = config.get("qwenBaseUrl") || "https://dashscope.aliyuncs.com/compatible-mode/v1";
+    url2 = `${baseUrl}/chat/completions`;
+    payload.model = "qwen-coder-turbo";
+    headers["Authorization"] = `Bearer ${apiKey}`;
+  } else if (model === "douban") {
+    url2 = "https://ark.cn-beijing.volces.com/api/v3/chat/completions";
+    payload.model = config.get("doubanModel") || "";
+    headers["Authorization"] = `Bearer ${apiKey}`;
+  } else if (model === "zhipu") {
+    url2 = "https://open.bigmodel.cn/api/paas/v4/chat/completions";
+    payload.model = "glm-4";
+    headers["Authorization"] = `Bearer ${apiKey}`;
+  } else if (model === "huggingface") {
+    url2 = "https://router.huggingface.co/v1/chat/completions";
+    payload.model = config.get("huggingfaceModel") || "meta-llama/Meta-Llama-3-8B-Instruct";
+    headers["Authorization"] = `Bearer ${apiKey}`;
+  }
+  const proxyAgent = getProxyAgent(url2);
+  const axiosConfig = {
+    headers,
+    signal,
+    timeout: 12e4,
+    // 延长至120秒
+    ...proxyAgent && {
+      httpAgent: proxyAgent,
+      httpsAgent: proxyAgent,
+      proxy: false
+      // 禁止 axios 自动使用环境代理
+    }
+  };
+  if (!isStreaming) {
+    try {
+      const response = await axiosPostWithRetry(url2, payload, axiosConfig, 2);
+      return response.data.choices[0]?.message?.content || "";
+    } catch (error) {
+      if (!axios_default.isCancel(error)) {
+        if (error.response)
+          console.error("Data:", error.response.data);
+        throw error;
+      }
+      return "";
+    }
+  } else {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response = await axios_default.post(url2, payload, {
+          ...axiosConfig,
+          responseType: "stream"
+        });
+        let fullContent = "";
+        let fullReasoning = "";
+        let buffer = "";
+        response.data.on("data", (chunk) => {
+          buffer += chunk.toString("utf8");
+          const lines = buffer.split("\n");
+          buffer = lines.pop() || "";
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (trimmed.startsWith("data: ")) {
+              const dataStr = trimmed.substring(6);
+              if (dataStr === "[DONE]") {
+                continue;
+              }
+              try {
+                const data = JSON.parse(dataStr);
+                const delta = data.choices?.[0]?.delta;
+                if (delta) {
+                  const contentDelta = delta.content || "";
+                  const reasoningDelta = delta.reasoning_content || "";
+                  if (contentDelta || reasoningDelta) {
+                    fullContent += contentDelta;
+                    fullReasoning += reasoningDelta;
+                    onUpdate?.(contentDelta, reasoningDelta);
+                  }
+                }
+              } catch (e) {
+              }
+            }
+          }
+        });
+        response.data.on("end", () => {
+          resolve(fullContent);
+        });
+        response.data.on("error", (err) => {
+          reject(err);
+        });
+      } catch (error) {
+        if (!axios_default.isCancel(error)) {
+          reject(error);
+        } else {
+          resolve("");
+        }
+      }
+    });
+  }
 }
-function getApiKey(config, modelType) {
-  switch (modelType) {
+function updateStatusBar(isLoading) {
+  const config = vscode.workspace.getConfiguration("llma");
+  const enabled = config.get("enableAutoCompletion");
+  if (!enabled) {
+    statusBarItem.text = `$(circle-slash) LLMA Off`;
+  } else if (isLoading) {
+    statusBarItem.text = `$(sync~spin) LLMA...`;
+  } else {
+    statusBarItem.text = `$(hubot) LLMA`;
+  }
+}
+function getApiKey(config, model) {
+  if (model === "local") {
+    return "local";
+  }
+  switch (model) {
     case "deepseek":
       return config.get("deepseekApiKey");
     case "qwen":
       return config.get("qwenApiKey");
     case "douban":
       return config.get("doubanApiKey");
+    case "zhipu":
+      return config.get("zhipuApiKey");
+    case "huggingface":
+      return config.get("huggingfaceApiKey");
     default:
       return void 0;
   }
-}
-function getSelectionOrLineText(editor) {
-  const selection = editor.selection;
-  if (!selection.isEmpty) {
-    return editor.document.getText(selection);
-  }
-  const line = editor.document.lineAt(selection.active.line);
-  return line.text;
-}
-async function getCodeContext(editor, cursorLine) {
-  const document2 = editor.document;
-  const totalLines = document2.lineCount;
-  const contextWindow = 20;
-  const startLine = Math.max(0, cursorLine - contextWindow);
-  const endLine = Math.min(totalLines - 1, cursorLine + contextWindow);
-  let context = "";
-  let contextLines = 0;
-  for (let i = startLine; i <= endLine; i++) {
-    const line = document2.lineAt(i);
-    context += `${i + 1}: ${line.text}
-`;
-    contextLines++;
-  }
-  const currentFunction = await findCurrentFunction(document2, cursorLine);
-  const currentClass = await findCurrentClass(document2, cursorLine);
-  return {
-    context,
-    currentFunction,
-    currentClass,
-    contextLines
-  };
-}
-async function findCurrentFunction(document2, cursorLine) {
-  const languageId = document2.languageId;
-  const functionPatterns = {
-    "javascript": [
-      /^\s*(?:export\s+)?(?:async\s+)?function\s+(\w+)/,
-      /^\s*(?:export\s+)?(?:const|let|var)\s+(\w+)\s*=\s*(?:async\s+)?\(/,
-      /^\s*(?:export\s+)?(?:const|let|var)\s+(\w+)\s*=\s*(?:async\s+)?function/,
-      /^\s*(\w+)\s*\(.*\)\s*{/,
-      /^\s*(\w+)\s*:\s*\(.*\)\s*=>/
-    ],
-    "typescript": [
-      /^\s*(?:export\s+)?(?:public|private|protected)?\s*(?:async\s+)?function\s+(\w+)/,
-      /^\s*(?:export\s+)?(?:const|let|var)\s+(\w+)\s*:\s*.*=\s*(?:async\s+)?\(/,
-      /^\s*(?:export\s+)?(?:public|private|protected)?\s*(\w+)\s*\(.*\)\s*:/,
-      /^\s*(?:async\s+)?(\w+)\s*\(.*\)\s*{/
-    ],
-    "python": [
-      /^\s*def\s+(\w+)/,
-      /^\s*async\s+def\s+(\w+)/,
-      /^\s*@.*\n\s*def\s+(\w+)/
-    ],
-    "java": [
-      /^\s*(?:public|private|protected|static|\s)+\s+[\w<>\[\]]+\s+(\w+)\s*\(/
-    ],
-    "cpp": [
-      /^\s*(?:[\w:<>]+\s+)+(\w+)\s*\(/
-    ],
-    "csharp": [
-      /^\s*(?:public|private|protected|internal|static|\s)+\s+[\w<>\[\]]+\s+(\w+)\s*\(/
-    ]
-  };
-  const patterns = functionPatterns[languageId] || functionPatterns["javascript"];
-  for (let i = cursorLine; i >= 0; i--) {
-    const line = document2.lineAt(i);
-    for (const pattern of patterns) {
-      const match = line.text.match(pattern);
-      if (match && match[1]) {
-        return match[1];
-      }
-    }
-  }
-  return null;
-}
-async function findCurrentClass(document2, cursorLine) {
-  const languageId = document2.languageId;
-  const classPatterns = {
-    "javascript": [
-      /^\s*(?:export\s+)?class\s+(\w+)/,
-      /^\s*(?:export\s+)?(?:const|let|var)\s+(\w+)\s*=\s*class/
-    ],
-    "typescript": [
-      /^\s*(?:export\s+)?(?:abstract\s+)?class\s+(\w+)/,
-      /^\s*interface\s+(\w+)/,
-      /^\s*type\s+(\w+)/
-    ],
-    "python": [
-      /^\s*class\s+(\w+)/
-    ],
-    "java": [
-      /^\s*(?:public|private|protected|abstract|\s)+\s+class\s+(\w+)/,
-      /^\s*interface\s+(\w+)/
-    ],
-    "cpp": [
-      /^\s*class\s+(\w+)/,
-      /^\s*struct\s+(\w+)/
-    ],
-    "csharp": [
-      /^\s*(?:public|private|protected|internal|abstract|\s)+\s+class\s+(\w+)/,
-      /^\s*interface\s+(\w+)/
-    ]
-  };
-  const patterns = classPatterns[languageId] || classPatterns["javascript"];
-  for (let i = cursorLine; i >= 0; i--) {
-    const line = document2.lineAt(i);
-    for (const pattern of patterns) {
-      const match = line.text.match(pattern);
-      if (match && match[1]) {
-        return match[1];
-      }
-    }
-  }
-  return null;
-}
-function buildSystemPrompt(languageId) {
-  const languageName = getLanguageName(languageId);
-  return `\u4F60\u662F\u4E00\u4E2A\u4E13\u4E1A\u7684${languageName}\u5F00\u53D1\u8005\uFF0C\u7CBE\u901A${languageName}\u7684\u6700\u4F73\u5B9E\u8DF5\u3001\u8BBE\u8BA1\u6A21\u5F0F\u548C\u4EE3\u7801\u89C4\u8303\u3002
-
-\u8BF7\u6839\u636E\u7528\u6237\u63D0\u4F9B\u7684\u5B8C\u6574\u4EE3\u7801\u4E0A\u4E0B\u6587\u548C\u5149\u6807\u4F4D\u7F6E\uFF0C\u751F\u6210\u6700\u5408\u9002\u3001\u6700\u51C6\u786E\u7684\u4EE3\u7801\u3002
-
-\u8981\u6C42\uFF1A
-1. \u4ED4\u7EC6\u5206\u6790\u63D0\u4F9B\u7684\u4EE3\u7801\u4E0A\u4E0B\u6587\uFF0C\u7406\u89E3\u4EE3\u7801\u7ED3\u6784\u548C\u903B\u8F91
-2. \u4FDD\u6301\u4E0E\u73B0\u6709\u4EE3\u7801\u5B8C\u5168\u4E00\u81F4\u7684\u98CE\u683C\uFF08\u7F29\u8FDB\u3001\u547D\u540D\u3001\u6CE8\u91CA\u7B49\uFF09
-3. \u53EA\u8FD4\u56DE\u4EE3\u7801\uFF0C\u4E0D\u8981\u4EFB\u4F55\u89E3\u91CA\u6216\u6807\u8BB0
-4. \u786E\u4FDD\u751F\u6210\u7684\u4EE3\u7801\u8BED\u6CD5\u6B63\u786E\uFF0C\u903B\u8F91\u5408\u7406
-5. \u5982\u679C\u9700\u8981\uFF0C\u6DFB\u52A0\u9002\u5F53\u7684\u6CE8\u91CA\u8BF4\u660E\u590D\u6742\u903B\u8F91
-6. \u8003\u8651\u5F02\u5E38\u5904\u7406\u548C\u8FB9\u754C\u6761\u4EF6
-7. \u9075\u5FAA${languageName}\u7684\u6700\u4F73\u5B9E\u8DF5
-
-\u5982\u679C\u7528\u6237\u8BF7\u6C42\u4FEE\u590D\u9519\u8BEF\u6216\u6539\u8FDB\u4EE3\u7801\uFF0C\u8BF7\u5206\u6790\u95EE\u9898\u5E76\u63D0\u4F9B\u6700\u4F18\u89E3\u51B3\u65B9\u6848\u3002`;
-}
-function buildUserPrompt(document2, cursorLine, userInput, contextInfo) {
-  const languageName = getLanguageName(document2.languageId);
-  const fileName = path.basename(document2.fileName);
-  let prompt = `\u6587\u4EF6: ${fileName}
-\u8BED\u8A00: ${languageName}
-\u5149\u6807\u4F4D\u7F6E: \u7B2C${cursorLine + 1}\u884C`;
-  if (contextInfo.currentFunction) {
-    prompt += `
-\u5F53\u524D\u51FD\u6570: ${contextInfo.currentFunction}`;
-  }
-  if (contextInfo.currentClass) {
-    prompt += `
-\u5F53\u524D\u7C7B: ${contextInfo.currentClass}`;
-  }
-  prompt += `
-
-=== \u4EE3\u7801\u4E0A\u4E0B\u6587 (${contextInfo.contextLines}\u884C) ===
-`;
-  prompt += contextInfo.context;
-  prompt += "\n=== \u4E0A\u4E0B\u6587\u7ED3\u675F ===\n\n";
-  prompt += `\u7528\u6237\u8F93\u5165/\u9700\u6C42: ${userInput}
-
-`;
-  prompt += `\u8BF7\u57FA\u4E8E\u4EE5\u4E0A\u5B8C\u6574\u4EE3\u7801\u4E0A\u4E0B\u6587\uFF0C\u5728\u5149\u6807\u4F4D\u7F6E\uFF08\u7B2C${cursorLine + 1}\u884C\uFF09\u751F\u6210\u6700\u5408\u9002\u7684\u4EE3\u7801\u3002`;
-  return prompt;
-}
-function getLanguageName(languageId) {
-  const languageMap = {
-    "javascript": "JavaScript",
-    "typescript": "TypeScript",
-    "python": "Python",
-    "java": "Java",
-    "cpp": "C++",
-    "c": "C",
-    "csharp": "C#",
-    "go": "Go",
-    "rust": "Rust",
-    "php": "PHP",
-    "ruby": "Ruby",
-    "swift": "Swift",
-    "kotlin": "Kotlin",
-    "html": "HTML",
-    "css": "CSS",
-    "vue": "Vue",
-    "react": "React",
-    "json": "JSON",
-    "xml": "XML",
-    "markdown": "Markdown",
-    "yaml": "YAML",
-    "shellscript": "Shell Script",
-    "sql": "SQL",
-    "dockerfile": "Dockerfile",
-    "makefile": "Makefile"
-  };
-  return languageMap[languageId] || languageId;
-}
-function formatCompletion(completion, languageId, indentation) {
-  let cleaned = completion.trim();
-  cleaned = cleaned.replace(/^```[\w]*\n/, "").replace(/\n```$/, "");
-  return cleaned;
-}
-async function callAIModel(modelType, apiKey, systemPrompt, userPrompt) {
-  const maxTokens = 2e3;
-  const temperature = 0.3;
-  console.log(`\u8C03\u7528 ${modelType} API\uFF0C\u7CFB\u7EDF\u63D0\u793A\u957F\u5EA6: ${systemPrompt.length}\uFF0C\u7528\u6237\u63D0\u793A\u957F\u5EA6: ${userPrompt.length}`);
-  switch (modelType) {
-    case "deepseek":
-      return callDeepSeek(apiKey, systemPrompt, userPrompt, maxTokens, temperature);
-    case "qwen":
-      const baseUrl = vscode.workspace.getConfiguration("llma").get("qwenBaseUrl") || "https://dashscope.aliyuncs.com/compatible-mode/v1";
-      return callQwen(apiKey, baseUrl, systemPrompt, userPrompt, maxTokens, temperature);
-    case "douban":
-      return callDouban(apiKey, systemPrompt, userPrompt, maxTokens, temperature);
-    default:
-      throw new Error(`\u4E0D\u652F\u6301\u7684\u6A21\u578B\u7C7B\u578B: ${modelType}`);
-  }
-}
-async function callDeepSeek(apiKey, systemPrompt, userPrompt, maxTokens, temperature) {
-  try {
-    console.log("\u8C03\u7528 DeepSeek API...");
-    const response = await axios_default.post("https://api.deepseek.com/v1/chat/completions", {
-      model: "deepseek-coder",
-      // 使用代码专用模型
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt }
-      ],
-      max_tokens: maxTokens,
-      temperature,
-      stream: false
-    }, {
-      headers: {
-        "Authorization": `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      timeout: 6e4
-      // 增加超时时间
-    });
-    return response.data.choices[0]?.message?.content?.trim() || "";
-  } catch (error) {
-    console.error("DeepSeek API \u9519\u8BEF:", error.response?.data || error.message);
-    throw new Error(`DeepSeek API\u9519\u8BEF: ${error.response?.data?.message || error.message}`);
-  }
-}
-async function callQwen(apiKey, baseUrl, systemPrompt, userPrompt, maxTokens, temperature) {
-  try {
-    console.log("\u8C03\u7528\u901A\u4E49\u5343\u95EE API...");
-    const response = await axios_default.post(`${baseUrl}/chat/completions`, {
-      model: "qwen-coder",
-      // 使用代码专用模型
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt }
-      ],
-      max_tokens: maxTokens,
-      temperature,
-      stream: false
-    }, {
-      headers: {
-        "Authorization": `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      timeout: 6e4
-    });
-    return response.data.choices[0]?.message?.content?.trim() || "";
-  } catch (error) {
-    console.error("\u901A\u4E49\u5343\u95EE API \u9519\u8BEF:", error.response?.data || error.message);
-    throw new Error(`\u901A\u4E49\u5343\u95EEAPI\u9519\u8BEF: ${error.response?.data?.message || error.message}`);
-  }
-}
-async function callDouban(apiKey, systemPrompt, userPrompt, maxTokens, temperature) {
-  try {
-    console.log("\u8C03\u7528\u8C46\u5305 API...");
-    const response = await axios_default.post("https://ark.cn-beijing.volces.com/api/v3/chat/completions", {
-      model: "ep-20240209134430-ftg8h",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt }
-      ],
-      max_tokens: maxTokens,
-      temperature,
-      stream: false
-    }, {
-      headers: {
-        "Authorization": `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      timeout: 6e4
-    });
-    return response.data.choices[0]?.message?.content?.trim() || "";
-  } catch (error) {
-    console.error("\u8C46\u5305 API \u9519\u8BEF:", error.response?.data || error.message);
-    if (error.response?.status === 401) {
-      throw new Error("\u8C46\u5305API\u5BC6\u94A5\u65E0\u6548\u6216\u5DF2\u8FC7\u671F");
-    } else if (error.response?.status === 404) {
-      throw new Error("\u8C46\u5305API\u7AEF\u70B9\u4E0D\u5B58\u5728\uFF0C\u53EF\u80FD\u9700\u8981\u66F4\u65B0");
-    }
-    throw new Error(`\u8C46\u5305API\u9519\u8BEF: ${error.response?.data?.message || error.message}`);
-  }
-}
-function deactivate() {
-  console.log("=== LLMA \u6269\u5C55\u5DF2\u505C\u7528 ===");
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {

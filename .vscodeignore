@@ -1,14 +1,18 @@
-.vscode/**
-.vscode-test/**
-out/**
-node_modules/**
-src/**
+# 忽略这些文件和目录
+.vscode/
 .gitignore
-.yarnrc
+*.ts
+!*.d.ts
+node_modules/
+out/
+*.vsix
+tsconfig.json
 esbuild.js
-vsc-extension-quickstart.md
-**/tsconfig.json
-**/eslint.config.mjs
-**/*.map
-**/*.ts
-**/.vscode-test.*
+
+# 但不要忽略这些
+!dist/extension.js
+!dist/extension.js.map
+!dist/webview.html
+!package.json
+!README.md
+!LICENSE

@@ -1,138 +1,227 @@
 {
   "name": "llma",
-  "displayName": "LLMA AI Code Assistant",
-  "description": "Large Model-driven End-to-End Software Development（类Cline AI代码辅助）",
-  "version": "0.0.1",
+  "displayName": "NJUST_AI_Assistant",
+  "description": "AI Code Assistant with Chat, File Creation, Inline Prediction, and Compilation.",
+  "version": "0.4.1",
+  "publisher": "JunjieChen",
+  "icon": "./NJUST.png",
   "engines": {
-    "vscode": "^1.108.1"
+    "vscode": "^1.108.0"
   },
   "categories": [
     "Machine Learning",
-    "Snippets",
+    "Programming Languages",
     "Other"
   ],
   "main": "./dist/extension.js",
   "activationEvents": [
-    "onStartupFinished",
-    "onLanguage:javascript",
-    "onLanguage:typescript",
-    "onLanguage:python",
-    "onLanguage:java",
-    "onLanguage:cpp",
-    "onLanguage:csharp",
-    "onLanguage:go",
-    "onLanguage:rust",
-    "onLanguage:php"
+    "onStartupFinished"
   ],
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "llma-sidebar",
+          "title": "LLMA",
+          "icon": "./NJUST.svg"
+        }
+      ]
+    },
+    "views": {
+      "llma-sidebar": [
+        {
+          "icon": "",
+          "type": "webview",
+          "id": "llma.chatView",
+          "name": "AI 聊天助手"
+        }
+      ]
+    },
     "configuration": {
-      "title": "LLMA AI Code Assistant",
+      "title": "LLMA 配置",
       "properties": {
+        "llma.enableAutoCompletion": {
+          "type": "boolean",
+          "default": true,
+          "description": "启用实时代码预测 (Ghost Text/幽灵文本)"
+        },
         "llma.currentModel": {
           "type": "string",
           "default": "deepseek",
-          "enum": ["deepseek", "douban", "qwen"],
-          "description": "选择要使用的国内大模型：deepseek-深度求索、douban-豆包、qwen-通义千问",
-          "enumDescriptions": [
-            "深度求索 DeepSeek - 强大的代码生成模型",
-            "豆包 - 字节跳动大模型",
-            "通义千问 - 阿里云大模型"
-          ]
+          "enum": [
+            "deepseek",
+            "qwen",
+            "douban",
+            "zhipu",
+            "local",
+            "huggingface"
+          ],
+          "description": "选择 AI 模型提供商"
         },
-        "llma.deepseekApiKey": {
+        "llma.localModel.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "启用本地大模型"
+        },
+        "llma.localModel.baseUrl": {
           "type": "string",
-          "default": "",
-          "description": "DeepSeek API密钥，获取地址：https://platform.deepseek.com/api_keys",
-          "scope": "application"
+          "default": "http://localhost:11434/v1",
+          "description": "本地模型 API 基础 URL (例如 Ollama: http://localhost:11434/v1)"
         },
-        "llma.doubanApiKey": {
+        "llma.localModel.modelName": {
           "type": "string",
-          "default": "",
-          "description": "豆包API密钥，获取地址：https://www.douban.com/ai/openapi",
-          "scope": "application"
+          "default": "llama3",
+          "description": "本地模型名称 (例如: llama3, qwen2, codellama)"
         },
-        "llma.qwenApiKey": {
-          "type": "string",
-          "default": "",
-          "description": "通义千问API密钥，获取地址：https://dashscope.aliyun.com/apiKey",
-          "scope": "application"
-        },
-        "llma.qwenBaseUrl": {
-          "type": "string",
-          "default": "https://dashscope.aliyuncs.com/compatible-mode/v1",
-          "description": "通义千问OpenAI兼容接口地址，一般无需修改",
-          "scope": "application"
-        },
-        "llma.contextWindowSize": {
+        "llma.localModel.timeout": {
           "type": "number",
-          "default": 20,
-          "description": "上下文窗口大小（行数），控制在光标前后各取多少行代码作为上下文",
-          "scope": "application"
+          "default": 120000,
+          "description": "本地模型请求超时时间 (毫秒)"
+        },
+        "llma.requestDelay": {
+          "type": "number",
+          "default": 300,
+          "description": "自动预测延迟 (毫秒)"
         },
         "llma.maxTokens": {
           "type": "number",
           "default": 2000,
-          "description": "生成代码的最大token数",
-          "scope": "application"
+          "description": "生成的最大 Token 数"
         },
-        "llma.temperature": {
-          "type": "number",
-          "default": 0.3,
-          "minimum": 0,
-          "maximum": 1,
-          "description": "温度参数，控制生成的随机性。较低的值（如0.3）使输出更确定性，较高的值（如0.8）使输出更有创造性",
-          "scope": "application"
+        "llma.deepseekApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "DeepSeek API Key"
         },
-        "llma.enableAutoCompletion": {
+        "llma.qwenApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "通义千问 API Key"
+        },
+        "llma.qwenBaseUrl": {
+          "type": "string",
+          "default": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "description": "通义千问 Base URL"
+        },
+        "llma.doubanApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "豆包 API Key"
+        },
+        "llma.doubanModel": {
+          "type": "string",
+          "default": "",
+          "description": "豆包 Endpoint ID (例如: ep-20240604...)"
+        },
+        "llma.zhipuApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "智普AI API Key"
+        },
+        "llma.huggingfaceApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Hugging Face Access Token (HF_TOKEN)"
+        },
+        "llma.huggingfaceModel": {
+          "type": "string",
+          "default": "Qwen/Qwen2.5-Coder-32B-Instruct",
+          "description": "Hugging Face 模型 ID (例如: Qwen/Qwen2.5-Coder-32B-Instruct)"
+        },
+        "llma.compilation.compilers": {
+          "type": "object",
+          "default": {
+            "c": "gcc \"{file}\" -o \"{executable}\"",
+            "cpp": "g++ \"{file}\" -o \"{executable}\"",
+            "python": "python -m py_compile \"{file}\"",
+            "javascript": "node --check \"{file}\"",
+            "typescript": "tsc --noEmit \"{file}\"",
+            "java": "javac -d \"{outputDir}\" \"{file}\"",
+            "rust": "rustc \"{file}\" -o \"{executable}\"",
+            "go": "go build -o \"{executable}\" \"{file}\"",
+            "cangjie": "cjc \"{file}\" -o \"{executable}\""
+          },
+          "description": "编译命令配置（支持 {file}、{executable}、{outputDir}、{fileName}、{fileNameWithoutExt}、{fileDir} 占位符）"
+        },
+        "llma.compilation.defaultOutputDir": {
+          "type": "string",
+          "default": "build",
+          "description": "默认输出目录"
+        },
+        "llma.python.interpreterPath": {
+          "type": "string",
+          "default": "",
+          "description": "Python 解释器路径（留空则自动检测）"
+        },
+        "llma.python.autoDetectVirtualEnv": {
           "type": "boolean",
           "default": true,
-          "description": "是否启用AI自动代码提示功能",
-          "scope": "application"
+          "description": "自动检测并激活虚拟环境"
         },
-        "llma.enableHoverExplanation": {
+        "llma.python.preferredCommand": {
+          "type": "string",
+          "default": "auto",
+          "enum": [
+            "auto",
+            "python",
+            "python3",
+            "py"
+          ],
+          "description": "首选 Python 命令（auto 表示自动检测）"
+        },
+        "llma.python.versionCheck": {
           "type": "boolean",
           "default": true,
-          "description": "是否启用悬停解释功能（鼠标悬停在代码上时显示AI解释）",
-          "scope": "application"
+          "description": "运行前检查 Python 版本"
         },
-        "llma.completionDelay": {
-          "type": "number",
-          "default": 300,
-          "description": "代码提示触发延迟（毫秒），避免频繁调用API",
-          "scope": "application"
+        "llma.enableWebSearch": {
+          "type": "boolean",
+          "default": false,
+          "description": "启用联网搜索功能"
         },
-        "llma.aiCompletionTriggers": {
-          "type": "array",
-          "default": ["//", "function", "if", "for", "while", "return", "const", "let", "var", "class"],
-          "description": "触发AI代码提示的关键词列表",
-          "scope": "application"
+        "llma.webSearchEngine": {
+          "type": "string",
+          "default": "google",
+          "enum": [
+            "google",
+            "bing",
+            "baidu",
+            "yahoo",
+            "duckduckgo"
+          ],
+          "description": "选择 SerpAPI 使用的底层搜索引擎"
+        },
+        "llma.serpApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "SerpApi API Key (用于联网搜索)"
         }
       }
     },
     "commands": [
       {
         "command": "llma.aiCodeComplete",
-        "title": "LLMA: AI代码补全（智能上下文）",
-        "category": "LLMA",
-        "icon": {
-          "light": "resources/light/code.svg",
-          "dark": "resources/dark/code.svg"
-        }
+        "title": "LLMA: 生成完整代码 (Prompt/Context)",
+        "icon": "$(sparkle)"
       },
       {
-        "command": "llma.helloWorld",
-        "title": "LLMA: 测试命令",
-        "category": "LLMA"
+        "command": "llma.toggle",
+        "title": "LLMA: 切换自动预测开关",
+        "icon": "$(hubot)"
       },
       {
-        "command": "llma.analyzeCode",
-        "title": "LLMA: 分析当前代码上下文",
-        "category": "LLMA"
+        "command": "llma.trigger",
+        "title": "LLMA: 手动触发 Ghost Text"
       },
       {
-        "command": "llma.quickSuggest",
-        "title": "LLMA: 快速智能提示",
-        "category": "LLMA"
+        "command": "llma.compileCurrentFile",
+        "title": "LLMA: 编译当前文件",
+        "icon": "$(play)"
+      },
+      {
+        "command": "llma.compileWithOptions",
+        "title": "LLMA: 编译文件（高级选项）",
+        "icon": "$(gear)"
       }
     ],
     "keybindings": [
@@ -141,88 +230,54 @@
         "key": "ctrl+shift+a",
         "mac": "cmd+shift+a",
         "when": "editorTextFocus",
-        "description": "触发LLMA智能代码补全"
+        "description": "根据注释或选中代码生成完整代码"
       },
       {
-        "command": "llma.analyzeCode",
-        "key": "ctrl+shift+l",
-        "mac": "cmd+shift+l",
-        "when": "editorTextFocus",
-        "description": "分析当前代码上下文"
+        "command": "llma.trigger",
+        "key": "alt+\\",
+        "when": "editorTextFocus"
       },
       {
-        "command": "llma.quickSuggest",
-        "key": "ctrl+space",
-        "mac": "cmd+space",
+        "command": "llma.compileCurrentFile",
+        "key": "ctrl+shift+b",
+        "mac": "cmd+shift+b",
         "when": "editorTextFocus",
-        "description": "触发LLMA智能代码提示"
+        "description": "编译当前文件"
       }
-    ],
-    "menus": {
-      "editor/context": [
-        {
-          "command": "llma.aiCodeComplete",
-          "group": "llma",
-          "when": "editorTextFocus"
-        },
-        {
-          "command": "llma.analyzeCode",
-          "group": "llma",
-          "when": "editorTextFocus"
-        },
-        {
-          "command": "llma.quickSuggest",
-          "group": "llma",
-          "when": "editorTextFocus"
-        }
-      ],
-      "commandPalette": [
-        {
-          "command": "llma.aiCodeComplete",
-          "when": "editorTextFocus"
-        },
-        {
-          "command": "llma.helloWorld"
-        },
-        {
-          "command": "llma.analyzeCode",
-          "when": "editorTextFocus"
-        },
-        {
-          "command": "llma.quickSuggest",
-          "when": "editorTextFocus"
-        }
-      ]
-    }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
-    "compile": "npm run check-types && npm run lint && node esbuild.js",
+    "compile": "npm run check-types && npm run lint && npm run build",
+    "build": "node esbuild.js && npm run copy-files",
+    "copy-files": "copyfiles -f src/webview.html dist/ && echo 'Files copied'",
     "watch": "npm-run-all -p watch:*",
     "watch:esbuild": "node esbuild.js --watch",
+    "watch:copy": "nodemon --watch src/webview.html --exec 'npm run copy-files'",
     "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
-    "package": "npm run check-types && npm run lint && node esbuild.js --production",
-    "compile-tests": "tsc -p . --outDir out",
-    "watch-tests": "tsc -p . -w --outDir out",
-    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "package": "npm run check-types && npm run lint && npm run build --production",
     "check-types": "tsc --noEmit",
     "lint": "eslint src",
     "test": "vscode-test"
   },
   "devDependencies": {
+    "@types/node": "20.x",
     "@types/vscode": "^1.108.1",
-    "@types/mocha": "^10.0.10",
-    "@types/node": "22.x",
-    "typescript-eslint": "^8.54.0",
-    "eslint": "^9.39.2",
-    "esbuild": "^0.27.2",
+    "@typescript-eslint/eslint-plugin": "^8.54.0",
+    "@typescript-eslint/parser": "^8.54.0",
+    "@vscode/test-cli": "^0.0.4",
+    "@vscode/test-electron": "^2.3.9",
+    "copyfiles": "^2.4.1",
+    "esbuild": "^0.20.1",
+    "eslint": "^8.56.0",
+    "nodemon": "^3.1.11",
     "npm-run-all": "^4.1.5",
     "typescript": "^5.9.3",
-    "@vscode/test-cli": "^0.0.12",
-    "@vscode/test-electron": "^2.5.2",
-    "@types/axios": "^0.14.0"
+    "typescript-eslint": "^8.54.0"
   },
   "dependencies": {
-    "axios": "^1.7.7"
+    "axios": "^1.13.4",
+    "http-proxy-agent": "^7.0.2",
+    "https-proxy-agent": "^7.0.6"
   }
 }
