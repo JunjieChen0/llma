@@ -111,15 +111,19 @@
 
 ## Release Notes
 
+Users appreciate release notes as you update your extension.
+
 ### 1.0.0
 
-初始发布版本，包含以下核心功能：
-- 多模型 AI 聊天（聊天模式 / Agent 模式）
-- 自动行内代码预测（Ghost Text）
-- 一键编译与运行（支持 C/C++、Java、Python、JS/TS 等）
-- Agent 模式下直接应用/保存/撤销文件更改
-- 联网搜索支持
-- 图形化设置界面
+Initial release of ...
+
+### 1.0.1
+
+Fixed issue #.
+
+### 1.1.0
+
+Added features X, Y, and Z.
 
 ---
 
