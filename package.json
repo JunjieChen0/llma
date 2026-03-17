@@ -1,9 +1,9 @@
 {
-  "name": "llma",
-  "displayName": "NJUST_AI_Assistant",
+  "name": "njust-cj",
+  "displayName": "NJUST_AI_CJ",
   "description": "AI Code Assistant with Chat, File Creation, Inline Prediction, and Compilation.",
-  "version": "0.4.1",
-  "publisher": "JunjieChen",
+  "version": "2026.6.9",
+  "publisher": "YuyaoJiang-JunjieChen",
   "icon": "./NJUST.png",
   "engines": {
     "vscode": "^1.108.0"
@@ -18,11 +18,20 @@
     "onStartupFinished"
   ],
   "contributes": {
+    "icons": {
+      "my-njust-logo": {
+        "description": "NJUST 自定义图标",
+        "default": {
+          "fontPath": "./njust.woff",
+          "fontCharacter": "\\e000"
+        }
+      }
+    },
     "viewsContainers": {
       "activitybar": [
         {
           "id": "llma-sidebar",
-          "title": "LLMA",
+          "title": "NJUST_AI_Assistant",
           "icon": "./NJUST.svg"
         }
       ]
@@ -30,15 +39,15 @@
     "views": {
       "llma-sidebar": [
         {
-          "icon": "",
+          "icon": "./NJUST.svg",
           "type": "webview",
           "id": "llma.chatView",
-          "name": "AI 聊天助手"
+          "name": "NJUST_AI_Assistant"
         }
       ]
     },
     "configuration": {
-      "title": "LLMA 配置",
+      "title": "NJUST_AI_Assistant 配置",
       "properties": {
         "llma.enableAutoCompletion": {
           "type": "boolean",
@@ -51,12 +60,41 @@
           "enum": [
             "deepseek",
             "qwen",
-            "douban",
+            "doubao",
             "zhipu",
             "local",
-            "huggingface"
+            "huggingface",
+            "openai",
+            "kimi",
+            "huggingface-space",
+            "custom"
           ],
           "description": "选择 AI 模型提供商"
+        },
+        "llma.customModel.apiBaseUrl": {
+          "type": "string",
+          "default": "http://127.0.0.1:8000",
+          "description": "自定义模型 API 基础 URL（例如：http://127.0.0.1:8000）"
+        },
+        "llma.customModel.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "自定义模型 API Key（如需认证）"
+        },
+        "llma.customModel.modelName": {
+          "type": "string",
+          "default": "",
+          "description": "自定义模型名称（如：gpt-4, llama3, qwen2）"
+        },
+        "llma.customModel.chatEndpoint": {
+          "type": "string",
+          "default": "/chat/completions",
+          "description": "聊天接口路径（默认：/chat/completions）"
+        },
+        "llma.customModel.supportsMultimodal": {
+          "type": "boolean",
+          "default": false,
+          "description": "自定义模型是否支持多模态（如图片输入）"
         },
         "llma.localModel.enabled": {
           "type": "boolean",
@@ -78,6 +116,11 @@
           "default": 120000,
           "description": "本地模型请求超时时间 (毫秒)"
         },
+        "llma.localModel.supportsMultimodal": {
+          "type": "boolean",
+          "default": false,
+          "description": "本地模型是否支持多模态（如图片输入）"
+        },
         "llma.requestDelay": {
           "type": "number",
           "default": 300,
@@ -93,22 +136,32 @@
           "default": "",
           "description": "DeepSeek API Key"
         },
+        "llma.deepseekModel": {
+          "type": "string",
+          "default": "deepseek-coder",
+          "description": "DeepSeek 模型名称 (留空则使用 deepseek-coder)"
+        },
         "llma.qwenApiKey": {
           "type": "string",
           "default": "",
           "description": "通义千问 API Key"
+        },
+        "llma.qwenModel": {
+          "type": "string",
+          "default": "qwen-coder-turbo",
+          "description": "通义千问模型名称 (留空则使用 qwen-coder-turbo)"
         },
         "llma.qwenBaseUrl": {
           "type": "string",
           "default": "https://dashscope.aliyuncs.com/compatible-mode/v1",
           "description": "通义千问 Base URL"
         },
-        "llma.doubanApiKey": {
+        "llma.doubaoApiKey": {
           "type": "string",
           "default": "",
           "description": "豆包 API Key"
         },
-        "llma.doubanModel": {
+        "llma.doubaoModel": {
           "type": "string",
           "default": "",
           "description": "豆包 Endpoint ID (例如: ep-20240604...)"
@@ -117,6 +170,11 @@
           "type": "string",
           "default": "",
           "description": "智普AI API Key"
+        },
+        "llma.zhipuModel": {
+          "type": "string",
+          "default": "glm-4",
+          "description": "智普AI 模型名称 (留空则使用 glm-4)"
         },
         "llma.huggingfaceApiKey": {
           "type": "string",
@@ -128,11 +186,46 @@
           "default": "Qwen/Qwen2.5-Coder-32B-Instruct",
           "description": "Hugging Face 模型 ID (例如: Qwen/Qwen2.5-Coder-32B-Instruct)"
         },
+        "llma.openaiApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "OpenAI API Key"
+        },
+        "llma.openaiModel": {
+          "type": "string",
+          "default": "gpt-4-turbo-preview",
+          "description": "OpenAI 模型名称，如 gpt-4、gpt-3.5-turbo"
+        },
+        "llma.kimiApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Kimi API Key"
+        },
+        "llma.kimiModel": {
+          "type": "string",
+          "default": "moonshot-v1-8k",
+          "description": "Kimi 模型名称 (如 moonshot-v1-8k, moonshot-v1-128k)"
+        },
+        "llma.huggingfaceSpaceApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Hugging Face Space API Key（如果需要）"
+        },
+        "llma.huggingfaceSpaceBaseUrl": {
+          "type": "string",
+          "default": "",
+          "description": "Hugging Face Space 的 Base URL，例如 https://username-space.hf.space/v1（必须包含 /v1）"
+        },
+        "llma.huggingfaceSpaceModel": {
+          "type": "string",
+          "default": "",
+          "description": "Hugging Face Space 的模型名称（如果 Space 需要）"
+        },
         "llma.compilation.compilers": {
           "type": "object",
           "default": {
-            "c": "gcc \"{file}\" -o \"{executable}\"",
-            "cpp": "g++ \"{file}\" -o \"{executable}\"",
+            "c": "gcc {allFiles} -o \"{executable}\"",
+            "cpp": "g++ {allFiles} -o \"{executable}\"",
             "python": "python -m py_compile \"{file}\"",
             "javascript": "node --check \"{file}\"",
             "typescript": "tsc --noEmit \"{file}\"",
@@ -141,7 +234,7 @@
             "go": "go build -o \"{executable}\" \"{file}\"",
             "cangjie": "cjc \"{file}\" -o \"{executable}\""
           },
-          "description": "编译命令配置（支持 {file}、{executable}、{outputDir}、{fileName}、{fileNameWithoutExt}、{fileDir} 占位符）"
+          "description": "编译命令配置（支持 {file}、{allFiles}、{executable}、{outputDir}、{fileName}、{fileNameWithoutExt}、{fileDir} 占位符）"
         },
         "llma.compilation.defaultOutputDir": {
           "type": "string",
@@ -195,6 +288,111 @@
           "type": "string",
           "default": "",
           "description": "SerpApi API Key (用于联网搜索)"
+        },
+        "llma.agent.allowCommandExecution": {
+          "type": "boolean",
+          "default": false,
+          "description": "允许 AI 自动执行终端命令（若为 false，每次执行前会请求用户确认）"
+        },
+        "llma.agent.maxToolIterations": {
+          "type": "number",
+          "default": 15,
+          "minimum": 1,
+          "maximum": 50,
+          "description": "单次对话中工具调用的最大迭代次数，防止无限循环"
+        },
+        "llma.agent.allowRangeEdit": {
+          "type": "boolean",
+          "default": true,
+          "description": "允许 AI 进行范围编辑（EDIT_BLOCK、RANGE_EDIT、DIFF 等局部修改），若为 false 则仅允许全文件替换"
+        },
+        "llma.agent.fileChangeConfirmMode": {
+          "type": "string",
+          "default": "smart",
+          "enum": [
+            "always",
+            "smart",
+            "never"
+          ],
+          "description": "文件改动确认策略：always（每次确认）、smart（仅高风险改动确认）、never（直接应用）"
+        },
+        "llma.agent.smartConfirmMinChangedLines": {
+          "type": "number",
+          "default": 50,
+          "minimum": 1,
+          "description": "smart 模式下触发确认的最小变更行数阈值"
+        },
+        "llma.agent.smartConfirmMinCharDelta": {
+          "type": "number",
+          "default": 3000,
+          "minimum": 1,
+          "description": "smart 模式下触发确认的最小字符变化阈值"
+        },
+        "llma.agent.revealEditsAfterApply": {
+          "type": "boolean",
+          "default": false,
+          "description": "确认或自动应用后是否自动跳转并高亮编辑位置（开启后可能频繁切换焦点）"
+        },
+        "llma.agent.openDiffAfterApply": {
+          "type": "boolean",
+          "default": true,
+          "description": "兼容旧配置项；当前版本在文件修改成功后会自动打开修改前后 diff 视图"
+        },
+        "llma.agent.promptForBatchEdit": {
+          "type": "boolean",
+          "default": true,
+          "description": "批量编辑多个文件时是否弹出确认对话框"
+        },
+        "llma.agent.enableReflection": {
+          "type": "boolean",
+          "default": true,
+          "description": "启用 AI 反思机制，允许 AI 自我评估和优化回答"
+        },
+        "llma.agent.taskCompletionCheck": {
+          "type": "boolean",
+          "default": true,
+          "description": "启用任务完成度检查，确保 AI 完成所有请求的任务"
+        },
+        "llma.agent.maxConsecutiveNoOps": {
+          "type": "number",
+          "default": 3,
+          "minimum": 1,
+          "maximum": 10,
+          "description": "允许的最大连续无操作次数，超过后停止自动调用"
+        },
+        "llma.agent.enableTaskPlanning": {
+          "type": "boolean",
+          "default": true,
+          "description": "启用任务规划功能，复杂任务自动生成执行计划"
+        },
+        "llma.agent.forceTaskPlanning": {
+          "type": "boolean",
+          "default": false,
+          "description": "强制对所有任务启用规划模式（忽略任务复杂度判断）"
+        },
+        "llma.agent.complexTaskKeywords": {
+          "type": "array",
+          "default": [
+            "创建",
+            "实现",
+            "开发",
+            "构建",
+            "项目",
+            "系统",
+            "功能",
+            "模块"
+          ],
+          "description": "触发任务规划的关键词列表，包含这些词的任务将被视为复杂任务"
+        },
+        "llma.mcp.servers": {
+          "type": "array",
+          "default": [],
+          "description": "MCP 服务器配置。每个服务器包含 name（唯一标识）、command（启动命令）、args（参数数组）、env（可选环境变量）。"
+        },
+        "llma.chat.typingEffect": {
+          "type": "boolean",
+          "default": true,
+          "description": "启用流式输出的打字机效果（闪烁光标 + 内容渐入）"
         }
       }
     },
@@ -202,12 +400,12 @@
       {
         "command": "llma.aiCodeComplete",
         "title": "LLMA: 生成完整代码 (Prompt/Context)",
-        "icon": "$(sparkle)"
+        "icon": "./NJUST.svg"
       },
       {
         "command": "llma.toggle",
         "title": "LLMA: 切换自动预测开关",
-        "icon": "$(hubot)"
+        "icon": "./NJUST.svg"
       },
       {
         "command": "llma.trigger",
@@ -216,12 +414,17 @@
       {
         "command": "llma.compileCurrentFile",
         "title": "LLMA: 编译当前文件",
-        "icon": "$(play)"
+        "icon": "./NJUST.svg"
       },
       {
         "command": "llma.compileWithOptions",
         "title": "LLMA: 编译文件（高级选项）",
-        "icon": "$(gear)"
+        "icon": "./NJUST.svg"
+      },
+      {
+        "command": "llma.toggleChatAgentMode",
+        "title": "LLMA: 切换聊天/Agent 模式",
+        "icon": "./NJUST.svg"
       }
     ],
     "keybindings": [
@@ -243,13 +446,19 @@
         "mac": "cmd+shift+b",
         "when": "editorTextFocus",
         "description": "编译当前文件"
+      },
+      {
+        "command": "llma.toggleChatAgentMode",
+        "key": "ctrl+shift+q",
+        "mac": "cmd+shift+q",
+        "description": "切换聊天模式和 Agent 模式"
       }
     ]
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
     "compile": "npm run check-types && npm run lint && npm run build",
-    "build": "node esbuild.js && npm run copy-files",
+    "build": "node esbuild.js && npm run copy-files && node scripts/build-chat.js",
     "copy-files": "copyfiles -f src/webview.html dist/ && echo 'Files copied'",
     "watch": "npm-run-all -p watch:*",
     "watch:esbuild": "node esbuild.js --watch",
@@ -261,6 +470,7 @@
     "test": "vscode-test"
   },
   "devDependencies": {
+    "@types/diff-match-patch": "^1.0.2",
     "@types/node": "20.x",
     "@types/vscode": "^1.108.1",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
@@ -276,8 +486,20 @@
     "typescript-eslint": "^8.54.0"
   },
   "dependencies": {
+    "@babel/parser": "^7.29.0",
+    "@babel/traverse": "^7.29.0",
+    "@babel/types": "^7.29.0",
+    "@langchain/core": "^1.1.32",
+    "@langchain/openai": "^1.2.13",
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "@types/uuid": "^10.0.0",
     "axios": "^1.13.4",
+    "diff-match-patch": "^1.0.5",
     "http-proxy-agent": "^7.0.2",
-    "https-proxy-agent": "^7.0.6"
+    "https-proxy-agent": "^7.0.6",
+    "langchain": "^1.2.32",
+    "openai": "^6.22.0",
+    "simple-git": "^3.33.0",
+    "uuid": "^13.0.0"
   }
 }

@@ -1,0 +1,5 @@
+2026-03-16 09:48:12.420 [error] Error: Error mutex already exists
+    at ls.installMutex (file:///d:/LLM/llma/.vscode-test/vscode-win32-x64-archive-1.111.0/ce099c1ed2/resources/app/out/main.js:550:23404)
+2026-03-16 09:48:12.439 [info] update#setState disabled
+2026-03-16 09:48:12.440 [info] update#ctor - updates are disabled by the environment
+2026-03-16 09:48:14.390 [info] Extension host with pid 22148 exited with code: 0, signal: unknown.

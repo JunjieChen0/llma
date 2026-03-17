@@ -1,0 +1,31 @@
+2026-03-16 09:48:13.967 [info] Extension host with pid 22148 started
+2026-03-16 09:48:13.984 [info] ExtensionService#_doActivateExtension vscode.github-authentication, startup: false, activationEvent: 'onAuthenticationRequest:github'
+2026-03-16 09:48:14.008 [info] ExtensionService#_doActivateExtension vscode.emmet, startup: false, activationEvent: 'onLanguage'
+2026-03-16 09:48:14.051 [info] ExtensionService#_doActivateExtension vscode.git-base, startup: true, activationEvent: '*', root cause: vscode.git
+2026-03-16 09:48:14.060 [info] ExtensionService#_doActivateExtension vscode.git, startup: true, activationEvent: '*'
+2026-03-16 09:48:14.111 [info] ExtensionService#_doActivateExtension vscode.github, startup: true, activationEvent: '*'
+2026-03-16 09:48:14.171 [warning] [vscode.git] Accessing a resource scoped configuration without providing a resource is not expected. To get the effective value for 'git.openRepositoryInParentFolders', provide the URI of a resource or 'null' for any resource.
+2026-03-16 09:48:14.171 [warning] [vscode.git] Accessing a resource scoped configuration without providing a resource is not expected. To get the effective value for 'git.showProgress', provide the URI of a resource or 'null' for any resource.
+2026-03-16 09:48:14.180 [info] Eager extensions activated
+2026-03-16 09:48:14.292 [info] ExtensionService#_doActivateExtension vscode.debug-auto-launch, startup: false, activationEvent: 'onStartupFinished'
+2026-03-16 09:48:14.297 [info] ExtensionService#_doActivateExtension vscode.merge-conflict, startup: false, activationEvent: 'onStartupFinished'
+2026-03-16 09:48:14.314 [info] ExtensionService#_doActivateExtension JunjieChen-YuyaoJiang.llma, startup: false, activationEvent: 'onStartupFinished'
+2026-03-16 09:48:14.352 [warning] [Deprecation Warning] 'PendingMigrationError' is deprecated. navigator is now a global in nodejs, please see https://aka.ms/vscode-extensions/navigator for additional info on this error.
+ FROM: PendingMigrationError: navigator is now a global in nodejs, please see https://aka.ms/vscode-extensions/navigator for additional info on this error.
+	at get (file:///d:/LLM/llma/.vscode-test/vscode-win32-x64-archive-1.111.0/ce099c1ed2/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:800:7210)
+	at Object.<anonymous> (d:\LLM\llma\dist\extension.js:28435:18)
+	at Module._compile (node:internal/modules/cjs/loader:1714:14)
+	at Module._extensions..js (node:internal/modules/cjs/loader:1848:10)
+	at Module.load (node:internal/modules/cjs/loader:1448:32)
+	at Module._load (node:internal/modules/cjs/loader:1270:12)
+	at c._load (node:electron/js2c/node_init:2:17993)
+	at r._load (file:///d:/LLM/llma/.vscode-test/vscode-win32-x64-archive-1.111.0/ce099c1ed2/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:800:6589)
+	at e._load (file:///d:/LLM/llma/.vscode-test/vscode-win32-x64-archive-1.111.0/ce099c1ed2/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:618:28611)
+	at n._load (file:///d:/LLM/llma/.vscode-test/vscode-win32-x64-archive-1.111.0/ce099c1ed2/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:610:25255)
+	at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+	at wrapModuleLoad (node:internal/modules/cjs/loader:244:24)
+	at Module.require (node:internal/modules/cjs/loader:1470:12)
+	at require (node:internal/modules/helpers:147:16)
+	at ck._doLoadModule (file:///d:/LLM/llma/.vscode-test/vscode-win32-x64-archive-1.111.0/ce099c1ed2/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:649:1614)
+2026-03-16 09:48:14.384 [info] Extension host terminating: renderer closed the MessagePort
+2026-03-16 09:48:14.390 [info] Extension host with pid 22148 exiting with code 0

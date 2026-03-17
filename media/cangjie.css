@@ -1,0 +1,61 @@
+/* 仓颉语言支持样式 */
+.cangjie-keyword {
+  color: #c586c0;
+  font-weight: bold;
+}
+
+.cangjie-type {
+  color: #4ec9b0;
+}
+
+.cangjie-function {
+  color: #dcdcaa;
+}
+
+.cangjie-variable {
+  color: #9cdcfe;
+}
+
+.cangjie-string {
+  color: #ce9178;
+}
+
+.cangjie-comment {
+  color: #6a9955;
+  font-style: italic;
+}
+
+.cangjie-number {
+  color: #b5cea8;
+}
+
+.cangjie-namespace {
+  color: #4ec9b0;
+  font-weight: bold;
+}
+
+.cangjie-struct {
+  color: #4ec9b0;
+  font-style: italic;
+}
+
+.cangjie-interface {
+  color: #4ec9b0;
+  text-decoration: underline;
+}
+
+.cangjie-enum {
+  color: #4ec9b0;
+}
+
+.cangjie-modifier {
+  color: #569cd6;
+}
+
+.cangjie-operator {
+  color: #d4d4d4;
+}
+
+.cangjie-bracket {
+  color: #ffd700;
+}

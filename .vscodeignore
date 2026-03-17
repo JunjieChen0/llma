@@ -12,7 +12,6 @@ esbuild.js
 # 但不要忽略这些
 !dist/extension.js
 !dist/extension.js.map
-!dist/webview.html
 !package.json
 !README.md
 !LICENSE

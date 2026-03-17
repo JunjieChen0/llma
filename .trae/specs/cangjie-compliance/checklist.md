@@ -1,0 +1,38 @@
+- [x] 所有仓颉函数定义包含显式返回类型
+- [x] 所有仓颉主函数使用 @entry 标记并返回 Int32
+- [x] 变量声明正确使用 let/var（优先 let）
+- [x] 类型声明语法正确（name: Type）
+- [x] 类和结构体语法正确（继承、接口实现）
+- [x] 控制流语法正确（if/match/for/while）
+- [x] 异常处理使用 try-catch-finally 结构
+- [x] 项目结构建议包含 src/目录和配置文件
+- [x] 编译命令使用正确的 cjc/cjpm 格式
+- [x] 导入语句语法正确（import/use）
+- [x] 可见性修饰符使用正确（public/private/protected）
+- [x] 泛型语法正确（类型参数、约束）
+- [x] Lambda 表达式语法正确
+- [x] 操作符重载语法正确
+- [x] 在回答中引用官方文档链接
+- [x] 代码示例符合命名规范（类名大驼峰、函数变量小驼峰）
+- [x] 推荐使用不可变变量（let）而非可变变量（var）
+- [x] 推荐使用模式匹配而非多层 if-else
+- [x] 推荐使用 Result 类型处理可预期错误
+- [x] 单表达式函数使用简写形式（=>）
+- [x] const 常量在编译时确定值
+- [x] match 表达式覆盖所有情况或使用 else
+- [x] 区间语法正确（.. 半开，... 闭合）
+- [x] 继承语法正确（class Child : Parent）
+- [x] 接口实现使用逗号分隔
+- [x] 重写方法使用 override 关键字
+- [x] 虚方法使用 open 关键字
+- [x] 枚举支持关联值（case Name(Type)）
+- [x] 类型别名使用 typealias
+- [x] 文档注释使用 /// 格式
+- [x] 管道操作符使用正确（|>）
+- [x] 函数组合使用正确（~>）
+- [x] 异步编程使用 async/await
+- [x] 编译命令参数正确（-O、-g、--target）
+- [x] 包管理配置正确（cjpm.toml）
+- [x] 命名空间使用正确（namespace）
+- [x] 重导出使用 pub use
+- [x] **参考正确的文档**：优先参考 `d:\LLM\llma\docs\cangjie-complete-reference.md`
