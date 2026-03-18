@@ -1,1 +1,12 @@
 node_modules
+.vscode
+.vscode-test
+.vsix
+.cursor
+.cache
+docs
+fixtures
+scripts
+test
+.llma_history.jsonl
+log.txt
